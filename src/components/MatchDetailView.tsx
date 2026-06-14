@@ -438,6 +438,12 @@ function MatchDetailContent({
         rivalryNote={detail.rivalryNote}
         rivalryFunFact={detail.rivalryFunFact}
       />
+
+      <MatchRelatedMatches
+        currentMatch={match}
+        liveMatches={liveMatches}
+        relatedMatches={relatedMatches}
+      />
         </>
       )}
 
@@ -550,12 +556,6 @@ function MatchDetailContent({
       {tab === "table" && !detail.groupStandings && (
         <p className="text-sm text-zinc-400 text-center py-8">Group table not available yet.</p>
       )}
-
-      <MatchRelatedMatches
-        currentMatch={match}
-        liveMatches={liveMatches}
-        relatedMatches={relatedMatches}
-      />
     </div>
   );
 }
