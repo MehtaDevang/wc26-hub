@@ -124,6 +124,14 @@ button:disabled,
 }
 
 /* Cards */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 .card-surface {
   background: var(--card);
   border: 1px solid var(--border);

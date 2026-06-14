@@ -16,6 +16,16 @@ export function isValidTeamCode(code: string): boolean {
   return !!resolveTeamCode(trimmed);
 }
 
+export function isValidGroupLetter(letter: string): boolean {
+  return /^[A-L]$/i.test(letter.trim());
+}
+
+export function isValidPlayerId(id: string): boolean {
+  const trimmed = id.trim();
+  if (!trimmed || trimmed.length > 64) return false;
+  return /^\d{4,15}$/.test(trimmed) || /^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(trimmed);
+}
+
 export function parseMatchesQuery(
   date: string | null,
   range: string | null,

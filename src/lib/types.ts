@@ -200,6 +200,98 @@ export interface TeamJourney {
   nextMatch?: TeamJourneyMatch;
 }
 
+export interface GroupPageData {
+  letter: string;
+  label: string;
+  standings: GroupStandings;
+  matches: Match[];
+}
+
+export interface PlayerGoal {
+  matchId: string;
+  minute: number;
+  opponent: string;
+  opponentCode: string;
+  assist?: string;
+  description: string;
+}
+
+export interface PlayerAppearance {
+  matchId: string;
+  opponent: string;
+  opponentCode: string;
+  started: boolean;
+  date: string;
+}
+
+export interface PlayerRecentMatch {
+  eventId: string;
+  date: string;
+  opponent: string;
+  score: string;
+  result: string;
+  competition: string;
+  goals: number;
+  assists: number;
+}
+
+export interface PlayerSeasonStat {
+  name: string;
+  displayValue: string;
+}
+
+export interface PlayerWorldCupProfile {
+  id: string;
+  espnId?: string;
+  slug: string;
+  name: string;
+  teamCode: string;
+  teamName: string;
+  number: number;
+  position: string;
+  flag: string;
+  headshot?: string;
+  age: number;
+  club: string;
+  clubLogo?: string;
+  nationality: string;
+  caps: number;
+  bio: string;
+  displayHeight?: string;
+  displayWeight?: string;
+  dateOfBirth?: string;
+  birthPlace?: string;
+  worldCupGoals: number;
+  goals: PlayerGoal[];
+  yellowCards: number;
+  redCards: number;
+  matchesPlayed: number;
+  appearances: PlayerAppearance[];
+  recentMatches: PlayerRecentMatch[];
+  seasonStats: PlayerSeasonStat[];
+}
+
+export interface PlayerListItem {
+  id: string;
+  slug: string;
+  name: string;
+  teamCode: string;
+  teamName: string;
+  flag: string;
+  goals: number;
+  position: string;
+  number: number;
+  headshot?: string;
+}
+
+export interface PlayerCountrySection {
+  teamCode: string;
+  teamName: string;
+  flag: string;
+  logo?: string;
+  players: PlayerListItem[];
+}
+
 export interface MatchLeader {
   category: string;
   playerName: string;

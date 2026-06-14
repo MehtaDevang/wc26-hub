@@ -1,4 +1,5 @@
 const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world";
+const ESPN_ATHLETE_BASE = "https://site.api.espn.com/apis/common/v3/sports/soccer/athletes";
 
 export async function fetchEspnScoreboard(options?: {
   dates?: string;
@@ -32,6 +33,46 @@ export function todayEspnDate(): string {
 
 export function formatEspnDate(date: Date): string {
   return date.toISOString().slice(0, 10).replace(/-/g, "");
+}
+
+export async function fetchEspnTeams(): Promise<EspnTeamsResponse> {
+  const url = `${ESPN_BASE}/teams`;
+  const res = await fetch(url, {
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`ESPN teams failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEspnTeamRoster(teamId: string): Promise<EspnTeamRosterResponse> {
+  const url = `${ESPN_BASE}/teams/${teamId}/roster`;
+  const res = await fetch(url, {
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`ESPN roster failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEspnAthlete(athleteId: string): Promise<EspnAthleteResponse> {
+  const url = `${ESPN_ATHLETE_BASE}/${athleteId}`;
+  const res = await fetch(url, {
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!res.ok) throw new Error(`ESPN athlete failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEspnAthleteGamelog(athleteId: string): Promise<EspnAthleteGamelog> {
+  const url = `${ESPN_ATHLETE_BASE}/${athleteId}/gamelog`;
+  const res = await fetch(url, {
+    next: { revalidate: 300 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!res.ok) throw new Error(`ESPN gamelog failed: ${res.status}`);
+  return res.json();
 }
 
 // Minimal ESPN types
@@ -206,6 +247,97 @@ export interface EspnH2H {
     gameResult?: string;
     competitionName?: string;
     opponent?: { displayName: string };
+  }>;
+}
+
+export interface EspnTeamsResponse {
+  sports?: Array<{
+    leagues?: Array<{
+      teams?: Array<{ team: EspnWorldCupTeam }>;
+    }>;
+  }>;
+}
+
+export interface EspnWorldCupTeam {
+  id: string;
+  abbreviation: string;
+  displayName: string;
+  shortDisplayName?: string;
+  location?: string;
+  logos?: Array<{ href?: string }>;
+}
+
+export interface EspnTeamRosterResponse {
+  athletes?: EspnRosterAthlete[];
+}
+
+export interface EspnRosterAthlete {
+  id: string;
+  displayName: string;
+  shortName?: string;
+  age?: number;
+  jersey?: string;
+  citizenship?: string;
+  displayHeight?: string;
+  displayWeight?: string;
+  dateOfBirth?: string;
+  headshot?: { href?: string; alt?: string };
+  birthPlace?: { city?: string; state?: string; country?: string };
+  position?: { displayName?: string; abbreviation?: string; name?: string };
+  team?: { displayName?: string; logos?: Array<{ href?: string }> } | null;
+}
+
+export interface EspnAthleteResponse {
+  athlete?: {
+    id: string;
+    displayName: string;
+    age?: number;
+    jersey?: string;
+    citizenship?: string;
+    displayHeight?: string;
+    displayWeight?: string;
+    displayDOB?: string;
+    headshot?: { href?: string };
+    birthPlace?: { city?: string; state?: string; country?: string } | null;
+    position?: { displayName?: string; abbreviation?: string };
+    team?: {
+      displayName?: string;
+      logos?: Array<{ href?: string }>;
+    };
+    statsSummary?: {
+      displayName?: string;
+      statistics?: Array<{
+        name: string;
+        displayValue: string;
+        displayName?: string;
+      }>;
+    };
+  };
+}
+
+export interface EspnAthleteGamelog {
+  labels?: string[];
+  names?: string[];
+  displayNames?: string[];
+  events?: Record<
+    string,
+    {
+      id: string;
+      gameDate?: string;
+      atVs?: string;
+      score?: string;
+      gameResult?: string;
+      leagueName?: string;
+      opponent?: { displayName?: string };
+    }
+  >;
+  seasonTypes?: Array<{
+    categories?: Array<{
+      events?: Array<{
+        eventId: string;
+        stats?: string[];
+      }>;
+    }>;
   }>;
 }
 

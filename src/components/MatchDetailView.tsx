@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
-  ArrowLeft, MapPin, Users, User, Clock, X, Trophy,
+  ArrowLeft, MapPin, Users, User, Clock, Trophy,
   Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
@@ -63,13 +63,14 @@ function LiveBadge() {
   );
 }
 
-function PlayerCard({ player, minute, assist, onSelect }: {
+function PlayerCard({ player, minute, assist }: {
   player: PlayerProfile; minute?: number; assist?: string;
-  onSelect: (p: PlayerProfile) => void;
 }) {
+  const playerHref = `/players/${player.espnId ?? player.id}`;
+
   return (
-    <button
-      onClick={() => onSelect(player)}
+    <Link
+      href={playerHref}
       className="w-full flex items-center gap-3 rounded-xl card-surface p-3 text-left hover:border-blue-200 hover:shadow-sm transition-all group"
     >
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-lg shrink-0">
@@ -81,58 +82,7 @@ function PlayerCard({ player, minute, assist, onSelect }: {
         {assist && <p className="text-xs text-zinc-400 mt-0.5">Assist: {assist}</p>}
       </div>
       {minute !== undefined && <span className="text-sm font-bold text-blue-600 shrink-0">{minute}&apos;</span>}
-    </button>
-  );
-}
-
-function PlayerProfileModal({ player, onClose }: { player: PlayerProfile; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-md rounded-2xl card-elevated p-6 max-h-[85vh] overflow-y-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700" aria-label="Close">
-          <X size={20} />
-        </button>
-        <div className="flex items-center gap-4 mb-5">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl">{player.flag}</div>
-          <div>
-            <h3 className="text-xl font-bold text-zinc-900">{player.name}</h3>
-            <p className="text-sm text-zinc-500">#{player.number} · {player.position}</p>
-            {player.club && <p className="text-xs text-blue-600 mt-0.5">{player.club}</p>}
-          </div>
-        </div>
-        {(player.age > 0 || player.caps > 0) && (
-          <div className="grid grid-cols-3 gap-3 mb-5">
-            {player.age > 0 && (
-              <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
-                <p className="text-lg font-bold text-amber-600">{player.age}</p>
-                <p className="text-[10px] text-zinc-400 uppercase">Age</p>
-              </div>
-            )}
-            {player.caps > 0 && (
-              <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
-                <p className="text-lg font-bold text-amber-600">{player.caps}</p>
-                <p className="text-[10px] text-zinc-400 uppercase">Caps</p>
-              </div>
-            )}
-            <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
-              <p className="text-lg font-bold text-amber-600">{player.worldCupGoals}</p>
-              <p className="text-[10px] text-zinc-400 uppercase">WC Goals</p>
-            </div>
-          </div>
-        )}
-        <p className="text-sm text-zinc-600 leading-relaxed">{player.bio}</p>
-        {player.espnId && (
-          <a
-            href={`https://www.espn.com/soccer/player/_/id/${player.espnId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-block text-sm text-blue-600 hover:underline"
-          >
-            View full profile on ESPN →
-          </a>
-        )}
-      </div>
-    </div>
+    </Link>
   );
 }
 
@@ -175,7 +125,6 @@ function MatchDetailContent({
   const away = getTeam(match.away, match.awayName, match.awayLogo);
   const searchParams = useSearchParams();
   const tab = parseTab(searchParams.get("tab"));
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerProfile | null>(null);
   const [liveMinute, setLiveMinute] = useState(match.minute ?? 0);
   const kickoffDateLabel = match.kickoffAt
     ? formatKickoffDateLabel(match.kickoffAt, timezone)
@@ -206,7 +155,10 @@ function MatchDetailContent({
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
             <span className="text-xs text-zinc-500 uppercase tracking-wider">
-              Group {match.group} · {kickoffDateLabel} ·{" "}
+              <Link href={`/groups/${match.group}`} className="hover:text-blue-600">
+                Group {match.group}
+              </Link>
+              {" · "}{kickoffDateLabel} ·{" "}
               <MatchKickoffTime match={match} />
             </span>
             {match.status === "live" && <LiveBadge />}
@@ -217,7 +169,9 @@ function MatchDetailContent({
           <div className="flex items-center justify-center gap-6 sm:gap-12">
             <div className="flex-1 text-center">
               {home.logo ? <img src={home.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{home.flag}</span>}
-              <h1 className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</h1>
+              <Link href={`/teams/${match.home}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                {home.name}
+              </Link>
               {detail.homeManager && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.homeManager}</p>
               )}
@@ -240,7 +194,9 @@ function MatchDetailContent({
             </div>
             <div className="flex-1 text-center">
               {away.logo ? <img src={away.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{away.flag}</span>}
-              <h1 className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</h1>
+              <Link href={`/teams/${match.away}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                {away.name}
+              </Link>
               {detail.awayManager && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.awayManager}</p>
               )}
@@ -409,7 +365,7 @@ function MatchDetailContent({
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {scorersWithProfiles.map(({ event, player }) => (
-              <PlayerCard key={event.id} player={player!} minute={event.minute} assist={event.assist} onSelect={setSelectedPlayer} />
+              <PlayerCard key={event.id} player={player!} minute={event.minute} assist={event.assist} />
             ))}
           </div>
         </section>
@@ -434,9 +390,9 @@ function MatchDetailContent({
                     <span className="text-base shrink-0">{EVENT_ICONS[event.type]}</span>
                     <div className="min-w-0">
                       {event.playerId && detail.players[event.playerId] ? (
-                        <button onClick={() => setSelectedPlayer(detail.players[event.playerId!])} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm text-left">
+                        <Link href={`/players/${detail.players[event.playerId!].espnId ?? event.playerId}`} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm">
                           {event.playerName}
-                        </button>
+                        </Link>
                       ) : (
                         <p className="font-semibold text-zinc-900 text-sm">{event.playerName}</p>
                       )}
@@ -459,9 +415,7 @@ function MatchDetailContent({
         <p className="text-sm text-zinc-400 text-center py-8">Group table not available yet.</p>
       )}
 
-      {selectedPlayer && (
-        <PlayerProfileModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
-      )}
+
     </div>
   );
 }

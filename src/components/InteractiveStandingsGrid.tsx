@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import type { GroupStandings, StandingsRow } from "@/lib/types";
 import { resolveTeamCode } from "@/lib/team-lookup";
-import { TeamJourneyPanel } from "./TeamJourneyPanel";
 import { GroupStandingsTable, StandingsTeamCell } from "./GroupStandingsTable";
 
 function ClickableStandingsTable({
@@ -14,13 +14,6 @@ function ClickableStandingsTable({
   rows: StandingsRow[];
   onTeamClick: (team: string, teamCode?: string) => void;
 }) {
-  const handleRow = useCallback(
-    (row: StandingsRow) => {
-      onTeamClick(row.team, row.teamCode ?? resolveTeamCode(row.team));
-    },
-    [onTeamClick]
-  );
-
   return (
     <div className="overflow-x-auto -mx-1">
       <table className="w-full text-sm">
@@ -38,36 +31,39 @@ function ClickableStandingsTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.team}
-              role="button"
-              tabIndex={0}
-              onClick={() => handleRow(row)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleRow(row);
-                }
-              }}
-              className="standings-row group"
-              aria-label={`View ${row.team} World Cup journey`}
-            >
-              <td className="py-3 pl-1 pr-2 text-zinc-400 font-bold tabular-nums">{row.rank}</td>
-              <td className="py-3 font-semibold text-zinc-900 group-hover:text-[var(--wc-usa)] transition-colors">
-                <StandingsTeamCell row={row} />
-              </td>
-              <td className="py-3 text-center text-zinc-600 tabular-nums">{row.played}</td>
-              <td className="py-3 text-center text-zinc-600 tabular-nums">{row.won}</td>
-              <td className="py-3 text-center text-zinc-600 tabular-nums">{row.drawn}</td>
-              <td className="py-3 text-center text-zinc-600 tabular-nums">{row.lost}</td>
-              <td className="py-3 text-center text-zinc-600 tabular-nums">{row.goalDiff}</td>
-              <td className="py-3 text-center font-bold text-[var(--wc-usa)] tabular-nums">{row.points}</td>
-              <td className="py-3 pr-1 text-right">
-                <ChevronRight size={15} className="standings-row-arrow inline-block" strokeWidth={2.5} />
-              </td>
-            </tr>
-          ))}
+          {rows.map((row) => {
+            const code = row.teamCode ?? resolveTeamCode(row.team) ?? "";
+            return (
+              <tr
+                key={row.team}
+                role="link"
+                tabIndex={0}
+                onClick={() => onTeamClick(row.team, code)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onTeamClick(row.team, code);
+                  }
+                }}
+                className="standings-row group cursor-pointer"
+                aria-label={`View ${row.team} World Cup hub`}
+              >
+                <td className="py-3 pl-1 pr-2 text-zinc-400 font-bold tabular-nums">{row.rank}</td>
+                <td className="py-3 font-semibold text-zinc-900 group-hover:text-[var(--wc-usa)] transition-colors">
+                  <StandingsTeamCell row={row} />
+                </td>
+                <td className="py-3 text-center text-zinc-600 tabular-nums">{row.played}</td>
+                <td className="py-3 text-center text-zinc-600 tabular-nums">{row.won}</td>
+                <td className="py-3 text-center text-zinc-600 tabular-nums">{row.drawn}</td>
+                <td className="py-3 text-center text-zinc-600 tabular-nums">{row.lost}</td>
+                <td className="py-3 text-center text-zinc-600 tabular-nums">{row.goalDiff}</td>
+                <td className="py-3 text-center font-bold text-[var(--wc-usa)] tabular-nums">{row.points}</td>
+                <td className="py-3 pr-1 text-right">
+                  <ChevronRight size={15} className="standings-row-arrow inline-block" strokeWidth={2.5} />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -75,33 +71,44 @@ function ClickableStandingsTable({
 }
 
 export function InteractiveStandingsGrid({ groups }: { groups: GroupStandings[] }) {
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const router = useRouter();
 
   if (!groups.length) {
     return <p className="text-sm text-zinc-400 text-center py-12">Standings not available yet.</p>;
   }
 
   return (
-    <>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {groups.map((g) => (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {groups.map((g) => {
+        const letter = g.group.replace(/^Group\s+/i, "");
+        return (
           <div key={g.group} className="wc26-group-card">
-            <div className="wc26-group-header">
-              <h3 className="font-bold text-zinc-900">{g.group}</h3>
-              <p className="text-[10px] text-zinc-500 mt-0.5">Tap any row to see a team&apos;s full journey</p>
+            <div className="wc26-group-header flex items-center justify-between gap-2">
+              <div>
+                <Link href={`/groups/${letter}`} className="font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                  {g.group}
+                </Link>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Tap a team for their full World Cup hub</p>
+              </div>
+              <Link
+                href={`/groups/${letter}`}
+                className="text-[10px] font-semibold text-blue-600 hover:underline shrink-0"
+              >
+                View group
+              </Link>
             </div>
             <div className="px-3 pb-2 pt-1">
               <ClickableStandingsTable
                 rows={g.rows}
-                onTeamClick={(team, code) => setSelectedTeam(code ?? team)}
+                onTeamClick={(_team, code) => {
+                  if (code) router.push(`/teams/${code}`);
+                }}
               />
             </div>
           </div>
-        ))}
-      </div>
-
-      <TeamJourneyPanel teamKey={selectedTeam} onClose={() => setSelectedTeam(null)} />
-    </>
+        );
+      })}
+    </div>
   );
 }
 

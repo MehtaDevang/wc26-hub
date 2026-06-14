@@ -6,8 +6,10 @@ import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
 import { IconicMoments } from "@/components/IconicMoments";
 import { WC26MascotStrip } from "@/components/WC26Brand";
+import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
 import { createPageMetadata } from "@/lib/seo";
 import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
+import { buildHeroSlides } from "@/lib/hero-background";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
@@ -28,11 +30,13 @@ export default async function Home() {
   const timeZone = await getServerTimezone();
   const [matchesResult, highlightsResult] = await Promise.allSettled([
     getTodayMatches(timeZone),
-    getRecentHighlights(6, timeZone),
+    getRecentHighlights(12, timeZone),
   ]);
 
   const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];
-  const initialHighlights = highlightsResult.status === "fulfilled" ? highlightsResult.value : [];
+  const allHighlights = highlightsResult.status === "fulfilled" ? highlightsResult.value : [];
+  const initialHighlights = allHighlights.slice(0, 6);
+  const heroSlides = buildHeroSlides(allHighlights);
 
   return (
     <div className="space-y-14">
@@ -74,6 +78,8 @@ export default async function Home() {
           </div>
         ))}
       </div>
+
+      <LiveMomentsStrip slides={heroSlides} />
 
       <LiveScores initialMatches={initialMatches} />
 

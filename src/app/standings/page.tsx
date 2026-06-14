@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { InteractiveStandingsGrid } from "@/components/InteractiveStandingsGrid";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
@@ -19,8 +20,13 @@ export default async function StandingsPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Group Standings"
-        subtitle="Live tables for all 12 World Cup groups — tap any team row to explore their journey"
+        subtitle="Live tables for all 12 World Cup groups — tap a team or browse by group"
       />
+      <p className="text-sm text-zinc-500">
+        <Link href="/groups" className="text-blue-600 hover:underline font-medium">
+          View all groups A–L →
+        </Link>
+      </p>
       <AdBanner placement="standings" />
       <InteractiveStandingsGrid groups={standings} />
     </div>
