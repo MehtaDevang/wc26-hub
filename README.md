@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WC26 Hub
 
-## Getting Started
+Live FIFA World Cup 2026 hub — scores, match details, fixtures, standings, and daily football puzzles.
 
-First, run the development server:
+## Live Data
+
+Match scores, stats, scorers, videos, lineups, and highlights are powered by the **ESPN public API** (free, no API key required):
+
+- `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard`
+- `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event={id}`
+
+Data refreshes every 60 seconds for scores and 30 seconds for match details.
+
+### Optional: API-Football
+
+For production scale, you can also add `API_FOOTBALL_KEY` from [api-football.com](https://www.api-football.com) (100 free requests/day).
+
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx vercel login
+npx vercel --prod
+```
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Live Scores** — Real ESPN data, auto-refreshing
+- **Match Details** — Videos, photos, lineups, stats, standings, minute-by-minute
+- **Fixtures & Tables** — Full schedule and group standings
+- **Daily Puzzles** — Guess the Player, Name Scramble, and Daily Quiz
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Monetization
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Google AdSense** — Replace `<AdBanner />` placeholders
+2. **Stripe** — Wire up Premium upsell in `PremiumUpsell.tsx`
+3. **Sponsored contests** — Customize `SponsoredBanner.tsx`

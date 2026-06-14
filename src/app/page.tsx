@@ -1,65 +1,172 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History } from "lucide-react";
+import { SponsoredBanner } from "@/components/SponsoredBanner";
+import { AdBanner } from "@/components/AdBanner";
+import { LiveScores } from "@/components/LiveScores";
+import { MatchHighlights } from "@/components/MatchHighlights";
+import { WC26MascotStrip } from "@/components/WC26Brand";
+import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
 
-export default function Home() {
+const STATS = [
+  { label: "Matches", value: "104", color: "text-[var(--wc-usa)]" },
+  { label: "Teams", value: "48", color: "text-[var(--wc-mexico)]" },
+  { label: "Groups", value: "12", color: "text-[var(--wc-canada)]" },
+  { label: "Days", value: "39", color: "text-[var(--wc-gold)]" },
+];
+
+export default async function Home() {
+  const [matchesResult, highlightsResult] = await Promise.allSettled([
+    getTodayMatches(),
+    getRecentHighlights(6),
+  ]);
+
+  const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];
+  const initialHighlights = highlightsResult.status === "fulfilled" ? highlightsResult.value : [];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-14">
+      <section className="text-center pt-4 pb-2">
+        <WC26MascotStrip variant="hero" className="mb-8" />
+
+        <div className="inline-flex items-center gap-2 rounded-full bg-white border border-zinc-200 px-4 py-1.5 text-sm mb-6 shadow-sm">
+          <span className="flex h-2 w-2 rounded-full bg-[var(--wc-canada)] animate-pulse" />
+          <span className="text-zinc-600 font-medium">FIFA World Cup 2026 — Live</span>
+          <span className="text-zinc-300">|</span>
+          <span className="text-zinc-400 text-xs">🇲🇽 🇺🇸 🇨🇦</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <h1 className="text-4xl sm:text-[3.5rem] font-extrabold text-zinc-900 leading-[1.1] tracking-tight">
+          Follow Every Moment.
+          <br />
+          <span className="text-gradient-hero">World Cup 2026.</span>
+        </h1>
+        <p className="mt-5 text-lg text-zinc-500 max-w-xl mx-auto leading-relaxed">
+          Live scores, match details, fixtures, standings, and daily puzzles.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
+          <Link href="/fixtures" className="btn-primary inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px]">
+            <Calendar size={18} />
+            View Fixtures
+          </Link>
+          <Link href="/puzzles" className="btn-usa inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[15px]">
+            <Puzzle size={18} />
+            Daily Puzzles
+          </Link>
         </div>
-      </main>
+      </section>
+
+      <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
+        {STATS.map((s) => (
+          <div key={s.label} className="card-surface rounded-xl py-4 text-center">
+            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+            <p className="text-[11px] text-zinc-400 mt-0.5 uppercase tracking-wide">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <LiveScores initialMatches={initialMatches} />
+      <MatchHighlights initialHighlights={initialHighlights} />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link href="/fixtures" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Full Fixtures</h3>
+            <p className="text-sm text-zinc-500 mt-1">Every match, venue & kickoff time</p>
+          </div>
+          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
+        </Link>
+        <Link href="/standings" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Group Tables</h3>
+            <p className="text-sm text-zinc-500 mt-1">Live standings for all 12 groups</p>
+          </div>
+          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
+        </Link>
+      </div>
+
+      <SponsoredBanner />
+
+      <section>
+        <h2 className="section-title mb-5 flex items-center gap-2">
+          <TrendingUp size={22} className="text-blue-600" />
+          Daily Puzzles
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Link href="/puzzles/guess-player" className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div className="rounded-xl p-2.5 bg-blue-50 text-blue-600 w-fit mb-4">
+              <Puzzle size={22} />
+            </div>
+            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">Guess the Player</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">Clue-based mystery footballer. 5 players daily.</p>
+          </Link>
+          <Link href="/puzzles/scramble" className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div className="rounded-xl p-2.5 bg-violet-50 text-violet-600 w-fit mb-4">
+              <Puzzle size={22} />
+            </div>
+            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">Name Scramble</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">Unscramble 5 jumbled names to find footballers.</p>
+          </Link>
+          <Link href="/puzzles/quiz" className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div className="rounded-xl p-2.5 bg-amber-50 text-amber-600 w-fit mb-4">
+              <Puzzle size={22} />
+            </div>
+            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">Daily Quiz</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">5 World Cup trivia questions every day.</p>
+          </Link>
+        </div>
+        <Link href="/puzzles" className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium mt-4 hover:underline">
+          View all puzzles <ArrowRight size={14} />
+        </Link>
+      </section>
+
+      <AdBanner slot="inline" />
+
+      <section>
+        <h2 className="section-title mb-5 flex items-center gap-2">
+          <History size={22} className="text-[var(--wc-gold)]" />
+          World Cup History
+        </h2>
+        <Link
+          href="/history"
+          className="group card-surface rounded-2xl p-6 sm:p-8 hover:shadow-md transition-all block relative overflow-hidden"
+        >
+          <div className="host-stripe absolute top-0 left-0 right-0" />
+          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2">1930 — 2022</p>
+              <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--wc-usa)] transition-colors">
+                22 editions · 8 champions · legendary records
+              </h3>
+              <p className="text-sm text-zinc-500 mt-2 max-w-lg leading-relaxed">
+                Explore every World Cup winner, final score, Golden Ball winners, all-time records, trophy history, prize money, and documented controversies.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--wc-usa)] shrink-0">
+              Browse history <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </div>
+        </Link>
+      </section>
+
+      <section className="card-elevated rounded-2xl p-8 sm:p-10 text-center relative overflow-hidden">
+        <div className="host-stripe absolute top-0 left-0 right-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none" />
+        <Trophy className="mx-auto text-blue-600 mb-3 relative mt-1" size={36} />
+        <h2 className="text-xl font-bold text-zinc-900 mb-2 relative">Explore the Tournament</h2>
+        <p className="text-zinc-500 text-sm max-w-sm mx-auto mb-6 relative leading-relaxed">
+          Videos, lineups, stats, photos, and live tables for every match.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3 relative">
+          <Link href="/fixtures" className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm">
+            <Calendar size={16} />
+            Fixtures
+          </Link>
+          <Link href="/standings" className="btn-usa inline-flex items-center gap-2 px-5 py-2.5 text-sm">
+            <Table2 size={16} />
+            Standings
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

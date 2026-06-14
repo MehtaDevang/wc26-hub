@@ -1,0 +1,498 @@
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import {
+  ArrowLeft, MapPin, Users, User, Clock, X, Trophy,
+  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid,
+} from "lucide-react";
+import { getTeam } from "@/lib/data";
+import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight, MatchStats } from "@/lib/types";
+import { MatchMedia } from "./MatchMedia";
+import { MatchLineups } from "./MatchLineups";
+import { GroupStandingsTable } from "./GroupStandingsTable";
+
+const TABS = [
+  { id: "overview", label: "Overview", icon: Trophy },
+  { id: "media", label: "Media", icon: ImageIcon },
+  { id: "lineups", label: "Lineups", icon: LayoutGrid },
+  { id: "stats", label: "Stats", icon: BarChart3 },
+  { id: "table", label: "Table", icon: Users },
+  { id: "timeline", label: "Timeline", icon: Clock },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
+
+function parseTab(value: string | null): TabId {
+  if (value && TABS.some((t) => t.id === value)) return value as TabId;
+  return "overview";
+}
+
+const EXTRA_STATS: Array<{ key: keyof MatchStats; label: string }> = [
+  { key: "fouls", label: "Fouls" },
+  { key: "yellowCards", label: "Yellow Cards" },
+  { key: "redCards", label: "Red Cards" },
+  { key: "saves", label: "Saves" },
+  { key: "passes", label: "Passes" },
+  { key: "passAccuracy", label: "Pass %" },
+  { key: "offsides", label: "Offsides" },
+  { key: "tackles", label: "Tackles" },
+  { key: "interceptions", label: "Interceptions" },
+];
+
+const EVENT_ICONS: Record<MatchEvent["type"], string> = {
+  goal: "⚽", yellow: "🟨", red: "🟥", sub: "🔄", chance: "💨",
+  whistle: "📣", save: "🧤", penalty: "🎯",
+};
+
+const EVENT_COLORS: Record<MatchEvent["type"], string> = {
+  goal: "border-emerald-200 bg-emerald-50",
+  yellow: "border-yellow-200 bg-yellow-50",
+  red: "border-red-200 bg-red-50",
+  sub: "border-zinc-200 bg-zinc-50",
+  chance: "border-blue-200 bg-blue-50",
+  whistle: "border-zinc-200 bg-zinc-50",
+  save: "border-blue-200 bg-blue-50",
+  penalty: "border-yellow-200 bg-yellow-50",
+};
+
+function LiveBadge() {
+  return (
+    <span className="badge-live">
+      <span className="relative flex h-2 w-2">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-red-600" />
+      </span>
+      Live
+    </span>
+  );
+}
+
+function PlayerCard({ player, minute, assist, onSelect }: {
+  player: PlayerProfile; minute?: number; assist?: string;
+  onSelect: (p: PlayerProfile) => void;
+}) {
+  return (
+    <button
+      onClick={() => onSelect(player)}
+      className="w-full flex items-center gap-3 rounded-xl card-surface p-3 text-left hover:border-blue-200 hover:shadow-sm transition-all group"
+    >
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-lg shrink-0">
+        {player.flag}
+      </div>
+      <div className="flex-1 min-w-0 text-left">
+        <p className="font-semibold text-zinc-900 group-hover:text-blue-600 transition-colors">{player.name}</p>
+        <p className="text-xs text-zinc-500">#{player.number} · {player.position}</p>
+        {assist && <p className="text-xs text-zinc-400 mt-0.5">Assist: {assist}</p>}
+      </div>
+      {minute !== undefined && <span className="text-sm font-bold text-blue-600 shrink-0">{minute}&apos;</span>}
+    </button>
+  );
+}
+
+function PlayerProfileModal({ player, onClose }: { player: PlayerProfile; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="relative w-full max-w-md rounded-2xl card-elevated p-6 max-h-[85vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700" aria-label="Close">
+          <X size={20} />
+        </button>
+        <div className="flex items-center gap-4 mb-5">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl">{player.flag}</div>
+          <div>
+            <h3 className="text-xl font-bold text-zinc-900">{player.name}</h3>
+            <p className="text-sm text-zinc-500">#{player.number} · {player.position}</p>
+            {player.club && <p className="text-xs text-blue-600 mt-0.5">{player.club}</p>}
+          </div>
+        </div>
+        {(player.age > 0 || player.caps > 0) && (
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            {player.age > 0 && (
+              <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
+                <p className="text-lg font-bold text-amber-600">{player.age}</p>
+                <p className="text-[10px] text-zinc-400 uppercase">Age</p>
+              </div>
+            )}
+            {player.caps > 0 && (
+              <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
+                <p className="text-lg font-bold text-amber-600">{player.caps}</p>
+                <p className="text-[10px] text-zinc-400 uppercase">Caps</p>
+              </div>
+            )}
+            <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
+              <p className="text-lg font-bold text-amber-600">{player.worldCupGoals}</p>
+              <p className="text-[10px] text-zinc-400 uppercase">WC Goals</p>
+            </div>
+          </div>
+        )}
+        <p className="text-sm text-zinc-600 leading-relaxed">{player.bio}</p>
+        {player.espnId && (
+          <a
+            href={`https://www.espn.com/soccer/player/_/id/${player.espnId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+          >
+            View full profile on ESPN →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StatBar({ label, home, away, homeCode, awayCode }: {
+  label: string; home: number; away: number; homeCode: string; awayCode: string;
+}) {
+  const total = home + away || 1;
+  const homePct = (home / total) * 100;
+  return (
+    <div>
+      <div className="flex justify-between text-sm mb-1.5">
+        <span className="font-bold text-zinc-900">{home}</span>
+        <span className="text-zinc-500 text-xs">{label}</span>
+        <span className="font-bold text-zinc-900">{away}</span>
+      </div>
+      <div className="flex h-2 rounded-full overflow-hidden bg-zinc-100">
+        <div className="bg-blue-600" style={{ width: `${homePct}%` }} />
+        <div className="bg-red-500" style={{ width: `${100 - homePct}%` }} />
+      </div>
+      <div className="flex justify-between text-[10px] text-zinc-400 mt-1">
+        <span>{getTeam(homeCode).flag} {getTeam(homeCode).name}</span>
+        <span>{getTeam(awayCode).name} {getTeam(awayCode).flag}</span>
+      </div>
+    </div>
+  );
+}
+
+export function MatchDetailView(props: {
+  match: Match;
+  detail: MatchDetail;
+  highlights: Highlight[];
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-6">
+          <div className="h-4 w-32 rounded bg-zinc-100 animate-pulse" />
+          <div className="card-surface rounded-2xl h-48 animate-pulse" />
+          <div className="flex gap-2">
+            {TABS.map((t) => (
+              <div key={t.id} className="h-9 w-20 rounded-lg bg-zinc-100 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <MatchDetailContent {...props} />
+    </Suspense>
+  );
+}
+
+function MatchDetailContent({
+  match,
+  detail,
+  highlights,
+}: {
+  match: Match;
+  detail: MatchDetail;
+  highlights: Highlight[];
+}) {
+  const home = getTeam(match.home, match.homeName, match.homeLogo);
+  const away = getTeam(match.away, match.awayName, match.awayLogo);
+  const searchParams = useSearchParams();
+  const tab = parseTab(searchParams.get("tab"));
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerProfile | null>(null);
+  const [liveMinute, setLiveMinute] = useState(match.minute ?? 0);
+
+  useEffect(() => {
+    if (match.status !== "live") return;
+    const interval = setInterval(() => {
+      setLiveMinute((m) => (m >= 90 ? 90 : m + 1));
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [match.status]);
+
+  const goalEvents = detail.events.filter((e) => e.type === "goal");
+  const scorersWithProfiles = goalEvents
+    .map((e) => ({ event: e, player: e.playerId ? detail.players[e.playerId] : undefined }))
+    .filter((s) => s.player);
+
+  return (
+    <div className="space-y-8">
+      <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
+        <ArrowLeft size={16} />
+        Back to Live Scores
+      </Link>
+
+      <div className="card-surface rounded-2xl overflow-hidden">
+        <div className="host-stripe" />
+        <div className="p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+            <span className="text-xs text-zinc-500 uppercase tracking-wider">
+              Group {match.group} · {match.date} · {match.time}
+            </span>
+            {match.status === "live" && <LiveBadge />}
+            {match.status === "finished" && <span className="text-xs font-bold text-zinc-400 uppercase">Full Time</span>}
+            {match.status === "upcoming" && <span className="badge-upcoming">Upcoming</span>}
+          </div>
+
+          <div className="flex items-center justify-center gap-6 sm:gap-12">
+            <div className="flex-1 text-center">
+              {home.logo ? <img src={home.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{home.flag}</span>}
+              <h1 className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</h1>
+              {detail.homeManager && (
+                <p className="text-xs text-zinc-400 mt-0.5">{detail.homeManager}</p>
+              )}
+            </div>
+            <div className="text-center shrink-0">
+              {match.status !== "upcoming" ? (
+                <>
+                  <p className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-wider">
+                    {match.homeScore} - {match.awayScore}
+                  </p>
+                  {match.status === "live" && (
+                    <p className="text-red-600 font-bold mt-1">{match.displayClock ?? `${liveMinute}'`}</p>
+                  )}
+                </>
+              ) : (
+                <p className="text-2xl font-bold text-zinc-300">vs</p>
+              )}
+            </div>
+            <div className="flex-1 text-center">
+              {away.logo ? <img src={away.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{away.flag}</span>}
+              <h1 className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</h1>
+              {detail.awayManager && (
+                <p className="text-xs text-zinc-400 mt-0.5">{detail.awayManager}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-zinc-500">
+            <span className="flex items-center gap-1.5"><MapPin size={14} />{detail.venue?.name ?? match.venue}</span>
+            {detail.venue?.city && (
+              <span className="text-zinc-400">{detail.venue.city}, {detail.venue.country}</span>
+            )}
+            {detail.venue?.capacity ? (
+              <span className="flex items-center gap-1.5"><Building2 size={14} />{detail.venue.capacity.toLocaleString()} capacity</span>
+            ) : null}
+            {detail.attendance && <span className="flex items-center gap-1.5"><Users size={14} />{detail.attendance} attendance</span>}
+            {detail.weather && (
+              <span className="flex items-center gap-1.5">
+                <Cloud size={14} />
+                {detail.weather.icon} {detail.weather.temperature != null ? `${detail.weather.temperature}°C` : ""} {detail.weather.condition}
+              </span>
+            )}
+            {detail.referee && <span className="flex items-center gap-1.5"><User size={14} />Ref: {detail.referee}</span>}
+          </div>
+
+          {(detail.broadcasts?.length || detail.homeRecord || detail.awayRecord) && (
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              {detail.broadcasts?.map((b) => (
+                <span key={b.network} className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium">
+                  <Tv size={12} /> {b.network}
+                </span>
+              ))}
+              {detail.homeRecord && (
+                <span className="text-xs text-zinc-500">{home.name}: {detail.homeRecord.summary} ({detail.homeRecord.points} pts)</span>
+              )}
+              {detail.awayRecord && (
+                <span className="text-xs text-zinc-500">{away.name}: {detail.awayRecord.summary} ({detail.awayRecord.points} pts)</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div
+        className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scroll-smooth"
+        role="tablist"
+        aria-label="Match sections"
+      >
+        {TABS.map(({ id, label, icon: Icon }) => (
+          <Link
+            key={id}
+            href={`/match/${match.id}?tab=${id}`}
+            scroll={false}
+            replace
+            role="tab"
+            aria-selected={tab === id}
+            className={`flex items-center gap-1.5 shrink-0 rounded-lg px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-colors touch-manipulation ${
+              tab === id
+                ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
+                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+            }`}
+          >
+            <Icon size={14} />
+            {label}
+          </Link>
+        ))}
+      </div>
+
+      {tab === "overview" && (
+        <>
+      <section className="card-surface rounded-2xl p-6">
+        <h2 className="section-title mb-3 flex items-center gap-2 text-base">
+          <Trophy size={18} className="text-amber-500" />
+          Match Summary
+        </h2>
+        <p className="text-zinc-600 leading-relaxed">{detail.summary}</p>
+      </section>
+
+      {highlights.length > 0 && (
+        <section>
+          <h2 className="section-title mb-4 text-base">Goal Highlights</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {highlights.map((h) => (
+              <div key={h.id} className="card-surface rounded-xl p-4 flex items-start gap-3">
+                <span className="text-2xl">{h.emoji}</span>
+                <div>
+                  <p className="text-[10px] text-amber-600 font-medium">{h.minute} · {h.teams}</p>
+                  <p className="font-semibold text-zinc-900 text-sm mt-0.5">{h.title}</p>
+                  <p className="text-xs text-zinc-500 mt-1">{h.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {detail.leaders && detail.leaders.length > 0 && (
+        <section className="card-surface rounded-2xl p-6">
+          <h2 className="section-title mb-4 text-base">Match Leaders</h2>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {detail.leaders.map((l) => (
+              <div key={`${l.category}-${l.playerName}`} className="flex justify-between items-center rounded-lg bg-zinc-50 px-3 py-2 text-sm">
+                <div>
+                  <p className="font-medium text-zinc-900">{l.playerName}</p>
+                  <p className="text-xs text-zinc-400">{l.team} · {l.category}</p>
+                </div>
+                <span className="font-bold text-blue-600">{l.value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {detail.headToHead && detail.headToHead.length > 0 && (
+        <section className="card-surface rounded-2xl p-6">
+          <h2 className="section-title mb-4 text-base">Recent Meetings</h2>
+          <div className="space-y-2">
+            {detail.headToHead.map((h, i) => (
+              <div key={i} className="flex justify-between text-sm py-2 border-b border-zinc-50 last:border-0">
+                <span className="text-zinc-600">{h.date} · {h.opponent}</span>
+                <span className="font-semibold text-zinc-900">{h.score} ({h.result})</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+        </>
+      )}
+
+      {tab === "media" && (
+        <MatchMedia videos={detail.videos} photos={detail.photos} />
+      )}
+
+      {tab === "lineups" && (
+        <MatchLineups
+          home={detail.homeLineup}
+          away={detail.awayLineup}
+          homeManager={detail.homeManager}
+          awayManager={detail.awayManager}
+        />
+      )}
+
+      {tab === "stats" && detail.stats && (
+        <section className="card-surface rounded-2xl p-6">
+          <h2 className="section-title mb-5 text-base">Match Stats</h2>
+          <div className="space-y-5">
+            <StatBar label="Possession %" home={detail.stats.possession[0]} away={detail.stats.possession[1]} homeCode={match.home} awayCode={match.away} />
+            <StatBar label="Shots" home={detail.stats.shots[0]} away={detail.stats.shots[1]} homeCode={match.home} awayCode={match.away} />
+            <StatBar label="On Target" home={detail.stats.shotsOnTarget[0]} away={detail.stats.shotsOnTarget[1]} homeCode={match.home} awayCode={match.away} />
+            <StatBar label="Corners" home={detail.stats.corners[0]} away={detail.stats.corners[1]} homeCode={match.home} awayCode={match.away} />
+            {EXTRA_STATS.map(({ key, label }) => {
+              const val = detail.stats![key];
+              if (!val || !Array.isArray(val)) return null;
+              return (
+                <StatBar key={key} label={label} home={val[0]} away={val[1]} homeCode={match.home} awayCode={match.away} />
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {tab === "table" && detail.groupStandings && (
+        <GroupStandingsTable standings={detail.groupStandings} />
+      )}
+
+      {tab === "timeline" && (
+        <>
+      {scorersWithProfiles.length > 0 && (
+        <section>
+          <h2 className="section-title mb-4 text-base">
+            ⚽ Goal Scorers <span className="text-xs text-zinc-400 font-normal">— tap for profile</span>
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {scorersWithProfiles.map(({ event, player }) => (
+              <PlayerCard key={event.id} player={player!} minute={event.minute} assist={event.assist} onSelect={setSelectedPlayer} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {detail.events.length > 0 ? (
+        <section>
+          <h2 className="section-title mb-4 flex items-center gap-2 text-base">
+            <Clock size={18} className="text-blue-600" />
+            Minute-by-Minute
+          </h2>
+          <div className="card-surface rounded-2xl overflow-hidden divide-y divide-zinc-50">
+            {[...detail.events].reverse().map((event) => (
+              <div key={event.id} className="flex gap-4 px-4 py-3.5">
+                <div className="w-10 shrink-0 text-center">
+                  <span className="text-xs font-bold text-zinc-400">
+                    {event.minute === 0 ? "—" : `${event.minute}'`}
+                  </span>
+                </div>
+                <div className={`flex-1 rounded-lg border px-3 py-2.5 ${EVENT_COLORS[event.type]}`}>
+                  <div className="flex items-start gap-2">
+                    <span className="text-base shrink-0">{EVENT_ICONS[event.type]}</span>
+                    <div className="min-w-0">
+                      {event.playerId && detail.players[event.playerId] ? (
+                        <button onClick={() => setSelectedPlayer(detail.players[event.playerId!])} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm text-left">
+                          {event.playerName}
+                        </button>
+                      ) : (
+                        <p className="font-semibold text-zinc-900 text-sm">{event.playerName}</p>
+                      )}
+                      <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{event.description}</p>
+                      {event.assist && <p className="text-xs text-zinc-400 mt-1">Assist: {event.assist}</p>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <p className="text-sm text-zinc-400 text-center py-8">No events yet.</p>
+      )}
+        </>
+      )}
+
+      {tab === "stats" && !detail.stats && (
+        <p className="text-sm text-zinc-400 text-center py-8">Stats not available yet.</p>
+      )}
+
+      {tab === "table" && !detail.groupStandings && (
+        <p className="text-sm text-zinc-400 text-center py-8">Group table not available yet.</p>
+      )}
+
+      {selectedPlayer && (
+        <PlayerProfileModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
+      )}
+    </div>
+  );
+}
