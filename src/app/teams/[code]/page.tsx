@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: `${name} World Cup 2026 — Live Scores, Fixtures, Squad & Stats`,
     description: `${name} at FIFA World Cup 2026 — live scores, results, group standings, upcoming fixtures, squad players, goals, and full tournament stats.`,
     path: `/teams/${teamCode}`,
+    ogImagePath: `/teams/${teamCode}/opengraph-image`,
     keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [
       `${name} World Cup`,
       `${name} football team`,

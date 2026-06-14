@@ -20,18 +20,29 @@ export function createPageMetadata({
   path = "/",
   noIndex = false,
   keywords,
+  ogImagePath,
 }: {
   title: string;
   description?: string;
   path?: string;
   noIndex?: boolean;
   keywords?: string[];
+  /** Route to page-specific opengraph-image (e.g. `/match/123/opengraph-image`). */
+  ogImagePath?: string;
 }): Metadata {
   const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
   const canonical = `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
   const pageKeywords = keywords?.length
     ? [...new Set([...keywords, ...SITE_KEYWORDS])]
     : SITE_KEYWORDS;
+  const ogImage = ogImagePath
+    ? {
+        url: ogImagePath,
+        width: OG_IMAGE.width,
+        height: OG_IMAGE.height,
+        alt: pageTitle,
+      }
+    : OG_IMAGE;
 
   return {
     title: pageTitle,
@@ -46,13 +57,13 @@ export function createPageMetadata({
       siteName: SITE_NAME,
       type: "website",
       locale: "en_US",
-      images: [OG_IMAGE],
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title: pageTitle,
       description,
-      images: [OG_IMAGE.url],
+      images: [ogImage.url],
     },
     robots: noIndex
       ? { index: false, follow: false }

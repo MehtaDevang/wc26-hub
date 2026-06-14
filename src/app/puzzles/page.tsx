@@ -5,6 +5,7 @@ export const metadata = createPageMetadata({
   title: "Daily Football Puzzles",
   description: "Daily World Cup puzzles: guess the player, name scramble, and football trivia quiz.",
   path: "/puzzles",
+  ogImagePath: "/puzzles/opengraph-image",
 });
 
 export default function PuzzlesPage() {

@@ -19,6 +19,8 @@ import { MatchHeadToHead } from "./MatchHeadToHead";
 import { MatchHighlightsPanel } from "./MatchHighlightsPanel";
 import { MatchStatsPanel } from "./MatchStatsPanel";
 import { MatchRelatedMatches } from "./MatchRelatedMatches";
+import { ShareButtons } from "./ShareButtons";
+import { buildMatchSharePayload } from "@/lib/share";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 
@@ -246,6 +248,8 @@ function MatchDetailContent({
     ),
   }));
 
+  const share = buildMatchSharePayload(match, liveMinute);
+
   return (
     <div className="space-y-8">
       <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
@@ -331,6 +335,14 @@ function MatchDetailContent({
               )}
             </div>
           </div>
+
+          <ShareButtons
+            url={share.url}
+            title={share.title}
+            text={share.text}
+            label={share.label}
+            className="mt-6"
+          />
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-zinc-500">
             <span className="flex items-center gap-1.5"><MapPin size={14} />{detail.venue?.name ?? match.venue}</span>

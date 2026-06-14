@@ -8,6 +8,8 @@ import { getPuzzleStatus } from "@/lib/storage";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { formatTodayDisplay } from "@/lib/puzzles/daily";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
+import { ShareButtons } from "./ShareButtons";
+import { buildPuzzlesSharePayload } from "@/lib/share";
 import { AdBanner } from "./AdBanner";
 
 const COLOR_MAP = {
@@ -52,6 +54,7 @@ export function PuzzlesHub() {
   }, [today]);
 
   const completed = Object.values(statuses).filter((s) => s === "done").length;
+  const share = buildPuzzlesSharePayload();
 
   return (
     <div className="space-y-8">
@@ -65,6 +68,22 @@ export function PuzzlesHub() {
       </div>
 
       <PuzzleDailyBanner />
+
+      <div className="card-surface rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <p className="font-semibold text-zinc-900">Challenge a friend</p>
+          <p className="text-sm text-zinc-500 mt-1">
+            Share today&apos;s puzzles — {completed}/{PUZZLE_CATALOG.length} done on your board.
+          </p>
+        </div>
+        <ShareButtons
+          url={share.url}
+          title={share.title}
+          text={share.text}
+          label={share.label}
+          className="shrink-0"
+        />
+      </div>
 
       <AdBanner placement="puzzles" />
 

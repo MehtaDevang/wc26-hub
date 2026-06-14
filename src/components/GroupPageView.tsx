@@ -4,6 +4,8 @@ import { getTeam } from "@/lib/data";
 import { resolveTeamCode } from "@/lib/team-lookup";
 import { StandingsTeamCell } from "@/components/GroupStandingsTable";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
+import { ShareButtons } from "@/components/ShareButtons";
+import { buildGroupSharePayload } from "@/lib/share";
 import type { GroupPageData } from "@/lib/types";
 
 function GroupFixtureRow({
@@ -73,6 +75,8 @@ function GroupFixtureRow({
 export function GroupPageView({ data }: { data: GroupPageData }) {
   const finished = data.matches.filter((m) => m.status === "finished").length;
   const upcoming = data.matches.filter((m) => m.status === "upcoming").length;
+  const groupLetter = data.label.replace(/^Group\s+/i, "");
+  const share = buildGroupSharePayload(groupLetter, data.label);
 
   return (
     <div className="space-y-6">
@@ -87,6 +91,13 @@ export function GroupPageView({ data }: { data: GroupPageData }) {
             {finished > 0 && ` · ${finished} played`}
             {upcoming > 0 && ` · ${upcoming} upcoming`}
           </p>
+          <ShareButtons
+            url={share.url}
+            title={share.title}
+            text={share.text}
+            label={share.label}
+            className="mt-4 justify-start"
+          />
         </div>
       </div>
 

@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: PageProps) {
       title: `${match.homeName} ${score} ${match.awayName} — World Cup 2026 ${liveTag}`,
       description: `${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 — live score, scorers, match stats, lineups, head-to-head history, highlights, and full match report.`,
       path: `/match/${id}`,
+      ogImagePath: `/match/${id}/opengraph-image`,
       keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS, [
         `${match.homeName} vs ${match.awayName}`,
         `${match.homeName} ${match.awayName} live score`,
@@ -67,6 +68,7 @@ export async function generateMetadata({ params }: PageProps) {
       title: "World Cup 2026 Match — Live Score, Stats & Highlights",
       description: "FIFA World Cup 2026 match live score, stats, lineups, head-to-head history, and highlights.",
       path: `/match/${id}`,
+      ogImagePath: `/match/${id}/opengraph-image`,
       keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS),
     });
   }

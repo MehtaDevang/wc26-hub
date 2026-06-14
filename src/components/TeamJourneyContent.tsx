@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Trophy, Calendar, MapPin, ChevronRight, TrendingUp } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
+import { ShareButtons } from "@/components/ShareButtons";
+import { buildTeamSharePayload } from "@/lib/share";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 import type { TeamJourney, TeamJourneyMatch } from "@/lib/types";
 
@@ -124,6 +126,7 @@ export function TeamJourneyContent({
 }) {
   const team = getTeam(journey.teamCode, journey.teamName, journey.logo);
   const groupLetter = journey.group.replace(/^Group\s+/i, "");
+  const share = buildTeamSharePayload(journey.teamCode, team.name);
 
   return (
     <div className="space-y-6">
@@ -154,6 +157,13 @@ export function TeamJourneyContent({
                 )}
                 {journey.rank && ` · ${journey.rank}${getOrdinal(journey.rank)} in group`}
               </p>
+              <ShareButtons
+                url={share.url}
+                title={share.title}
+                text={share.text}
+                label={share.label}
+                className="mt-4 justify-start"
+              />
             </div>
           </div>
         </div>
