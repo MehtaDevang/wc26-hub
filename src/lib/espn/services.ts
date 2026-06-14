@@ -31,6 +31,30 @@ export async function getTodayMatches(
   return transformEvents(data.events ?? [], timeZone);
 }
 
+export async function getNextUpcomingMatches(
+  limit = 2,
+  timeZone: string = DEFAULT_TIMEZONE
+): Promise<Match[]> {
+  const today = todayEspnDateInTimezone(timeZone);
+  const data = await withTimeout(
+    fetchEspnScoreboard({ dates: `${today}-20260719` })
+  );
+  const now = Date.now();
+
+  return transformEvents(data.events ?? [], timeZone)
+    .filter(
+      (match) =>
+        match.status === "upcoming" &&
+        match.kickoffAt &&
+        new Date(match.kickoffAt).getTime() > now
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.kickoffAt).getTime() - new Date(b.kickoffAt).getTime()
+    )
+    .slice(0, limit);
+}
+
 export async function getMatchesByParams(params: {
   date?: string | null;
   range?: string | null;

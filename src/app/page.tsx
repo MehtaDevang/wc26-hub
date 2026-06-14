@@ -7,8 +7,9 @@ import { MatchHighlights } from "@/components/MatchHighlights";
 import { IconicMoments } from "@/components/IconicMoments";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
+import { NextMatchCountdown } from "@/components/NextMatchCountdown";
 import { createPageMetadata } from "@/lib/seo";
-import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
+import { getNextUpcomingMatches, getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
 import { buildHeroSlides } from "@/lib/hero-background";
 import { getServerTimezone } from "@/lib/timezone";
 
@@ -28,15 +29,17 @@ const STATS = [
 
 export default async function Home() {
   const timeZone = await getServerTimezone();
-  const [matchesResult, highlightsResult] = await Promise.allSettled([
+  const [matchesResult, highlightsResult, nextMatchesResult] = await Promise.allSettled([
     getTodayMatches(timeZone),
     getRecentHighlights(12, timeZone),
+    getNextUpcomingMatches(2, timeZone),
   ]);
 
   const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];
   const allHighlights = highlightsResult.status === "fulfilled" ? highlightsResult.value : [];
   const initialHighlights = allHighlights.slice(0, 6);
   const heroSlides = buildHeroSlides(allHighlights);
+  const nextMatches = nextMatchesResult.status === "fulfilled" ? nextMatchesResult.value : [];
 
   return (
     <div className="space-y-14">
@@ -80,6 +83,8 @@ export default async function Home() {
       </div>
 
       <LiveMomentsStrip slides={heroSlides} />
+
+      <NextMatchCountdown matches={nextMatches} />
 
       <LiveScores initialMatches={initialMatches} />
 
