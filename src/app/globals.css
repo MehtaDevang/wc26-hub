@@ -79,6 +79,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Pointer cursor on interactive elements */
+a[href],
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label[for],
+select,
+summary,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+.match-row,
+.standings-row,
+.cursor-pointer {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 .cup-bg {
   background-color: var(--bg);
   background-image:

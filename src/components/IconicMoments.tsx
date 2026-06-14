@@ -1,16 +1,124 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, X } from "lucide-react";
 import {
   getIconicMoments,
   CATEGORY_LABELS,
   type IconicMoment,
 } from "@/lib/iconic-moments";
 
-function MomentCard({ moment }: { moment: IconicMoment }) {
+function MomentDetailModal({
+  moment,
+  onClose,
+}: {
+  moment: IconicMoment;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
   return (
-    <article className="group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md">
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="moment-detail-title"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/55 backdrop-blur-[2px] cursor-pointer"
+        onClick={onClose}
+        aria-label="Close moment details"
+      />
+      <div className="relative z-10 w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white shadow-2xl">
+        <div className="relative aspect-video bg-zinc-100">
+          <img
+            src={moment.imageUrl}
+            alt={moment.imageAlt}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 cursor-pointer"
+            aria-label="Close"
+          >
+            <X size={18} />
+          </button>
+          <div className="absolute bottom-3 left-3 flex flex-wrap gap-2">
+            <span className="rounded-md bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
+              {moment.year}
+            </span>
+            <span className="rounded-md bg-white/90 px-2 py-1 text-[10px] font-semibold text-zinc-700">
+              {CATEGORY_LABELS[moment.category]}
+            </span>
+            {moment.era === "wc26" && (
+              <span className="rounded-md bg-[var(--wc-usa)]/90 px-2 py-1 text-[10px] font-bold text-white">
+                WC26
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="p-5 sm:p-6 space-y-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              {moment.teams}
+            </p>
+            <h3
+              id="moment-detail-title"
+              className="mt-1 text-xl font-bold text-zinc-900 leading-snug"
+            >
+              {moment.title}
+            </h3>
+          </div>
+
+          <p className="text-sm leading-relaxed text-zinc-600">{moment.description}</p>
+          <p className="text-sm leading-relaxed text-zinc-500 border-l-2 border-[var(--wc-gold)] pl-4">
+            {moment.details}
+          </p>
+
+          {moment.era === "classic" && (
+            <Link
+              href="/history"
+              onClick={onClose}
+              className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
+            >
+              Read more in World Cup history <ArrowRight size={14} />
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MomentCard({
+  moment,
+  onSelect,
+}: {
+  moment: IconicMoment;
+  onSelect: (moment: IconicMoment) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(moment)}
+      className="group card-surface w-full overflow-hidden rounded-xl text-left transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wc-usa)]"
+      aria-label={`View details: ${moment.title}`}
+    >
       <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100">
         <img
           src={moment.imageUrl}
@@ -43,8 +151,11 @@ function MomentCard({ moment }: { moment: IconicMoment }) {
         <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-zinc-500">
           {moment.description}
         </p>
+        <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-blue-600 opacity-0 transition-opacity group-hover:opacity-100">
+          Tap for details
+        </p>
       </div>
-    </article>
+    </button>
   );
 }
 
@@ -55,6 +166,9 @@ interface IconicMomentsProps {
 
 export function IconicMoments({ limit = 6, showClassicLink = true }: IconicMomentsProps) {
   const moments = getIconicMoments(limit);
+  const [selected, setSelected] = useState<IconicMoment | null>(null);
+
+  const closeModal = useCallback(() => setSelected(null), []);
 
   return (
     <section>
@@ -72,18 +186,20 @@ export function IconicMoments({ limit = 6, showClassicLink = true }: IconicMomen
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {moments.map((moment) => (
-          <MomentCard key={moment.id} moment={moment} />
+          <MomentCard key={moment.id} moment={moment} onSelect={setSelected} />
         ))}
       </div>
 
       {showClassicLink && (
         <Link
           href="/history"
-          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline cursor-pointer"
         >
           Explore full World Cup history <ArrowRight size={14} />
         </Link>
       )}
+
+      {selected && <MomentDetailModal moment={selected} onClose={closeModal} />}
     </section>
   );
 }

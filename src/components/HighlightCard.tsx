@@ -79,7 +79,7 @@ function HighlightBody({ highlight }: { highlight: Highlight }) {
 
 export function HighlightCard({ highlight, href, compact }: HighlightCardProps) {
   const className =
-    "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md";
+    "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer";
 
   if (href) {
     return (
