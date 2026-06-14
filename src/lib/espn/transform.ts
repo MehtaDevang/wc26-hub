@@ -11,7 +11,7 @@ import { formatKickoffDateKey, formatKickoffTime } from "../timezone";
 import type {
   EspnCompetition, EspnEvent, EspnKeyEvent, EspnSummary, EspnRoster, EspnCompetitor,
 } from "./client";
-import { buildGoalHighlights, extractMomentHighlights } from "./highlight-images";
+import { buildGoalHighlights, extractMomentHighlights, extractScorerName } from "./highlight-images";
 import { buildHeadToHead } from "./head-to-head";
 import { getRivalryInfo } from "../rivalries";
 
@@ -34,6 +34,18 @@ function parseMinute(displayClock?: string): number | undefined {
   if (!displayClock) return undefined;
   const match = displayClock.match(/(\d+)/);
   return match ? parseInt(match[1], 10) : undefined;
+}
+
+function parseEventClock(displayClock?: string): { minute: number; extraTime?: number } {
+  if (!displayClock) return { minute: 0 };
+  const stoppage = displayClock.match(/^(\d+)'\+(\d+)'?$/);
+  if (stoppage) {
+    return {
+      minute: parseInt(stoppage[1]!, 10),
+      extraTime: parseInt(stoppage[2]!, 10),
+    };
+  }
+  return { minute: parseMinute(displayClock) ?? 0 };
 }
 
 function formatTime(isoDate: string, timeZone: string): string {
@@ -94,7 +106,13 @@ export function transformEvents(
   return events.map((e) => transformEvent(e, timeZone));
 }
 
-function eventType(espnType: string): MatchEvent["type"] {
+function eventType(espnType: string, scoringPlay?: boolean): MatchEvent["type"] {
+  if (scoringPlay || espnType.includes("goal") || espnType.includes("penalty")) {
+    if (espnType.includes("own-goal")) return "goal";
+    if (espnType.includes("penalty")) return "penalty";
+    return "goal";
+  }
+
   const map: Record<string, MatchEvent["type"]> = {
     goal: "goal",
     "yellow-card": "yellow",
@@ -117,10 +135,13 @@ function parseAssist(text?: string): string | undefined {
 }
 
 function buildPlayerFromGoal(event: EspnKeyEvent, teamCode: string): import("../types").PlayerProfile | undefined {
-  const name = event.athlete?.displayName ?? event.shortText?.replace(/ Goal$/, "");
+  const name =
+    event.athlete?.displayName ??
+    extractScorerName(event) ??
+    event.shortText?.replace(/\s+Goal$/i, "").trim();
   if (!name) return undefined;
 
-  const id = event.athlete?.id ?? name.toLowerCase().replace(/\s+/g, "-");
+  const id = event.athlete?.id ?? `scorer-${name.toLowerCase().replace(/\s+/g, "-")}`;
   return {
     id,
     name,
@@ -168,21 +189,31 @@ function transformKeyEvents(
       const teamCode = side === "home" ? homeCode : side === "away" ? awayCode : homeCode;
 
       let playerId: string | undefined;
-      if (e.type.type === "goal" || e.scoringPlay) {
+      let playerName =
+        extractScorerName(e) ??
+        e.shortText?.replace(/\s+Goal$/i, "").trim() ??
+        e.shortText ??
+        e.type.text;
+
+      if (e.scoringPlay || /goal|penalty/i.test(e.type.type)) {
         const player = buildPlayerFromGoal(e, teamCode);
         if (player) {
-          players[player.id] = player;
+          players[player.id] = players[player.id] ?? player;
           playerId = player.id;
+          playerName = player.name;
         }
       }
 
+      const clock = parseEventClock(e.clock?.displayValue);
+
       return {
         id: e.id,
-        minute: parseMinute(e.clock?.displayValue) ?? 0,
-        type: eventType(e.type.type),
+        minute: clock.minute,
+        extraTime: clock.extraTime,
+        type: eventType(e.type.type, e.scoringPlay),
         team: side,
         playerId,
-        playerName: e.shortText ?? e.type.text,
+        playerName,
         description: e.text ?? e.shortText ?? e.type.text,
         assist: parseAssist(e.text),
       } as MatchEvent;

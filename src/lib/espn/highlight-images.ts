@@ -14,12 +14,15 @@ export function extractScorerName(event: EspnKeyEvent): string | undefined {
   if (event.athlete?.displayName) return event.athlete.displayName;
 
   const short = event.shortText ?? "";
-  const shortMatch = short.match(/^(.+?)\s+Goal\b/i);
-  if (shortMatch) return shortMatch[1].trim();
+  const goalMatch = short.match(/^(.+?)\s+Goal\b/i);
+  if (goalMatch) return goalMatch[1].trim();
+
+  const penaltyMatch = short.match(/^(.+?)\s+Penalty\b/i);
+  if (penaltyMatch) return penaltyMatch[1].trim();
 
   const text = event.text ?? "";
   const textMatch = text.match(
-    /([A-Za-zÀ-ÿ' .-]+)\s+\([^)]+\)\s+(?:right footed|left footed|header)/i
+    /([A-Za-zÀ-ÿ' .-]+)\s+\([^)]+\)\s+(?:right footed|left footed|header|converts the penalty)/i
   );
   return textMatch?.[1]?.trim();
 }
@@ -134,17 +137,34 @@ function resolveGoalImage(
   goalVideos: ReturnType<typeof getGoalVideos>,
   matchPhotos: ReturnType<typeof collectMatchPhotos>,
   usedUrls: Set<string>
-): Pick<Highlight, "imageUrl" | "imageAlt" | "imageType" | "playerName"> {
+): Pick<
+  Highlight,
+  "imageUrl" | "imageAlt" | "imageType" | "playerName" | "videoUrl" | "webUrl"
+> {
   const scorer = extractScorerName(goal);
   const headshot = findPlayerHeadshot(scorer, headshots);
 
+  const videoLinks = (video: (typeof goalVideos)[number]) => ({
+    videoUrl:
+      video.links?.source?.href ??
+      video.links?.mobile?.source?.href ??
+      undefined,
+    webUrl: video.links?.web?.href,
+  });
+
   if (headshot && !usedUrls.has(headshot)) {
     usedUrls.add(headshot);
+    const pairedVideo = goalVideos.find((v) => {
+      const headline = (v.headline ?? "").toLowerCase();
+      const token = scorer?.split(" ").pop()?.toLowerCase();
+      return token && headline.includes(token);
+    });
     return {
       imageUrl: headshot,
       imageAlt: scorer ?? "Goal scorer",
       imageType: "player",
       playerName: scorer,
+      ...(pairedVideo ? videoLinks(pairedVideo) : {}),
     };
   }
 
@@ -160,6 +180,7 @@ function resolveGoalImage(
         imageAlt: video.headline ?? scorer ?? "Goal highlight",
         imageType: "moment",
         playerName: scorer,
+        ...videoLinks(video),
       };
     }
   }
@@ -172,6 +193,7 @@ function resolveGoalImage(
       imageAlt: indexedVideo.headline ?? scorer ?? "Goal highlight",
       imageType: "moment",
       playerName: scorer,
+      ...videoLinks(indexedVideo),
     };
   }
 
@@ -339,6 +361,19 @@ export function buildGoalHighlights(
       usedUrls
     );
 
+    const fallbackVideo = goalVideos[index] ?? goalVideos[0];
+    const links =
+      image.webUrl || image.videoUrl
+        ? {}
+        : fallbackVideo
+          ? {
+              videoUrl:
+                fallbackVideo.links?.source?.href ??
+                fallbackVideo.links?.mobile?.source?.href,
+              webUrl: fallbackVideo.links?.web?.href,
+            }
+          : {};
+
     return {
       id: `h-${match.id}-${goal.id}`,
       matchId: match.id,
@@ -349,6 +384,7 @@ export function buildGoalHighlights(
       teams: `${match.homeName} ${match.homeScore ?? 0}-${match.awayScore ?? 0} ${match.awayName}`,
       emoji: "⚽",
       ...image,
+      ...links,
     };
   });
 }

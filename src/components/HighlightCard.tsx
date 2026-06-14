@@ -1,3 +1,4 @@
+import { ExternalLink, Play } from "lucide-react";
 import type { Highlight } from "@/lib/types";
 
 const IMAGE_TYPE_LABELS: Record<NonNullable<Highlight["imageType"]>, string> = {
@@ -13,7 +14,7 @@ interface HighlightCardProps {
   compact?: boolean;
 }
 
-function HighlightImage({ highlight, compact }: { highlight: Highlight; compact?: boolean }) {
+function HighlightImage({ highlight, compact, hasLink }: { highlight: Highlight; compact?: boolean; hasLink: boolean }) {
   if (highlight.imageUrl) {
     return (
       <div className={`relative overflow-hidden bg-zinc-100 ${compact ? "aspect-[16/10]" : "aspect-video"}`}>
@@ -34,6 +35,13 @@ function HighlightImage({ highlight, compact }: { highlight: Highlight; compact?
             </span>
           )}
         </div>
+        {hasLink && (
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 shadow-lg">
+              <Play size={18} className="ml-0.5 text-blue-600" fill="currentColor" />
+            </div>
+          </div>
+        )}
         {highlight.playerName && highlight.imageType === "player" && (
           <p className="absolute bottom-3 left-3 right-3 text-sm font-semibold text-white drop-shadow">
             {highlight.playerName}
@@ -54,7 +62,7 @@ function HighlightImage({ highlight, compact }: { highlight: Highlight; compact?
   );
 }
 
-function HighlightBody({ highlight }: { highlight: Highlight }) {
+function HighlightBody({ highlight, hasLink }: { highlight: Highlight; hasLink: boolean }) {
   return (
     <div className="p-4">
       {!highlight.imageUrl && (
@@ -72,21 +80,28 @@ function HighlightBody({ highlight }: { highlight: Highlight }) {
         <p className="mt-1 truncate text-[10px] text-zinc-400">{highlight.teams}</p>
       )}
       <p className="mt-1 line-clamp-2 text-xs text-zinc-500">{highlight.description}</p>
+      {hasLink && (
+        <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600">
+          Watch on ESPN
+          <ExternalLink size={12} />
+        </p>
+      )}
     </div>
   );
 }
 
 export function HighlightCard({ highlight, href, compact }: HighlightCardProps) {
   const className =
-    "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer";
+    "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md";
 
-  const externalHref = highlight.videoUrl ?? highlight.webUrl;
+  const externalHref = highlight.webUrl ?? highlight.videoUrl;
   const linkHref = href ?? externalHref;
+  const hasLink = Boolean(linkHref);
 
   const content = (
     <>
-      <HighlightImage highlight={highlight} compact={compact} />
-      <HighlightBody highlight={highlight} />
+      <HighlightImage highlight={highlight} compact={compact} hasLink={hasLink} />
+      <HighlightBody highlight={highlight} hasLink={hasLink} />
     </>
   );
 
@@ -95,7 +110,7 @@ export function HighlightCard({ highlight, href, compact }: HighlightCardProps) 
     return (
       <a
         href={linkHref}
-        className={className}
+        className={`${className} block cursor-pointer`}
         {...(isExternal
           ? { target: "_blank", rel: "noopener noreferrer" }
           : {})}

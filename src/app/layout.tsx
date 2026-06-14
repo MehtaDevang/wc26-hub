@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
-import { AdBanner } from "@/components/AdBanner";
+import { SiteTopAd, SiteFooterAd } from "@/components/SiteAds";
+import { LiveNowStickyBar } from "@/components/LiveNowStickyBar";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
@@ -54,12 +55,12 @@ export default async function RootLayout({
         <JsonLd data={buildOrganizationJsonLd()} />
         <JsonLd data={buildWebsiteJsonLd()} />
         <Navbar />
-        <AdBanner placement="top" />
-        <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
+        <SiteTopAd />
+        <main className="site-main flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
           {children}
         </main>
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-4">
-          <AdBanner placement="footer" />
+          <SiteFooterAd />
         </div>
         <footer className="border-t border-zinc-200 bg-white py-8">
           <WC26MascotStrip variant="footer" className="mb-4" />
@@ -75,6 +76,7 @@ export default async function RootLayout({
           </p>
         </footer>
         <Analytics />
+        <LiveNowStickyBar />
         </TimezoneProvider>
       </body>
     </html>

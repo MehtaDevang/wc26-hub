@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft, MapPin, Users, User, Clock, Trophy,
-  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, History, Play,
+  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, Play,
 } from "lucide-react";
 import { getTeam, isKnownTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
@@ -18,12 +18,12 @@ import { MatchKickoffTime } from "./MatchKickoffTime";
 import { MatchHeadToHead } from "./MatchHeadToHead";
 import { MatchHighlightsPanel } from "./MatchHighlightsPanel";
 import { MatchStatsPanel } from "./MatchStatsPanel";
+import { MatchRelatedMatches } from "./MatchRelatedMatches";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 
 const BASE_TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
-  { id: "history", label: "History", icon: History },
   { id: "highlights", label: "Highlights", icon: Play },
   { id: "media", label: "Media", icon: ImageIcon },
   { id: "lineups", label: "Lineups", icon: LayoutGrid },
@@ -45,8 +45,56 @@ function getTabs(match: Match, hasHighlights: boolean) {
 
 function parseTab(value: string | null, match: Match, hasHighlights: boolean): TabId {
   const tabs = getTabs(match, hasHighlights);
-  if (value && tabs.some((t) => t.id === value)) return value as TabId;
+  const normalized = value === "history" ? "overview" : value;
+  if (normalized && tabs.some((t) => t.id === normalized)) return normalized as TabId;
   return "overview";
+}
+
+function parseScorerName(raw: string): string {
+  return raw
+    .replace(/\s+Goal\b.*$/i, "")
+    .replace(/\s+Penalty\b.*$/i, "")
+    .trim() || raw;
+}
+
+function formatEventMinute(event: MatchEvent): string {
+  if (event.extraTime) return `${event.minute}+${event.extraTime}'`;
+  if (event.minute === 0) return "—";
+  return `${event.minute}'`;
+}
+
+function resolveGoalScorer(
+  event: MatchEvent,
+  players: Record<string, PlayerProfile>,
+  homeFlag: string,
+  awayFlag: string,
+  homeCode: string,
+  awayCode: string
+): PlayerProfile {
+  if (event.playerId && players[event.playerId]) {
+    return players[event.playerId];
+  }
+
+  const name = parseScorerName(event.playerName);
+  const flag =
+    event.team === "home" ? homeFlag : event.team === "away" ? awayFlag : "⚽";
+  const team = event.team === "home" ? homeCode : event.team === "away" ? awayCode : "";
+
+  return {
+    id: event.playerId ?? `goal-${event.id}`,
+    name,
+    team,
+    number: 0,
+    position: "Player",
+    age: 0,
+    club: "",
+    nationality: "",
+    flag,
+    worldCupGoals: 0,
+    caps: 0,
+    bio: `${name} scored in this match.`,
+    espnId: event.playerId,
+  };
 }
 
 const EVENT_ICONS: Record<MatchEvent["type"], string> = {
@@ -77,27 +125,43 @@ function LiveBadge() {
   );
 }
 
-function PlayerCard({ player, minute, assist }: {
-  player: PlayerProfile; minute?: number; assist?: string;
+function PlayerCard({ player, minuteLabel, assist }: {
+  player: PlayerProfile; minuteLabel?: string; assist?: string;
 }) {
-  const playerHref = `/players/${player.espnId ?? player.id}`;
+  const playerHref = player.espnId ? `/players/${player.espnId}` : null;
 
-  return (
-    <Link
-      href={playerHref}
-      className="w-full flex items-center gap-3 rounded-xl card-surface p-3 text-left hover:border-blue-200 hover:shadow-sm transition-all group"
-    >
+  const inner = (
+    <>
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-lg shrink-0">
         {player.flag}
       </div>
       <div className="flex-1 min-w-0 text-left">
-        <p className="font-semibold text-zinc-900 group-hover:text-blue-600 transition-colors">{player.name}</p>
-        <p className="text-xs text-zinc-500">#{player.number} · {player.position}</p>
+        <p className={`font-semibold text-zinc-900 ${playerHref ? "group-hover:text-blue-600 transition-colors" : ""}`}>
+          {player.name}
+        </p>
+        <p className="text-xs text-zinc-500">
+          {player.number > 0 ? `#${player.number} · ` : ""}{player.position}
+        </p>
         {assist && <p className="text-xs text-zinc-400 mt-0.5">Assist: {assist}</p>}
       </div>
-      {minute !== undefined && <span className="text-sm font-bold text-blue-600 shrink-0">{minute}&apos;</span>}
-    </Link>
+      {minuteLabel && (
+        <span className="text-sm font-bold text-blue-600 shrink-0">{minuteLabel}</span>
+      )}
+    </>
   );
+
+  const className =
+    "w-full flex items-center gap-3 rounded-xl card-surface p-3 text-left hover:border-blue-200 hover:shadow-sm transition-all group";
+
+  if (playerHref) {
+    return (
+      <Link href={playerHref} className={className}>
+        {inner}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{inner}</div>;
 }
 
 
@@ -105,6 +169,8 @@ export function MatchDetailView(props: {
   match: Match;
   detail: MatchDetail;
   highlights: Highlight[];
+  liveMatches?: Match[];
+  relatedMatches?: Match[];
 }) {
   return (
     <Suspense
@@ -129,10 +195,14 @@ function MatchDetailContent({
   match,
   detail,
   highlights,
+  liveMatches = [],
+  relatedMatches = [],
 }: {
   match: Match;
   detail: MatchDetail;
   highlights: Highlight[];
+  liveMatches?: Match[];
+  relatedMatches?: Match[];
 }) {
   const timezone = useTimezone();
   const home = getTeam(match.home, match.homeName, match.homeLogo);
@@ -161,10 +231,20 @@ function MatchDetailContent({
     return () => clearInterval(interval);
   }, [match.status]);
 
-  const goalEvents = detail.events.filter((e) => e.type === "goal");
-  const scorersWithProfiles = goalEvents
-    .map((e) => ({ event: e, player: e.playerId ? detail.players[e.playerId] : undefined }))
-    .filter((s) => s.player);
+  const goalEvents = detail.events.filter(
+    (e) => e.type === "goal" || e.type === "penalty"
+  );
+  const goalScorers = goalEvents.map((event) => ({
+    event,
+    player: resolveGoalScorer(
+      event,
+      detail.players,
+      home.flag,
+      away.flag,
+      match.home,
+      match.away
+    ),
+  }));
 
   return (
     <div className="space-y-8">
@@ -350,77 +430,14 @@ function MatchDetailContent({
         </section>
       )}
 
-      {(detail.headToHeadRecord?.totalMeetings ?? 0) > 0 ? (
-        <section className="card-surface rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="font-bold text-zinc-900">Head-to-head record</h2>
-            <p className="text-sm text-zinc-500 mt-1">
-              {match.homeName} {detail.headToHeadRecord!.homeWins}–{detail.headToHeadRecord!.draws}–{detail.headToHeadRecord!.awayWins} {match.awayName}
-              {" "}· {detail.headToHeadRecord!.totalMeetings} meetings
-            </p>
-          </div>
-          <Link
-            href={`/match/${match.id}?tab=history`}
-            scroll={false}
-            replace
-            className="btn-usa inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm shrink-0"
-          >
-            <History size={16} />
-            Full History
-          </Link>
-        </section>
-      ) : (detail.rivalryNote || detail.headToHeadRecord) && (
-        <section className="card-surface rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="font-bold text-zinc-900">
-              {detail.rivalryName ?? "Head-to-head history"}
-            </h2>
-            <p className="text-sm text-zinc-500 mt-1 line-clamp-2">
-              {detail.rivalryNote ?? `History between ${match.homeName} and ${match.awayName}`}
-            </p>
-          </div>
-          <Link
-            href={`/match/${match.id}?tab=history`}
-            scroll={false}
-            replace
-            className="btn-usa inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm shrink-0"
-          >
-            <History size={16} />
-            View History
-          </Link>
-        </section>
-      )}
-
-      {detail.leaders && detail.leaders.length > 0 && (
-        <section className="card-surface rounded-2xl p-6">
-          <h2 className="section-title mb-4 text-base">Match Leaders</h2>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {detail.leaders.map((l) => (
-              <div key={`${l.category}-${l.playerName}`} className="flex justify-between items-center rounded-lg bg-zinc-50 px-3 py-2 text-sm">
-                <div>
-                  <p className="font-medium text-zinc-900">{l.playerName}</p>
-                  <p className="text-xs text-zinc-400">{l.team} · {l.category}</p>
-                </div>
-                <span className="font-bold text-blue-600">{l.value}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-        </>
-      )}
-
-      {tab === "history" && (
-        <>
-          <MatchHeadToHead
-            match={match}
-            meetings={detail.headToHead}
-            record={detail.headToHeadRecord}
-            rivalryName={detail.rivalryName}
-            rivalryNote={detail.rivalryNote}
-            rivalryFunFact={detail.rivalryFunFact}
-          />
-          <AdBanner placement="match" />
+      <MatchHeadToHead
+        match={match}
+        meetings={detail.headToHead}
+        record={detail.headToHeadRecord}
+        rivalryName={detail.rivalryName}
+        rivalryNote={detail.rivalryNote}
+        rivalryFunFact={detail.rivalryFunFact}
+      />
         </>
       )}
 
@@ -454,8 +471,6 @@ function MatchDetailContent({
           match={match}
           stats={detail.stats}
           leaders={detail.leaders}
-          headToHead={detail.headToHead}
-          headToHeadRecord={detail.headToHeadRecord}
           homeRecord={detail.homeRecord}
           awayRecord={detail.awayRecord}
           homeLineup={detail.homeLineup}
@@ -464,6 +479,7 @@ function MatchDetailContent({
           attendance={detail.attendance}
           referee={detail.referee}
           groupStandings={detail.groupStandings}
+          venue={detail.venue}
         />
       )}
 
@@ -473,14 +489,19 @@ function MatchDetailContent({
 
       {tab === "timeline" && (
         <>
-      {scorersWithProfiles.length > 0 && (
+      {goalScorers.length > 0 && (
         <section>
           <h2 className="section-title mb-4 text-base">
             ⚽ Goal Scorers <span className="text-xs text-zinc-400 font-normal">— tap for profile</span>
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
-            {scorersWithProfiles.map(({ event, player }) => (
-              <PlayerCard key={event.id} player={player!} minute={event.minute} assist={event.assist} />
+            {goalScorers.map(({ event, player }) => (
+              <PlayerCard
+                key={`${event.id}-${event.minute}-${event.extraTime ?? 0}`}
+                player={player}
+                minuteLabel={formatEventMinute(event)}
+                assist={event.assist}
+              />
             ))}
           </div>
         </section>
@@ -497,19 +518,19 @@ function MatchDetailContent({
               <div key={event.id} className="flex gap-4 px-4 py-3.5">
                 <div className="w-10 shrink-0 text-center">
                   <span className="text-xs font-bold text-zinc-400">
-                    {event.minute === 0 ? "—" : `${event.minute}'`}
+                    {formatEventMinute(event)}
                   </span>
                 </div>
                 <div className={`flex-1 rounded-lg border px-3 py-2.5 ${EVENT_COLORS[event.type]}`}>
                   <div className="flex items-start gap-2">
                     <span className="text-base shrink-0">{EVENT_ICONS[event.type]}</span>
                     <div className="min-w-0">
-                      {event.playerId && detail.players[event.playerId] ? (
-                        <Link href={`/players/${detail.players[event.playerId!].espnId ?? event.playerId}`} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm">
-                          {event.playerName}
+                      {event.playerId && detail.players[event.playerId]?.espnId ? (
+                        <Link href={`/players/${detail.players[event.playerId!].espnId}`} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm">
+                          {parseScorerName(event.playerName)}
                         </Link>
                       ) : (
-                        <p className="font-semibold text-zinc-900 text-sm">{event.playerName}</p>
+                        <p className="font-semibold text-zinc-900 text-sm">{parseScorerName(event.playerName)}</p>
                       )}
                       <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{event.description}</p>
                       {event.assist && <p className="text-xs text-zinc-400 mt-1">Assist: {event.assist}</p>}
@@ -530,7 +551,11 @@ function MatchDetailContent({
         <p className="text-sm text-zinc-400 text-center py-8">Group table not available yet.</p>
       )}
 
-
+      <MatchRelatedMatches
+        currentMatch={match}
+        liveMatches={liveMatches}
+        relatedMatches={relatedMatches}
+      />
     </div>
   );
 }

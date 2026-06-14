@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME } from "@/lib/site";
+import { MascotFootballPlay } from "@/components/MascotFootballPlay";
 import { WC26MascotIcon } from "./mascots/WC26Mascots";
 
 const NAV_ITEMS = [
@@ -61,16 +62,8 @@ export function Navbar() {
             <WC26MascotIcon id="clutch" size={28} />
           </div>
 
-          <div className="hidden md:flex items-center -space-x-1.5 shrink-0">
-            <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--wc-mexico-light)] border border-[var(--wc-mexico)]/15 overflow-hidden">
-              <WC26MascotIcon id="zayu" size={26} />
-            </div>
-            <div className="relative z-20 flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--wc-usa-light)] border border-[var(--wc-usa)]/15 shadow-sm overflow-hidden">
-              <WC26MascotIcon id="clutch" size={30} />
-            </div>
-            <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--wc-canada-light)] border border-[var(--wc-canada)]/15 overflow-hidden">
-              <WC26MascotIcon id="maple" size={26} />
-            </div>
+          <div className="hidden md:flex items-center shrink-0">
+            <MascotFootballPlay />
           </div>
 
           <div className="min-w-0">

@@ -10,14 +10,30 @@ interface MatchHighlightsPanelProps {
   photos?: MatchPhoto[];
 }
 
+/** Attach ESPN watch links when a highlight card is missing them */
+function withWatchLinks(highlights: Highlight[], videos: MatchVideo[]): Highlight[] {
+  const fallbackWeb = videos.find((v) => v.webUrl)?.webUrl;
+  const fallbackVideo = videos.find((v) => v.videoUrl)?.videoUrl;
+
+  return highlights.map((h) => {
+    if (h.webUrl || h.videoUrl) return h;
+    return {
+      ...h,
+      webUrl: fallbackWeb,
+      videoUrl: fallbackVideo,
+    };
+  });
+}
+
 export function MatchHighlightsPanel({
   match,
   highlights,
   videos = [],
   photos = [],
 }: MatchHighlightsPanelProps) {
-  const goalHighlights = highlights.filter((h) => h.type === "goal");
-  const otherHighlights = highlights.filter((h) => h.type !== "goal");
+  const linkedHighlights = withWatchLinks(highlights, videos);
+  const goalHighlights = linkedHighlights.filter((h) => h.type === "goal");
+  const otherHighlights = linkedHighlights.filter((h) => h.type !== "goal");
   const hasContent = highlights.length > 0 || videos.length > 0 || photos.length > 0;
 
   if (!hasContent) {

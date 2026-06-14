@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Puzzle, Calendar, ChevronRight } from "lucide-react";
+import { Puzzle, Calendar } from "lucide-react";
 import { WC26MascotStrip } from "@/components/WC26Brand";
-import { getTeam } from "@/lib/data";
-import { getTeamColors } from "@/lib/team-colors";
+import { LiveHomeHeroSpotlight } from "@/components/LiveHomeHeroSpotlight";
 import { WC26_HOSTS } from "@/lib/wc26-brand";
 import type { Match } from "@/lib/types";
 
@@ -14,59 +13,14 @@ const STATS = [
 ] as const;
 
 interface HomeHeroProps {
-  nextMatch?: Match | null;
+  initialTodayMatches: Match[];
+  initialUpcomingMatches: Match[];
 }
 
-function NextMatchTeaser({ match }: { match: Match }) {
-  const home = getTeam(match.home, match.homeName, match.homeLogo);
-  const away = getTeam(match.away, match.awayName, match.awayLogo);
-  const homeColors = getTeamColors(match.home);
-  const awayColors = getTeamColors(match.away);
-
-  return (
-    <Link
-      href={`/match/${match.id}`}
-      className="home-hero-teaser group block max-w-lg mx-auto mt-10"
-    >
-      <div
-        className="home-hero-teaser-bar"
-        style={{
-          background: `linear-gradient(90deg, ${homeColors.primary} 0%, ${homeColors.primary} 48%, ${awayColors.primary} 52%, ${awayColors.primary} 100%)`,
-        }}
-      />
-      <div className="home-hero-teaser-body">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-3">
-          Next up · Group {match.group}
-        </p>
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            {home.logo ? (
-              <img src={home.logo} alt="" className="h-8 w-8 object-contain shrink-0" />
-            ) : (
-              <span className="text-2xl shrink-0">{home.flag}</span>
-            )}
-            <span className="font-bold text-zinc-900 truncate">{home.name}</span>
-          </div>
-          <span className="text-xs font-extrabold text-zinc-300 shrink-0">vs</span>
-          <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
-            <span className="font-bold text-zinc-900 truncate text-right">{away.name}</span>
-            {away.logo ? (
-              <img src={away.logo} alt="" className="h-8 w-8 object-contain shrink-0" />
-            ) : (
-              <span className="text-2xl shrink-0">{away.flag}</span>
-            )}
-          </div>
-        </div>
-        <p className="mt-3 flex items-center justify-center gap-1 text-xs font-semibold text-[var(--wc-usa)] opacity-0 group-hover:opacity-100 transition-opacity">
-          View match
-          <ChevronRight size={12} />
-        </p>
-      </div>
-    </Link>
-  );
-}
-
-export function HomeHero({ nextMatch }: HomeHeroProps) {
+export function HomeHero({
+  initialTodayMatches,
+  initialUpcomingMatches,
+}: HomeHeroProps) {
   return (
     <section className="home-hero">
       <div className="home-hero-glow" aria-hidden />
@@ -124,7 +78,10 @@ export function HomeHero({ nextMatch }: HomeHeroProps) {
           </Link>
         </div>
 
-        {nextMatch && <NextMatchTeaser match={nextMatch} />}
+        <LiveHomeHeroSpotlight
+          initialTodayMatches={initialTodayMatches}
+          initialUpcomingMatches={initialUpcomingMatches}
+        />
       </div>
 
       <div className="grid grid-cols-4 gap-3 max-w-md mx-auto px-4 pb-6 sm:pb-8">

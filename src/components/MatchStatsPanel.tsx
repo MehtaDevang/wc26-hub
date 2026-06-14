@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  Target, Shield, History, User, LayoutGrid, TrendingUp, BarChart3,
+  Target, Shield, LayoutGrid, BarChart3, Sparkles, TrendingUp,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
+import { buildMatchInsights } from "@/lib/match-insights";
 import type {
   Match,
   MatchEvent,
   MatchLeader,
   MatchStats,
-  HeadToHeadMatch,
-  HeadToHeadRecord,
   TeamLineup,
   TeamRecord,
   GroupStandings,
+  VenueInfo,
 } from "@/lib/types";
 
 const CORE_STATS: Array<{ key: keyof MatchStats; label: string; higherIsBetter?: boolean }> = [
@@ -266,28 +266,10 @@ function SideCard({
   );
 }
 
-function countEventStats(events: MatchEvent[]) {
-  const goals = { home: 0, away: 0 };
-  const cards = { yellow: 0, red: 0 };
-
-  for (const e of events) {
-    if (e.type === "goal") {
-      if (e.team === "home") goals.home += 1;
-      else if (e.team === "away") goals.away += 1;
-    }
-    if (e.type === "yellow") cards.yellow += 1;
-    if (e.type === "red") cards.red += 1;
-  }
-
-  return { goals, cards };
-}
-
 export function MatchStatsPanel({
   match,
   stats,
   leaders,
-  headToHead,
-  headToHeadRecord,
   homeRecord,
   awayRecord,
   homeLineup,
@@ -296,12 +278,11 @@ export function MatchStatsPanel({
   attendance,
   referee,
   groupStandings,
+  venue,
 }: {
   match: Match;
   stats?: MatchStats;
   leaders?: MatchLeader[];
-  headToHead?: HeadToHeadMatch[];
-  headToHeadRecord?: HeadToHeadRecord;
   homeRecord?: TeamRecord;
   awayRecord?: TeamRecord;
   homeLineup?: TeamLineup;
@@ -310,13 +291,26 @@ export function MatchStatsPanel({
   attendance?: string;
   referee?: string;
   groupStandings?: GroupStandings;
+  venue?: VenueInfo;
 }) {
   const home = getTeam(match.home, match.homeName, match.homeLogo);
   const away = getTeam(match.away, match.awayName, match.awayLogo);
 
   const rows = stats ? buildStatRows(stats) : [];
-  const leadersCount = stats ? countStatLeaders(rows) : null;
-  const eventStats = countEventStats(events);
+  const leadersCount = stats && rows.length > 0 ? countStatLeaders(rows) : null;
+
+  const insights = buildMatchInsights({
+    match,
+    stats,
+    events,
+    homeName: home.name,
+    awayName: away.name,
+    homeLineup,
+    awayLineup,
+    venue,
+    attendance,
+    referee,
+  });
 
   const homeStanding = groupStandings?.rows.find(
     (r) => r.teamCode === match.home || r.team === home.name
@@ -342,13 +336,11 @@ export function MatchStatsPanel({
     awayRecord ||
     homeStanding ||
     awayStanding ||
-    (headToHeadRecord?.totalMeetings ?? 0) > 0 ||
-    (headToHead && headToHead.length > 0) ||
     homeLineup?.formation ||
     awayLineup?.formation ||
     attendance ||
     referee ||
-    events.length > 0;
+    insights.length > 0;
 
   if (!stats && !hasSideContent) {
     return (
@@ -473,7 +465,7 @@ export function MatchStatsPanel({
 
       <div className="grid gap-6 lg:grid-cols-2">
         {leaders && leaders.length > 0 && (
-          <SideCard title="Match Leaders" icon={Target}>
+          <SideCard title="Top Performers" icon={Target}>
             <div className="space-y-2">
               {leaders.map((l) => (
                 <div
@@ -571,111 +563,19 @@ export function MatchStatsPanel({
           </SideCard>
         )}
 
-        {(headToHeadRecord || (headToHead && headToHead.length > 0)) && (
-          <SideCard title="Head-to-Head" icon={History}>
-            {headToHeadRecord && headToHeadRecord.totalMeetings > 0 ? (
-              <>
-                <div className="grid grid-cols-3 gap-2 mb-3">
-                  <div className="rounded-lg bg-[var(--wc-usa-light)] px-2 py-2 text-center">
-                    <p className="text-lg font-bold text-[var(--wc-usa)]">{headToHeadRecord.homeWins}</p>
-                    <p className="text-[9px] font-semibold text-zinc-500 truncate">{home.name}</p>
-                  </div>
-                  <div className="rounded-lg bg-zinc-100 px-2 py-2 text-center">
-                    <p className="text-lg font-bold text-zinc-600">{headToHeadRecord.draws}</p>
-                    <p className="text-[9px] font-semibold text-zinc-500">Draws</p>
-                  </div>
-                  <div className="rounded-lg bg-[var(--wc-canada-light)] px-2 py-2 text-center">
-                    <p className="text-lg font-bold text-[var(--wc-canada)]">{headToHeadRecord.awayWins}</p>
-                    <p className="text-[9px] font-semibold text-zinc-500 truncate">{away.name}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-zinc-500 mb-3">
-                  Goals {headToHeadRecord.homeGoals}–{headToHeadRecord.awayGoals}
-                  {headToHeadRecord.worldCupMeetings > 0 &&
-                    ` · ${headToHeadRecord.worldCupMeetings} WC meeting${headToHeadRecord.worldCupMeetings === 1 ? "" : "s"}`}
-                </p>
-              </>
-            ) : (
-              <p className="text-xs text-zinc-500 mb-3">No previous meetings on record.</p>
-            )}
-            {headToHead && headToHead.length > 0 && (
-            <div className="space-y-2">
-              {headToHead.slice(0, 5).map((h, i) => (
-                <div
-                  key={`${h.date}-${h.opponent}-${i}`}
-                  className="flex items-center justify-between gap-3 border-b border-zinc-50 py-2 text-sm last:border-0"
+        {insights.length > 0 && (
+          <SideCard title="Match Insights" icon={Sparkles}>
+            <ul className="space-y-2.5">
+              {insights.map((fact) => (
+                <li
+                  key={fact}
+                  className="flex gap-2 text-sm leading-relaxed text-zinc-600"
                 >
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-zinc-800">
-                      {h.homeTeam} {h.score} {h.awayTeam}
-                    </p>
-                    <p className="text-xs text-zinc-400">
-                      {h.date} · {h.competition}
-                    </p>
-                  </div>
-                  <span
-                    className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                      h.resultForHome === "W"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : h.resultForHome === "L"
-                          ? "bg-red-50 text-red-600"
-                          : "bg-zinc-100 text-zinc-600"
-                    }`}
-                  >
-                    {h.resultForHome}
-                  </span>
-                </div>
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--wc-usa)]" />
+                  <span>{fact}</span>
+                </li>
               ))}
-            </div>
-            )}
-          </SideCard>
-        )}
-
-        {(attendance || referee || events.length > 0) && (
-          <SideCard title="Match Facts" icon={User}>
-            <div className="space-y-3 text-sm text-zinc-600">
-              {match.status !== "upcoming" && (
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
-                    <p className="text-lg font-bold tabular-nums text-zinc-900">
-                      {eventStats.goals.home}
-                    </p>
-                    <p className="text-[10px] text-zinc-400">{home.name} goals</p>
-                  </div>
-                  <div className="rounded-lg bg-zinc-50 px-3 py-2 text-center">
-                    <p className="text-lg font-bold tabular-nums text-zinc-900">
-                      {eventStats.goals.away}
-                    </p>
-                    <p className="text-[10px] text-zinc-400">{away.name} goals</p>
-                  </div>
-                </div>
-              )}
-              {(eventStats.cards.yellow > 0 || eventStats.cards.red > 0) && (
-                <p>
-                  Discipline:{" "}
-                  <strong>{eventStats.cards.yellow}</strong> yellow
-                  {eventStats.cards.red > 0 && (
-                    <>
-                      , <strong>{eventStats.cards.red}</strong> red
-                    </>
-                  )}
-                </p>
-              )}
-              {attendance && (
-                <p>
-                  Attendance: <strong>{attendance}</strong>
-                </p>
-              )}
-              {referee && (
-                <p>
-                  Referee: <strong>{referee}</strong>
-                </p>
-              )}
-              <p className="text-xs text-zinc-400">
-                Group {match.group}
-                {match.venueCity && ` · ${match.venueCity}`}
-              </p>
-            </div>
+            </ul>
           </SideCard>
         )}
       </div>

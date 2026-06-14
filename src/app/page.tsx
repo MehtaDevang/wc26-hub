@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History } from "lucide-react";
 import { SponsoredBanner } from "@/components/SponsoredBanner";
-import { AdBanner } from "@/components/AdBanner";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
 import { IconicMoments } from "@/components/IconicMoments";
@@ -52,7 +51,11 @@ export default async function Home() {
             "Live World Cup scores, fixtures, standings, teams, players, stats, and history.",
         })}
       />
-      <HomeHero nextMatch={nextMatches[0] ?? null} />
+
+      <HomeHero
+        initialTodayMatches={initialMatches}
+        initialUpcomingMatches={nextMatches}
+      />
 
       <LiveMomentsStrip slides={heroSlides} />
 
@@ -62,11 +65,7 @@ export default async function Home() {
 
       {bracket && <LiveKnockoutBracket initialData={bracket} compact showLink />}
 
-      <AdBanner placement="inline" />
-
       <MatchHighlights initialHighlights={initialHighlights} />
-
-      <AdBanner placement="inline" />
 
       <IconicMoments limit={9} />
 
@@ -128,8 +127,6 @@ export default async function Home() {
           View all puzzles <ArrowRight size={14} />
         </Link>
       </section>
-
-      <AdBanner placement="inline" />
 
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">
