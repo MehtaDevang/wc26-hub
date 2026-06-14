@@ -2,7 +2,23 @@
 
 import { Globe } from "lucide-react";
 import { useTimezone } from "@/components/TimezoneProvider";
+import { useMounted } from "@/hooks/useMounted";
 import { formatTimezoneLabel } from "@/lib/timezone";
+
+function timezoneShortName(timeZone: string): string {
+  try {
+    return (
+      new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        timeZoneName: "short",
+      })
+        .formatToParts(new Date("2026-06-15T12:00:00"))
+        .find((p) => p.type === "timeZoneName")?.value ?? timeZone
+    );
+  } catch {
+    return timeZone;
+  }
+}
 
 interface TimezoneBadgeProps {
   className?: string;
@@ -14,6 +30,8 @@ export function TimezoneBadge({
   showIcon = true,
 }: TimezoneBadgeProps) {
   const timezone = useTimezone();
+  const mounted = useMounted();
+  const label = mounted ? formatTimezoneLabel(timezone) : timezoneShortName(timezone);
 
   return (
     <span
@@ -21,7 +39,7 @@ export function TimezoneBadge({
       title={`Times shown in your timezone (${timezone})`}
     >
       {showIcon && <Globe size={11} className="shrink-0" />}
-      {formatTimezoneLabel(timezone)}
+      {label}
     </span>
   );
 }

@@ -7,7 +7,8 @@ import {
   ArrowLeft, MapPin, Users, User, Clock, Trophy,
   Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid,
 } from "lucide-react";
-import { getTeam } from "@/lib/data";
+import { getTeam, isKnownTeam } from "@/lib/data";
+import { getTeamColors } from "@/lib/team-colors";
 import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight } from "@/lib/types";
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
@@ -129,6 +130,10 @@ function MatchDetailContent({
   const kickoffDateLabel = match.kickoffAt
     ? formatKickoffDateLabel(match.kickoffAt, timezone)
     : match.date;
+  const isKnockout = match.group === "?";
+  const knockoutLabel = match.stageLabel?.replace(/ FIFA World Cup$/i, "") ?? "Knockout Stage";
+  const homeColors = getTeamColors(match.home);
+  const awayColors = getTeamColors(match.away);
 
   useEffect(() => {
     if (match.status !== "live") return;
@@ -150,14 +155,32 @@ function MatchDetailContent({
         Back to Live Scores
       </Link>
 
-      <div className="card-surface rounded-2xl overflow-hidden">
+      <div
+        className="card-surface rounded-2xl overflow-hidden relative"
+        style={
+          {
+            "--home-primary": homeColors.primary,
+            "--away-primary": awayColors.primary,
+          } as React.CSSProperties
+        }
+      >
+        <div className="match-detail-accent" aria-hidden>
+          <span className="match-detail-accent-home" />
+          <span className="match-detail-accent-away" />
+        </div>
         <div className="host-stripe" />
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
             <span className="text-xs text-zinc-500 uppercase tracking-wider">
-              <Link href={`/groups/${match.group}`} className="hover:text-blue-600">
-                Group {match.group}
-              </Link>
+              {isKnockout ? (
+                <Link href="/bracket" className="hover:text-blue-600">
+                  {knockoutLabel}
+                </Link>
+              ) : (
+                <Link href={`/groups/${match.group}`} className="hover:text-blue-600">
+                  Group {match.group}
+                </Link>
+              )}
               {" · "}{kickoffDateLabel} ·{" "}
               <MatchKickoffTime match={match} />
             </span>
@@ -169,10 +192,14 @@ function MatchDetailContent({
           <div className="flex items-center justify-center gap-6 sm:gap-12">
             <div className="flex-1 text-center">
               {home.logo ? <img src={home.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{home.flag}</span>}
-              <Link href={`/teams/${match.home}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
-                {home.name}
-              </Link>
-              {detail.homeManager && (
+              {isKnownTeam(match.home) ? (
+                <Link href={`/teams/${match.home}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                  {home.name}
+                </Link>
+              ) : (
+                <p className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</p>
+              )}
+              {detail.homeManager && detail.homeManager !== "TBD" && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.homeManager}</p>
               )}
             </div>
@@ -194,10 +221,14 @@ function MatchDetailContent({
             </div>
             <div className="flex-1 text-center">
               {away.logo ? <img src={away.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{away.flag}</span>}
-              <Link href={`/teams/${match.away}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
-                {away.name}
-              </Link>
-              {detail.awayManager && (
+              {isKnownTeam(match.away) ? (
+                <Link href={`/teams/${match.away}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                  {away.name}
+                </Link>
+              ) : (
+                <p className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</p>
+              )}
+              {detail.awayManager && detail.awayManager !== "TBD" && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.awayManager}</p>
               )}
             </div>

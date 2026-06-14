@@ -28,3 +28,7 @@ export function getTeam(code: string, name?: string, logo?: string): Team {
   const base = TEAMS[upper] ?? { code: upper, name: name ?? code, flag: getTeamFlag(upper) };
   return { ...base, name: name ?? base.name, logo };
 }
+
+export function isKnownTeam(code: string): boolean {
+  return code.toUpperCase() in TEAMS;
+}

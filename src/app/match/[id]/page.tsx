@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
-import { transformEvent, transformSummary, goalsToHighlights } from "@/lib/espn/transform";
+import { transformEvent, transformSummary, goalsToHighlights, buildMinimalMatchDetail } from "@/lib/espn/transform";
 import { MatchDetailView } from "@/components/MatchDetailView";
 import { JsonLd } from "@/components/JsonLd";
 import { lookupVenue } from "@/lib/venues";
@@ -70,9 +70,17 @@ export default async function MatchPage({ params }: PageProps) {
   if (!event) notFound();
 
   const match = transformEvent(event, timeZone);
-  const summary = await fetchEspnSummary(id);
-  const detail = transformSummary(summary, match);
-  const highlights = goalsToHighlights(match, summary);
+
+  let detail = buildMinimalMatchDetail(match);
+  let highlights: Awaited<ReturnType<typeof goalsToHighlights>> = [];
+
+  try {
+    const summary = await fetchEspnSummary(id);
+    detail = transformSummary(summary, match);
+    highlights = goalsToHighlights(match, summary);
+  } catch {
+    // ESPN summary can be unavailable for early knockout placeholders — keep minimal detail
+  }
 
   const venueMeta = lookupVenue(
     detail.venue?.name ?? match.venue,

@@ -59,7 +59,7 @@ export function transformEvent(
   const kickoffAt = comp.date || event.date;
 
   return {
-    id: event.id,
+    id: String(event.id),
     group: parseGroup(comp.altGameNote),
     home: home.team.abbreviation,
     away: away.team.abbreviation,
@@ -81,6 +81,7 @@ export function transformEvent(
     attendance: comp.attendance,
     homeRecord: getRecord(home),
     awayRecord: getRecord(away),
+    stageLabel: event.name,
   };
 }
 
@@ -426,6 +427,37 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
         minute: c.time?.displayValue ?? "",
         text: c.text,
       })),
+  };
+}
+
+export function buildMinimalMatchDetail(match: Match): MatchDetail {
+  const meta = lookupVenue(match.venue, match.venueCity, match.venueCountry);
+  return {
+    matchId: match.id,
+    summary: `${match.homeName} vs ${match.awayName} at the 2026 FIFA World Cup.`,
+    events: [],
+    players: {},
+    stats: {
+      possession: [0, 0],
+      shots: [0, 0],
+      shotsOnTarget: [0, 0],
+      corners: [0, 0],
+      fouls: [0, 0],
+      yellowCards: [0, 0],
+      redCards: [0, 0],
+      saves: [0, 0],
+      passes: [0, 0],
+      passAccuracy: [0, 0],
+      offsides: [0, 0],
+      tackles: [0, 0],
+      interceptions: [0, 0],
+    },
+    venue: {
+      name: meta.name,
+      city: meta.city || match.venueCity || "",
+      country: meta.country || match.venueCountry || "",
+      capacity: meta.capacity,
+    },
   };
 }
 

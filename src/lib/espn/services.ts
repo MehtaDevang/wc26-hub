@@ -6,10 +6,16 @@ import { transformEvents, transformEvent, goalsToHighlights } from "./transform"
 import { extractMomentHighlights } from "./highlight-images";
 import {
   todayEspnDateInTimezone,
+  todayDateKey,
+  shiftDateKey,
+  dateKeyToEspn,
+  filterMatchesByLocalDate,
   formatEspnDateInTimezone,
   DEFAULT_TIMEZONE,
 } from "../timezone";
 import type { Match, Highlight } from "../types";
+import { buildKnockoutBracket } from "./bracket";
+import { fetchAllGroupStandings } from "./standings";
 
 const ESPN_TIMEOUT_MS = 8_000;
 
@@ -25,10 +31,16 @@ async function withTimeout<T>(promise: Promise<T>, ms = ESPN_TIMEOUT_MS): Promis
 export async function getTodayMatches(
   timeZone: string = DEFAULT_TIMEZONE
 ): Promise<Match[]> {
+  const localToday = todayDateKey(timeZone);
+  const yesterday = shiftDateKey(localToday, -1);
+  const tomorrow = shiftDateKey(localToday, 1);
   const data = await withTimeout(
-    fetchEspnScoreboard({ dates: todayEspnDateInTimezone(timeZone) })
+    fetchEspnScoreboard({
+      dates: `${dateKeyToEspn(yesterday)}-${dateKeyToEspn(tomorrow)}`,
+    })
   );
-  return transformEvents(data.events ?? [], timeZone);
+  const matches = transformEvents(data.events ?? [], timeZone);
+  return filterMatchesByLocalDate(matches, localToday, timeZone);
 }
 
 export async function getNextUpcomingMatches(
@@ -68,7 +80,10 @@ export async function getMatchesByParams(params: {
   } else if (params.range === "full") {
     dates = "20260611-20260719";
   } else if (params.date === "today") {
-    dates = todayEspnDateInTimezone(timeZone);
+    const localToday = todayDateKey(timeZone);
+    const yesterday = shiftDateKey(localToday, -1);
+    const tomorrow = shiftDateKey(localToday, 1);
+    dates = `${dateKeyToEspn(yesterday)}-${dateKeyToEspn(tomorrow)}`;
   } else if (params.date) {
     dates = params.date.replace(/-/g, "");
   } else if (params.range === "recent") {
@@ -81,7 +96,13 @@ export async function getMatchesByParams(params: {
   const data = await withTimeout(
     fetchEspnScoreboard(dates ? { dates } : undefined)
   );
-  return transformEvents(data.events ?? [], timeZone);
+  const matches = transformEvents(data.events ?? [], timeZone);
+
+  if (params.date === "today") {
+    return filterMatchesByLocalDate(matches, todayDateKey(timeZone), timeZone);
+  }
+
+  return matches;
 }
 
 function sortHighlights(highlights: Highlight[]): Highlight[] {
@@ -137,4 +158,15 @@ export async function getRecentHighlights(
 
   const combined = sortHighlights([...goals, ...moments]);
   return combined.slice(0, limit);
+}
+
+export async function getKnockoutBracket(
+  timeZone: string = DEFAULT_TIMEZONE
+): Promise<ReturnType<typeof buildKnockoutBracket>> {
+  const [data, standings] = await Promise.all([
+    withTimeout(fetchEspnScoreboard({ dates: "20260611-20260719" })),
+    withTimeout(fetchAllGroupStandings()).catch(() => [] as Awaited<ReturnType<typeof fetchAllGroupStandings>>),
+  ]);
+  const matches = transformEvents(data.events ?? [], timeZone);
+  return buildKnockoutBracket(matches, standings);
 }

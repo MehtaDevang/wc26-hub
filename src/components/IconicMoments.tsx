@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Sparkles, ArrowRight, X } from "lucide-react";
 import {
@@ -159,29 +159,65 @@ function MomentCard({
   );
 }
 
+type MomentFilter = "all" | "wc26" | "classic";
+
 interface IconicMomentsProps {
   limit?: number;
   showClassicLink?: boolean;
+  showFilters?: boolean;
 }
 
-export function IconicMoments({ limit = 6, showClassicLink = true }: IconicMomentsProps) {
-  const moments = getIconicMoments(limit);
+export function IconicMoments({
+  limit = 9,
+  showClassicLink = true,
+  showFilters = true,
+}: IconicMomentsProps) {
+  const [filter, setFilter] = useState<MomentFilter>("all");
   const [selected, setSelected] = useState<IconicMoment | null>(null);
+
+  const moments = useMemo(() => {
+    const era = filter === "all" ? undefined : filter;
+    return getIconicMoments(limit, era);
+  }, [filter, limit]);
 
   const closeModal = useCallback(() => setSelected(null), []);
 
+  const filters: Array<{ id: MomentFilter; label: string }> = [
+    { id: "all", label: "All" },
+    { id: "wc26", label: "WC 2026" },
+    { id: "classic", label: "Classics" },
+  ];
+
   return (
     <section>
-      <div className="mb-4 flex items-end justify-between gap-4">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h2 className="section-title flex items-center gap-2">
             <Sparkles size={20} className="text-[var(--wc-gold)]" />
             Iconic Moments
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
-            Legendary goals, stadium atmospheres, shock results, and World Cup 2026 memories.
+            Legendary goals, shock results, stadium atmospheres, and memories from 2026 and beyond.
           </p>
         </div>
+        {showFilters && (
+          <div className="flex gap-1.5 shrink-0">
+            {filters.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setFilter(item.id)}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  filter === item.id
+                    ? "bg-zinc-900 text-white"
+                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

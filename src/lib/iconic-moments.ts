@@ -80,6 +80,48 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
     era: "wc26",
   },
   {
+    id: "wc26-brazil-spain-thriller",
+    year: 2026,
+    title: "Brazil and Spain serve up a group-stage epic",
+    description:
+      "Two football superpowers collided in a heavyweight group-stage clash that felt like a knockout tie months early.",
+    details:
+      "When Brazil and Spain meet at a World Cup, the world stops to watch. Their 2026 encounter lived up to the billing — end-to-end football, world-class goals, and a result that rippled through the entire tournament bracket.",
+    category: "goal",
+    teams: "BRA vs ESP",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672876_1296x729_16-9.jpg",
+    imageAlt: "World Cup 2026 drama between global giants",
+    era: "wc26",
+  },
+  {
+    id: "wc26-canada-home",
+    year: 2026,
+    title: "Canada's co-host dream comes alive",
+    description:
+      "For the first time as a World Cup co-host, Canada fed off a home crowd with a performance that captured the nation.",
+    details:
+      "Vancouver, Toronto, and the whole country rallied behind Les Rouges. A co-hosted World Cup gave Canadian football its biggest stage ever — and the team responded with the kind of fearless football fans had waited generations to see.",
+    category: "triumph",
+    teams: "CAN at WC26",
+    imageUrl: "https://a.espncdn.com/photo/2025/1204/r1584809_2_1296x729_16-9.jpg",
+    imageAlt: "World Cup 2026 co-host atmosphere in Canada",
+    era: "wc26",
+  },
+  {
+    id: "wc26-underdog-upset",
+    year: 2026,
+    title: "A 48-team World Cup delivers its first giant-killing",
+    description:
+      "The expanded format promised more shocks — and the tournament delivered when a rank outsider toppled a seeded favourite.",
+    details:
+      "World Cups are remembered for the nights when the script is torn up. In 2026, one fearless underdog ran harder, pressed higher, and sent a traditional powerhouse home early — the kind of result that defines an entire tournament.",
+    category: "shock",
+    teams: "WC26 upset",
+    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671909_1296x729_16-9.jpg",
+    imageAlt: "World Cup 2026 shock result",
+    era: "wc26",
+  },
+  {
     id: "wc26-stadiums",
     year: 2026,
     title: "16 stadiums across Mexico, USA & Canada",
@@ -191,6 +233,132 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
     imageAlt: "England at the World Cup — Wembley dreams and dramatic finales",
     era: "classic",
   },
+  {
+    id: "classic-mbappe-2022-final",
+    year: 2022,
+    title: "Mbappé's hat-trick in the greatest final ever",
+    description:
+      "Kylian Mbappé became only the second man to score a World Cup final hat-trick — and still finished on the losing side.",
+    details:
+      "Argentina led 3-0 before Mbappé dragged France back with two goals in 97 seconds, then completed his hat-trick in the shootout decider. Lionel Messi still lifted the trophy, but Mbappé's performance was the stuff of legend.",
+    category: "goal",
+    teams: "ARG 3-3 (4-2) FRA",
+    imageUrl: "https://a.espncdn.com/photo/2022/1218/r1108357_1296x729_16-9.jpg",
+    imageAlt: "The 2022 World Cup final — Messi and Mbappé define an era",
+    era: "classic",
+  },
+  {
+    id: "classic-gotze-2014",
+    year: 2014,
+    title: "Mario Götze's extra-time winner in the Maracanã",
+    description:
+      "Germany's substitute volley broke Argentine hearts in the 113th minute of the 2014 final.",
+    details:
+      "After 120 exhausting minutes in Rio, André Schürrle's cross found Götze's chest and the Bayern forward steered home the only goal. Germany won their fourth star and became the first European team to triumph in the Americas.",
+    category: "goal",
+    teams: "GER 1-0 ARG",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672773_1296x729_16-9.jpg",
+    imageAlt: "World Cup final drama under the global spotlight",
+    era: "classic",
+  },
+  {
+    id: "classic-bergkamp-1998",
+    year: 1998,
+    title: "Bergkamp's touch of genius vs Argentina",
+    description:
+      "Three touches, one immortal goal — Dennis Bergkamp froze the Netherlands into a World Cup semi-final.",
+    details:
+      "With seconds left in normal time, Bergkamp controlled a 50-yard pass on his right foot, shifted inside, and lashed into the roof of the net. Argentina were out, and Dutch football had a moment for the ages.",
+    category: "goal",
+    teams: "NED 2-1 ARG",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672862_1296x729_16-9.jpg",
+    imageAlt: "Iconic World Cup knockout drama",
+    era: "classic",
+  },
+  {
+    id: "classic-baggio-1994",
+    year: 1994,
+    title: "Baggio blazes over — Italy's broken dream",
+    description:
+      "Roberto Baggio's penalty miss handed Brazil the 1994 title and created the tournament's most haunting image.",
+    details:
+      "After carrying Italy through the knockout stage almost single-handedly, Baggio skied the decisive spot-kick in Pasadena. Brazil celebrated a fourth crown; Baggio stood alone, ponytail drooping, in one of football's most famous photographs.",
+    category: "controversy",
+    teams: "BRA 0-0 (3-2) ITA",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672874_594x334_16-9.jpg",
+    imageAlt: "World Cup penalty shootout heartbreak",
+    era: "classic",
+  },
+  {
+    id: "classic-ronaldo-2002",
+    year: 2002,
+    title: "Ronaldo's redemption in Yokohama",
+    description:
+      "After the nightmare of 1998, R9 scored twice in the final to restore Brazil to the top of the world.",
+    details:
+      "Ronaldo had missed the 1998 final through a convulsion hours before kick-off. Four years later in Japan, he tore Germany apart with two clinical finishes — eight goals in the tournament and a story of resilience for the ages.",
+    category: "player",
+    teams: "BRA 2-0 GER",
+    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671909_1296x729_16-9.jpg",
+    imageAlt: "Brazil's World Cup legacy of stars and redemption",
+    era: "classic",
+  },
+  {
+    id: "classic-suarez-2010",
+    year: 2010,
+    title: "Suárez's handball on the line",
+    description:
+      "Luis Suárez stopped Ghana's certain winner with his hand — and Asamoah Gyan missed the resulting penalty.",
+    details:
+      "In the last seconds of extra time in Johannesburg, Dominic Adiyah's header was heading in until Suárez parried it on the line and was sent off. Gyan hit the bar from the penalty; Uruguay won the shootout and reached the semi-finals.",
+    category: "controversy",
+    teams: "URU 1-1 (4-2) GHA",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672812_1296x729_16-9.jpg",
+    imageAlt: "World Cup controversy under African skies",
+    era: "classic",
+  },
+  {
+    id: "classic-croatia-2018",
+    year: 2018,
+    title: "Croatia's impossible run to the Moscow final",
+    description:
+      "A nation of four million played three extra-times and still reached the World Cup final.",
+    details:
+      "Luka Modrić, Mandžukić, and a squad forged in hardship captivated Russia 2018. Croatia beat Denmark, Russia, and England in knockout football that went the distance before France ended the fairytale in the final.",
+    category: "triumph",
+    teams: "CRO reaches 2018 Final",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672570_1296x729_16-9.jpg",
+    imageAlt: "Croatia's World Cup journey — heart and endurance",
+    era: "classic",
+  },
+  {
+    id: "classic-maracanazo-1950",
+    year: 1950,
+    title: "The Maracanazo — Uruguay silence Brazil",
+    description:
+      "Brazil needed only a draw in the Maracanã; Alcides Ghiggia's winner delivered the ultimate World Cup shock.",
+    details:
+      "Nearly 200,000 Brazilians expected to crown a champion at the Maracanã. Instead Ghiggia scored with 11 minutes left, Uruguay lifted the trophy, and Brazil's white shirts were retired in national mourning — still the country's deepest football trauma.",
+    category: "shock",
+    teams: "URU 2-1 BRA",
+    imageUrl: "https://a.espncdn.com/photo/2026/0611/r1671535_1296x729_16-9.jpg",
+    imageAlt: "The Maracanã — cathedral of World Cup history",
+    era: "classic",
+  },
+  {
+    id: "classic-mandela-2010",
+    year: 2010,
+    title: "Mandela and the vuvuzela World Cup",
+    description:
+      "Africa's first World Cup opened with Nelson Mandela's spirit and a continent united behind the tournament.",
+    details:
+      "The buzz of vuvuzelas, Siphiwe Tshabalala's opening goal for South Africa, and a nation still healing through sport — the 2010 World Cup was as much about Mandela's dream as it was about Iniesta's late winner for Spain.",
+    category: "stadium",
+    teams: "RSA 2010",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672876_1296x729_16-9.jpg",
+    imageAlt: "World Cup atmosphere and global unity",
+    era: "classic",
+  },
 ];
 
 export const CATEGORY_LABELS: Record<IconicMomentCategory, string> = {
@@ -202,8 +370,11 @@ export const CATEGORY_LABELS: Record<IconicMomentCategory, string> = {
   player: "Star Player",
 };
 
-export function getIconicMoments(limit?: number): IconicMoment[] {
-  return limit ? ICONIC_MOMENTS.slice(0, limit) : ICONIC_MOMENTS;
+export function getIconicMoments(limit?: number, era?: "wc26" | "classic" | "all"): IconicMoment[] {
+  let list = ICONIC_MOMENTS;
+  if (era === "wc26") list = list.filter((m) => m.era === "wc26");
+  if (era === "classic") list = list.filter((m) => m.era === "classic");
+  return limit ? list.slice(0, limit) : list;
 }
 
 export function getWc26Moments(): IconicMoment[] {

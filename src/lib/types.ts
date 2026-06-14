@@ -28,6 +28,7 @@ export interface Match {
   status: "upcoming" | "live" | "finished";
   homeRecord?: string;
   awayRecord?: string;
+  stageLabel?: string;
 }
 
 export interface Highlight {
@@ -154,6 +155,57 @@ export interface StandingsRow {
 export interface GroupStandings {
   group: string;
   rows: StandingsRow[];
+}
+
+export type BracketRoundId =
+  | "round-of-32"
+  | "round-of-16"
+  | "quarter-final"
+  | "semi-final"
+  | "third-place"
+  | "final";
+
+export interface BracketTeam {
+  name: string;
+  code?: string;
+  logo?: string;
+  score?: number;
+  winner?: boolean;
+  /** ESPN-style feeder label before a winner is known */
+  feederLabel?: string;
+  placeholder?: boolean;
+  /** Resolved from live standings before group stage ends */
+  projected?: boolean;
+}
+
+export interface BracketMatch {
+  id?: string;
+  round: BracketRoundId;
+  slot: number;
+  /** FIFA-style match number within the round (e.g. R32 #7) */
+  matchNumber?: number;
+  label: string;
+  home: BracketTeam;
+  away: BracketTeam;
+  status: "upcoming" | "live" | "finished" | "tbd";
+  kickoffAt?: string;
+  date?: string;
+  time?: string;
+}
+
+export interface BracketRound {
+  id: BracketRoundId;
+  label: string;
+  shortLabel: string;
+  matches: BracketMatch[];
+}
+
+export interface KnockoutBracketData {
+  rounds: BracketRound[];
+  activeRound?: BracketRoundId;
+  finishedMatches: number;
+  totalMatches: number;
+  updatedAt: string;
 }
 
 export type TeamMatchResult = "W" | "D" | "L" | "upcoming" | "live";

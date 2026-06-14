@@ -1,6 +1,6 @@
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvents } from "@/lib/espn/transform";
-import { FixturesList } from "@/components/FixturesList";
+import { LiveFixturesList } from "@/components/LiveFixturesList";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getServerTimezone } from "@/lib/timezone";
@@ -27,7 +27,7 @@ export default async function FixturesPage() {
         </p>
       </div>
       <AdBanner placement="fixtures" />
-      <FixturesList matches={matches} />
+      <LiveFixturesList initialMatches={matches} />
     </div>
   );
 }

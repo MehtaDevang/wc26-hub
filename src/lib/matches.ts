@@ -4,7 +4,7 @@ import { detectBrowserTimezone } from "./timezone";
 
 export async function fetchMatches(params?: {
   date?: "today" | string;
-  range?: "group-stage" | "recent";
+  range?: "group-stage" | "full" | "recent";
   timeZone?: string;
 }): Promise<Match[]> {
   const search = new URLSearchParams();

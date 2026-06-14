@@ -1,94 +1,20 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useMounted } from "@/hooks/useMounted";
 import Link from "next/link";
 import { Radio, Clock, ChevronRight, Loader2, RefreshCw } from "lucide-react";
-import { getTeam } from "@/lib/data";
 import { fetchMatches } from "@/lib/matches";
+import { MatchClashRow } from "@/components/MatchBattleGraphic";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { TimezoneBadge } from "@/components/TimezoneBadge";
-import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import {
   applyTimezoneToMatches,
+  filterMatchesByLocalDate,
   formatTodayLabel,
+  todayDateKey,
 } from "@/lib/timezone";
 import type { Match } from "@/lib/types";
-
-function LiveBadge() {
-  return (
-    <span className="badge-live">
-      <span className="relative flex h-1.5 w-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-60" />
-        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-      </span>
-      Live
-    </span>
-  );
-}
-
-function MatchRow({ match, liveMinute }: { match: Match; liveMinute?: number }) {
-  const home = getTeam(match.home, match.homeName, match.homeLogo);
-  const away = getTeam(match.away, match.awayName, match.awayLogo);
-  const isLive = match.status === "live";
-  const isFinished = match.status === "finished";
-
-  return (
-    <Link
-      href={`/match/${match.id}`}
-      className={`match-row group ${isLive ? "match-row-live" : ""}`}
-    >
-      <div className="w-12 shrink-0 text-center">
-        {isLive ? (
-          <span className="text-xs font-bold text-red-600 tabular-nums">
-            {match.displayClock ?? `${liveMinute}'`}
-          </span>
-        ) : isFinished ? (
-          <span className="text-[10px] font-semibold text-zinc-400 uppercase">FT</span>
-        ) : (
-          <MatchKickoffTime
-            match={match}
-            className="text-[11px] text-zinc-400 tabular-nums"
-          />
-        )}
-      </div>
-
-      <div className="flex-1 min-w-0 grid grid-cols-[1fr_auto] gap-x-3 gap-y-1.5">
-        <div className="flex items-center gap-2 min-w-0 col-span-1">
-          {home.logo ? (
-            <img src={home.logo} alt="" className="h-5 w-5 object-contain shrink-0" />
-          ) : (
-            <span className="text-sm shrink-0">{home.flag}</span>
-          )}
-          <span className={`text-sm truncate ${isLive || isFinished ? "font-semibold text-zinc-900" : "text-zinc-600"}`}>
-            {home.name}
-          </span>
-        </div>
-        {(isLive || isFinished) && (
-          <span className="text-sm font-bold text-zinc-900 tabular-nums text-right row-span-2 self-center">
-            {match.homeScore} – {match.awayScore}
-          </span>
-        )}
-        <div className="flex items-center gap-2 min-w-0 col-span-1">
-          {away.logo ? (
-            <img src={away.logo} alt="" className="h-5 w-5 object-contain shrink-0" />
-          ) : (
-            <span className="text-sm shrink-0">{away.flag}</span>
-          )}
-          <span className={`text-sm truncate ${isLive || isFinished ? "font-semibold text-zinc-900" : "text-zinc-600"}`}>
-            {away.name}
-          </span>
-        </div>
-      </div>
-
-      <div className="shrink-0 flex flex-col items-end gap-1.5 pl-2">
-        {isLive && <LiveBadge />}
-        {!isLive && !isFinished && <span className="badge-upcoming">Soon</span>}
-        <span className="text-[10px] text-zinc-300 font-medium">Grp {match.group}</span>
-        <ChevronRight size={14} className="text-zinc-300 group-hover:text-blue-500 transition-colors" />
-      </div>
-    </Link>
-  );
-}
 
 interface LiveScoresProps {
   initialMatches?: Match[];
@@ -96,15 +22,16 @@ interface LiveScoresProps {
 
 export function LiveScores({ initialMatches }: LiveScoresProps) {
   const timezone = useTimezone();
+  const mounted = useMounted();
   const [matches, setMatches] = useState<Match[]>(initialMatches ?? []);
   const [loading, setLoading] = useState(initialMatches === undefined);
   const [error, setError] = useState("");
   const [liveMinute, setLiveMinute] = useState(0);
 
-  const localizedMatches = useMemo(
-    () => applyTimezoneToMatches(matches, timezone),
-    [matches, timezone]
-  );
+  const localizedMatches = useMemo(() => {
+    const localized = applyTimezoneToMatches(matches, timezone);
+    return filterMatchesByLocalDate(localized, todayDateKey(timezone), timezone);
+  }, [matches, timezone]);
 
   const loadMatches = useCallback(async (showSpinner = false) => {
     if (showSpinner) setLoading(true);
@@ -125,14 +52,17 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
     } else {
       loadMatches(false);
     }
-
-    const interval = setInterval(() => loadMatches(false), 60_000);
-    return () => clearInterval(interval);
   }, [initialMatches, loadMatches]);
 
   const liveMatches = localizedMatches.filter((m) => m.status === "live");
   const upcomingToday = localizedMatches.filter((m) => m.status === "upcoming");
   const finishedToday = localizedMatches.filter((m) => m.status === "finished");
+
+  useEffect(() => {
+    const hasLive = liveMatches.length > 0;
+    const interval = setInterval(() => loadMatches(false), hasLive ? 30_000 : 60_000);
+    return () => clearInterval(interval);
+  }, [liveMatches.length, loadMatches]);
 
   useEffect(() => {
     if (liveMatches.length === 0) return;
@@ -143,7 +73,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
     return () => clearInterval(interval);
   }, [liveMatches.length, liveMatches[0]?.minute]);
 
-  const todayLabel = formatTodayLabel(timezone);
+  const todayLabel = mounted ? formatTodayLabel(timezone) : "Today's matches";
   const showSpinner = loading && localizedMatches.length === 0;
 
   return (
@@ -158,7 +88,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
         </Link>
       </div>
 
-      <div className="card-elevated overflow-hidden">
+      <div className="card-elevated overflow-hidden rounded-2xl">
         <div className="host-stripe" />
         <div className="flex items-center justify-between gap-3 px-4 py-3 bg-zinc-50 border-b border-zinc-100">
           <div className="flex items-center gap-2 text-sm text-zinc-600 min-w-0">
@@ -167,7 +97,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <TimezoneBadge showIcon={false} />
-            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">ESPN</span>
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Auto-updates</span>
           </div>
         </div>
 
@@ -191,7 +121,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
         )}
 
         {!showSpinner && (localizedMatches.length > 0 || error) && (
-          <>
+          <div className="match-clash-list">
             {error && localizedMatches.length > 0 && (
               <p className="px-4 py-2 text-xs text-amber-600 bg-amber-50 border-b border-amber-100">
                 Couldn&apos;t refresh — showing cached scores
@@ -199,34 +129,34 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
             )}
             {liveMatches.length > 0 && (
               <div>
-                <p className="px-4 pt-3 pb-0 text-[10px] uppercase tracking-widest text-red-500 font-bold">
+                <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-red-500 font-bold">
                   Live
                 </p>
                 {liveMatches.map((m) => (
-                  <MatchRow key={m.id} match={m} liveMinute={liveMinute} />
+                  <MatchClashRow key={m.id} match={m} liveMinute={liveMinute} />
                 ))}
               </div>
             )}
             {upcomingToday.length > 0 && (
               <div>
-                <p className="px-4 pt-3 pb-0 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
+                <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
                   Upcoming
                 </p>
-                {upcomingToday.map((m) => <MatchRow key={m.id} match={m} />)}
+                {upcomingToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
             )}
             {finishedToday.length > 0 && (
               <div>
-                <p className="px-4 pt-3 pb-0 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
+                <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
                   Full Time
                 </p>
-                {finishedToday.map((m) => <MatchRow key={m.id} match={m} />)}
+                {finishedToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
             )}
             {localizedMatches.length === 0 && !error && (
               <p className="px-4 py-10 text-center text-zinc-400 text-sm">No matches today</p>
             )}
-          </>
+          </div>
         )}
       </div>
     </section>

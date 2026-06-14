@@ -47,6 +47,27 @@ export function todayDateKey(timeZone: string): string {
   return getDateKeyInTimezone(new Date(), timeZone);
 }
 
+/** Shift a YYYY-MM-DD calendar key by whole days (for ESPN fetch windows). */
+export function shiftDateKey(dateKey: string, deltaDays: number): string {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  const utc = new Date(Date.UTC(y, m - 1, d + deltaDays));
+  return utc.toISOString().slice(0, 10);
+}
+
+/** Keep only matches whose kickoff falls on this calendar day in the user's timezone. */
+export function filterMatchesByLocalDate(
+  matches: Match[],
+  dateKey: string,
+  timeZone: string
+): Match[] {
+  return matches.filter((match) => {
+    if (match.kickoffAt) {
+      return formatKickoffDateKey(match.kickoffAt, timeZone) === dateKey;
+    }
+    return match.date === dateKey;
+  });
+}
+
 export function todayEspnDateInTimezone(timeZone: string): string {
   return dateKeyToEspn(todayDateKey(timeZone));
 }

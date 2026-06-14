@@ -15,6 +15,7 @@ const STATIC_ROUTES: Array<{
   { path: "/", changeFrequency: "hourly", priority: 1 },
   { path: "/fixtures", changeFrequency: "hourly", priority: 0.9 },
   { path: "/standings", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/bracket", changeFrequency: "hourly", priority: 0.9 },
   { path: "/teams", changeFrequency: "daily", priority: 0.9 },
   { path: "/groups", changeFrequency: "hourly", priority: 0.9 },
   { path: "/players", changeFrequency: "hourly", priority: 0.85 },
