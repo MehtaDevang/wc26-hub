@@ -10,7 +10,7 @@ import { useTimezone } from "@/components/TimezoneProvider";
 import { TimezoneBadge } from "@/components/TimezoneBadge";
 import {
   applyTimezoneToMatches,
-  filterMatchesByLocalDate,
+  filterMatchesForScoreboardToday,
   formatTodayLabel,
   todayDateKey,
 } from "@/lib/timezone";
@@ -30,7 +30,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
 
   const localizedMatches = useMemo(() => {
     const localized = applyTimezoneToMatches(matches, timezone);
-    return filterMatchesByLocalDate(localized, todayDateKey(timezone), timezone);
+    return filterMatchesForScoreboardToday(localized, todayDateKey(timezone), timezone);
   }, [matches, timezone]);
 
   const loadMatches = useCallback(async (showSpinner = false) => {

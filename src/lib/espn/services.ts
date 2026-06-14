@@ -9,7 +9,7 @@ import {
   todayDateKey,
   shiftDateKey,
   dateKeyToEspn,
-  filterMatchesByLocalDate,
+  filterMatchesForScoreboardToday,
   formatEspnDateInTimezone,
   DEFAULT_TIMEZONE,
 } from "../timezone";
@@ -40,7 +40,7 @@ export async function getTodayMatches(
     })
   );
   const matches = transformEvents(data.events ?? [], timeZone);
-  return filterMatchesByLocalDate(matches, localToday, timeZone);
+  return filterMatchesForScoreboardToday(matches, localToday, timeZone);
 }
 
 export async function getNextUpcomingMatches(
@@ -99,7 +99,7 @@ export async function getMatchesByParams(params: {
   const matches = transformEvents(data.events ?? [], timeZone);
 
   if (params.date === "today") {
-    return filterMatchesByLocalDate(matches, todayDateKey(timeZone), timeZone);
+    return filterMatchesForScoreboardToday(matches, todayDateKey(timeZone), timeZone);
   }
 
   return matches;

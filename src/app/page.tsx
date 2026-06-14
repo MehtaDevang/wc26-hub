@@ -57,11 +57,11 @@ export default async function Home() {
         initialUpcomingMatches={nextMatches}
       />
 
+      <LiveScores initialMatches={initialMatches} />
+
       <LiveMomentsStrip slides={heroSlides} />
 
       <LiveNextMatchCountdown initialMatches={nextMatches} />
-
-      <LiveScores initialMatches={initialMatches} />
 
       {bracket && <LiveKnockoutBracket initialData={bracket} compact showLink />}
 

@@ -68,6 +68,23 @@ export function filterMatchesByLocalDate(
   });
 }
 
+/**
+ * Today's scoreboard view: matches on the local calendar day, plus any match
+ * still live from the previous day (common after midnight in the user's TZ).
+ */
+export function filterMatchesForScoreboardToday(
+  matches: Match[],
+  dateKey: string,
+  timeZone: string
+): Match[] {
+  const onToday = filterMatchesByLocalDate(matches, dateKey, timeZone);
+  const todayIds = new Set(onToday.map((m) => m.id));
+  const liveCarryover = matches.filter(
+    (m) => m.status === "live" && !todayIds.has(m.id)
+  );
+  return [...liveCarryover, ...onToday];
+}
+
 export function todayEspnDateInTimezone(timeZone: string): string {
   return dateKeyToEspn(todayDateKey(timeZone));
 }

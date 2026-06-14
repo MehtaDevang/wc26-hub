@@ -10,7 +10,7 @@ import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import { useTimezone } from "@/components/TimezoneProvider";
 import {
   applyTimezoneToMatches,
-  filterMatchesByLocalDate,
+  filterMatchesForScoreboardToday,
   todayDateKey,
 } from "@/lib/timezone";
 import type { Match } from "@/lib/types";
@@ -145,7 +145,11 @@ export function LiveHomeHeroSpotlight({
 
   const localizedToday = useMemo(() => {
     const localized = applyTimezoneToMatches(todayMatches, timezone);
-    return filterMatchesByLocalDate(localized, todayDateKey(timezone), timezone);
+    return filterMatchesForScoreboardToday(
+      localized,
+      todayDateKey(timezone),
+      timezone
+    );
   }, [todayMatches, timezone]);
 
   const liveMatches = localizedToday.filter((m) => m.status === "live");

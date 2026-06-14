@@ -9,7 +9,7 @@ import { getTeam } from "@/lib/data";
 import { useTimezone } from "@/components/TimezoneProvider";
 import {
   applyTimezoneToMatches,
-  filterMatchesByLocalDate,
+  filterMatchesForScoreboardToday,
   todayDateKey,
 } from "@/lib/timezone";
 import type { Match } from "@/lib/types";
@@ -45,7 +45,7 @@ export function LiveNowStickyBar() {
 
   const liveMatches = useMemo(() => {
     const localized = applyTimezoneToMatches(matches, timezone);
-    const today = filterMatchesByLocalDate(
+    const today = filterMatchesForScoreboardToday(
       localized,
       todayDateKey(timezone),
       timezone
