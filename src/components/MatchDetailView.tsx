@@ -8,13 +8,14 @@ import {
   Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
-import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight, MatchStats } from "@/lib/types";
+import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight } from "@/lib/types";
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
 import { HighlightCard } from "./HighlightCard";
 import { AdBanner } from "./AdBanner";
 import { MatchKickoffTime } from "./MatchKickoffTime";
+import { MatchStatsPanel } from "./MatchStatsPanel";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 
@@ -33,18 +34,6 @@ function parseTab(value: string | null): TabId {
   if (value && TABS.some((t) => t.id === value)) return value as TabId;
   return "overview";
 }
-
-const EXTRA_STATS: Array<{ key: keyof MatchStats; label: string }> = [
-  { key: "fouls", label: "Fouls" },
-  { key: "yellowCards", label: "Yellow Cards" },
-  { key: "redCards", label: "Red Cards" },
-  { key: "saves", label: "Saves" },
-  { key: "passes", label: "Passes" },
-  { key: "passAccuracy", label: "Pass %" },
-  { key: "offsides", label: "Offsides" },
-  { key: "tackles", label: "Tackles" },
-  { key: "interceptions", label: "Interceptions" },
-];
 
 const EVENT_ICONS: Record<MatchEvent["type"], string> = {
   goal: "⚽", yellow: "🟨", red: "🟥", sub: "🔄", chance: "💨",
@@ -147,29 +136,6 @@ function PlayerProfileModal({ player, onClose }: { player: PlayerProfile; onClos
   );
 }
 
-function StatBar({ label, home, away, homeCode, awayCode }: {
-  label: string; home: number; away: number; homeCode: string; awayCode: string;
-}) {
-  const total = home + away || 1;
-  const homePct = (home / total) * 100;
-  return (
-    <div>
-      <div className="flex justify-between text-sm mb-1.5">
-        <span className="font-bold text-zinc-900">{home}</span>
-        <span className="text-zinc-500 text-xs">{label}</span>
-        <span className="font-bold text-zinc-900">{away}</span>
-      </div>
-      <div className="flex h-2 rounded-full overflow-hidden bg-zinc-100">
-        <div className="bg-blue-600" style={{ width: `${homePct}%` }} />
-        <div className="bg-red-500" style={{ width: `${100 - homePct}%` }} />
-      </div>
-      <div className="flex justify-between text-[10px] text-zinc-400 mt-1">
-        <span>{getTeam(homeCode).flag} {getTeam(homeCode).name}</span>
-        <span>{getTeam(awayCode).name} {getTeam(awayCode).flag}</span>
-      </div>
-    </div>
-  );
-}
 
 export function MatchDetailView(props: {
   match: Match;
@@ -256,11 +222,13 @@ function MatchDetailContent({
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.homeManager}</p>
               )}
             </div>
-            <div className="text-center shrink-0">
+            <div className="text-center shrink-0 min-w-[7rem]">
               {match.status !== "upcoming" ? (
                 <>
-                  <p className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-wider">
-                    {match.homeScore} - {match.awayScore}
+                  <p className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tabular-nums tracking-tight">
+                    <span className="inline-block min-w-[2.5rem] text-right">{match.homeScore}</span>
+                    <span className="mx-2 sm:mx-3 text-zinc-300">–</span>
+                    <span className="inline-block min-w-[2.5rem] text-left">{match.awayScore}</span>
                   </p>
                   {match.status === "live" && (
                     <p className="text-red-600 font-bold mt-1">{match.displayClock ?? `${liveMinute}'`}</p>
@@ -411,23 +379,21 @@ function MatchDetailContent({
         />
       )}
 
-      {tab === "stats" && detail.stats && (
-        <section className="card-surface rounded-2xl p-6">
-          <h2 className="section-title mb-5 text-base">Match Stats</h2>
-          <div className="space-y-5">
-            <StatBar label="Possession %" home={detail.stats.possession[0]} away={detail.stats.possession[1]} homeCode={match.home} awayCode={match.away} />
-            <StatBar label="Shots" home={detail.stats.shots[0]} away={detail.stats.shots[1]} homeCode={match.home} awayCode={match.away} />
-            <StatBar label="On Target" home={detail.stats.shotsOnTarget[0]} away={detail.stats.shotsOnTarget[1]} homeCode={match.home} awayCode={match.away} />
-            <StatBar label="Corners" home={detail.stats.corners[0]} away={detail.stats.corners[1]} homeCode={match.home} awayCode={match.away} />
-            {EXTRA_STATS.map(({ key, label }) => {
-              const val = detail.stats![key];
-              if (!val || !Array.isArray(val)) return null;
-              return (
-                <StatBar key={key} label={label} home={val[0]} away={val[1]} homeCode={match.home} awayCode={match.away} />
-              );
-            })}
-          </div>
-        </section>
+      {tab === "stats" && (
+        <MatchStatsPanel
+          match={match}
+          stats={detail.stats}
+          leaders={detail.leaders}
+          headToHead={detail.headToHead}
+          homeRecord={detail.homeRecord}
+          awayRecord={detail.awayRecord}
+          homeLineup={detail.homeLineup}
+          awayLineup={detail.awayLineup}
+          events={detail.events}
+          attendance={detail.attendance}
+          referee={detail.referee}
+          groupStandings={detail.groupStandings}
+        />
       )}
 
       {tab === "table" && detail.groupStandings && (
@@ -487,10 +453,6 @@ function MatchDetailContent({
         <p className="text-sm text-zinc-400 text-center py-8">No events yet.</p>
       )}
         </>
-      )}
-
-      {tab === "stats" && !detail.stats && (
-        <p className="text-sm text-zinc-400 text-center py-8">Stats not available yet.</p>
       )}
 
       {tab === "table" && !detail.groupStandings && (
