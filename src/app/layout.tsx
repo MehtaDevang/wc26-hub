@@ -9,7 +9,13 @@ import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { rootMetadata } from "@/lib/seo";
 import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { getServerTimezone } from "@/lib/timezone";
-import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import {
+  getSiteUrl,
+  SITE_ADS_EMAIL,
+  SITE_CONTACT_EMAIL,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+} from "@/lib/site";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -67,14 +73,14 @@ export default async function RootLayout({
         <footer className="border-t border-zinc-200 bg-white py-8">
           <WC26MascotStrip variant="footer" className="mb-4" />
           <p className="text-center text-xs text-zinc-400">
-            WC26 Hub © 2026 — Not affiliated with FIFA. Live data via ESPN.
+            {SITE_NAME} © 2026 — Not affiliated with FIFA. Live data via ESPN.
           </p>
           <p className="mt-2 flex items-center justify-center gap-3 text-xs text-zinc-400">
             <span>Hosted across Mexico, USA & Canada</span>
             <span>·</span>
-            <a href="mailto:ads@wc26hub.com" className="hover:text-[var(--wc-usa)] transition-colors">Advertise</a>
+            <a href={`mailto:${SITE_ADS_EMAIL}`} className="hover:text-[var(--wc-usa)] transition-colors">Advertise</a>
             <span>·</span>
-            <a href="mailto:hello@wc26hub.com" className="hover:text-[var(--wc-usa)] transition-colors">Contact</a>
+            <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="hover:text-[var(--wc-usa)] transition-colors">Contact</a>
           </p>
         </footer>
         <Analytics />

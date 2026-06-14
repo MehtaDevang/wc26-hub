@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Trophy, Calendar, Table2, Puzzle, History } from "lucide-react";
 import clsx from "clsx";
+import { SITE_NAME } from "@/lib/site";
 import { WC26MascotIcon } from "./mascots/WC26Mascots";
 
 const NAV_ITEMS = [
@@ -35,10 +36,10 @@ export function Navbar() {
           </div>
           <div>
             <p className="font-bold text-zinc-900 text-[15px] leading-none group-hover:text-[var(--wc-usa)] transition-colors">
-              WC26 Hub
+              {SITE_NAME}
             </p>
             <p className="text-[10px] text-zinc-400 leading-none mt-0.5 tracking-wide uppercase">
-              🇲🇽 🇺🇸 🇨🇦 World Cup 2026
+              Scores · Stats · Puzzles
             </p>
           </div>
         </Link>

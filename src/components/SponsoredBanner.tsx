@@ -1,10 +1,12 @@
+import { SITE_ADS_EMAIL, SITE_NAME } from "@/lib/site";
+
 interface SponsoredBannerProps {
   sponsor?: string;
   message?: string;
 }
 
 export function SponsoredBanner({
-  sponsor = "Partner with WC26 Hub",
+  sponsor = `Partner with ${SITE_NAME}`,
   message = "Reach millions of World Cup fans across North America",
 }: SponsoredBannerProps) {
   return (
@@ -17,7 +19,7 @@ export function SponsoredBanner({
           <p className="text-zinc-500 text-xs mt-0.5">{message}</p>
         </div>
         <a
-          href="mailto:ads@wc26hub.com"
+          href={`mailto:${SITE_ADS_EMAIL}`}
           className="shrink-0 rounded-lg bg-blue-600 text-white px-4 py-2 text-xs font-semibold hover:bg-blue-700 transition-colors"
         >
           Advertise

@@ -1,6 +1,8 @@
-# WC26 Hub
+# The Goal Posts
 
-Live FIFA World Cup 2026 hub — scores, match details, fixtures, standings, and daily football puzzles.
+Live football hub — World Cup scores, match details, fixtures, standings, history, and daily puzzles.
+
+**Site:** [thegoalposts.com](https://thegoalposts.com)
 
 ## Live Data
 
@@ -25,6 +27,8 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000)
 
 ## Deploy to Vercel
+
+Set `NEXT_PUBLIC_SITE_URL=https://thegoalposts.com` in your Vercel project environment variables.
 
 ```bash
 npx vercel login
