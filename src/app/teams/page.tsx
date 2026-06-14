@@ -2,12 +2,18 @@ import Link from "next/link";
 import { TEAMS } from "@/lib/data";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, TEAMS_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Teams — All 48 Nations",
+  title: "World Cup 2026 Teams — All 48 Countries, Squads & Stats",
   description:
-    "Browse every FIFA World Cup 2026 team — fixtures, results, group standings, and tournament stats for all 48 nations.",
+    "Browse every FIFA World Cup 2026 country — live results, group standings, fixtures, squad players, and full tournament stats for all 48 national teams.",
   path: "/teams",
+  keywords: mergeKeywords(TEAMS_KEYWORDS, [
+    "national teams",
+    "World Cup nations",
+    "country football teams",
+  ]),
 });
 
 export default function TeamsIndexPage() {

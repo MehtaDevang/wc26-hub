@@ -4,6 +4,7 @@ import { getGroupPageData } from "@/lib/espn/groups";
 import { GroupPageView } from "@/components/GroupPageView";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidGroupLetter } from "@/lib/api-security";
 import { normalizeGroupLetter } from "@/lib/espn/groups";
 import { getServerTimezone } from "@/lib/timezone";
@@ -26,9 +27,14 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return createPageMetadata({
-    title: `World Cup 2026 Group ${group} — Standings & Fixtures`,
-    description: `FIFA World Cup 2026 Group ${group} live standings, points table, fixtures, results, and team links.`,
+    title: `World Cup 2026 Group ${group} — Live Standings, Teams & Fixtures`,
+    description: `FIFA World Cup 2026 Group ${group} — live points table, standings, fixtures, results, and every national team in the group.`,
     path: `/groups/${group}`,
+    keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [
+      `World Cup Group ${group}`,
+      `Group ${group} standings`,
+      `Group ${group} table`,
+    ]),
   });
 }
 

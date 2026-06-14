@@ -1,12 +1,15 @@
 import { notFound } from "next/navigation";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
-import { transformEvent, transformSummary, goalsToHighlights, buildMinimalMatchDetail } from "@/lib/espn/transform";
+import { transformEvent, transformSummary, buildAllMatchHighlights, buildMinimalMatchDetail } from "@/lib/espn/transform";
+import { buildHeadToHead } from "@/lib/espn/head-to-head";
+import { getRivalryInfo } from "@/lib/rivalries";
 import { MatchDetailView } from "@/components/MatchDetailView";
 import { JsonLd } from "@/components/JsonLd";
 import { lookupVenue } from "@/lib/venues";
 import { fetchMatchWeather } from "@/lib/weather";
 import { createPageMetadata } from "@/lib/seo";
-import { getSiteUrl } from "@/lib/site";
+import { buildSportsEventJsonLd, buildBreadcrumbJsonLd } from "@/lib/structured-data";
+import { mergeKeywords, LIVE_SCORES_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidMatchId } from "@/lib/api-security";
 import { getServerTimezone } from "@/lib/timezone";
 
@@ -44,17 +47,26 @@ export async function generateMetadata({ params }: PageProps) {
       match.status !== "upcoming"
         ? `${match.homeScore}-${match.awayScore}`
         : "vs";
+    const liveTag = match.status === "live" ? "Live Score" : match.status === "finished" ? "Result" : "Preview";
 
     return createPageMetadata({
-      title: `${match.homeName} ${score} ${match.awayName}`,
-      description: `Live match details, scorers, stats, lineups, and highlights for ${match.homeName} vs ${match.awayName} at the FIFA World Cup 2026.`,
+      title: `${match.homeName} ${score} ${match.awayName} — World Cup 2026 ${liveTag}`,
+      description: `${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 — live score, scorers, match stats, lineups, head-to-head history, highlights, and full match report.`,
       path: `/match/${id}`,
+      keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS, [
+        `${match.homeName} vs ${match.awayName}`,
+        `${match.homeName} ${match.awayName} live score`,
+        "World Cup match stats",
+        "match highlights",
+        "head to head",
+      ]),
     });
   } catch {
     return createPageMetadata({
-      title: "Match Details",
-      description: "World Cup 2026 match details, stats, and highlights.",
+      title: "World Cup 2026 Match — Live Score, Stats & Highlights",
+      description: "FIFA World Cup 2026 match live score, stats, lineups, head-to-head history, and highlights.",
       path: `/match/${id}`,
+      keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS),
     });
   }
 }
@@ -72,12 +84,25 @@ export default async function MatchPage({ params }: PageProps) {
   const match = transformEvent(event, timeZone);
 
   let detail = buildMinimalMatchDetail(match);
-  let highlights: Awaited<ReturnType<typeof goalsToHighlights>> = [];
+  let highlights: Awaited<ReturnType<typeof buildAllMatchHighlights>> = [];
 
   try {
     const summary = await fetchEspnSummary(id);
-    detail = transformSummary(summary, match);
-    highlights = goalsToHighlights(match, summary);
+    try {
+      detail = transformSummary(summary, match);
+    } catch {
+      const h2h = buildHeadToHead(match, summary);
+      const rivalry = getRivalryInfo(match.home, match.away);
+      detail = {
+        ...buildMinimalMatchDetail(match),
+        headToHead: h2h.meetings,
+        headToHeadRecord: h2h.record,
+        rivalryNote: rivalry?.context,
+        rivalryName: rivalry?.name,
+        rivalryFunFact: rivalry?.funFact,
+      };
+    }
+    highlights = buildAllMatchHighlights(match, summary);
   } catch {
     // ESPN summary can be unavailable for early knockout placeholders — keep minimal detail
   }
@@ -90,33 +115,17 @@ export default async function MatchPage({ params }: PageProps) {
   const weather = await fetchMatchWeather(venueMeta.lat, venueMeta.lon, match.date);
   if (weather) detail.weather = weather;
 
-  const matchJsonLd: Record<string, unknown> = {
-    "@context": "https://schema.org",
-    "@type": "SportsEvent",
-    name: `${match.homeName} vs ${match.awayName}`,
-    sport: "Soccer",
-    startDate: match.date,
-    location: {
-      "@type": "Place",
-      name: match.venue,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: match.venueCity,
-        addressCountry: match.venueCountry,
-      },
-    },
-    homeTeam: { "@type": "SportsTeam", name: match.homeName },
-    awayTeam: { "@type": "SportsTeam", name: match.awayName },
-    url: `${getSiteUrl()}/match/${id}`,
-  };
-
-  if (match.status !== "finished") {
-    matchJsonLd.eventStatus = "https://schema.org/EventScheduled";
-  }
+  const matchJsonLd = buildSportsEventJsonLd(match, id);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Fixtures", path: "/fixtures" },
+    { name: `${match.homeName} vs ${match.awayName}`, path: `/match/${id}` },
+  ]);
 
   return (
     <>
       <JsonLd data={matchJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <MatchDetailView
         match={match}
         detail={detail}

@@ -5,8 +5,10 @@ import { PlayerPageView } from "@/components/PlayerPageView";
 import { AdBanner } from "@/components/AdBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, PLAYERS_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidPlayerId } from "@/lib/api-security";
 import { getSiteUrl } from "@/lib/site";
+import { buildBreadcrumbJsonLd } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -36,9 +38,14 @@ export async function generateMetadata({ params }: PageProps) {
     }
 
     return createPageMetadata({
-      title: `${player.name} — ${player.teamName} World Cup 2026 Stats`,
-      description: `${player.name} at FIFA World Cup 2026 — ${player.worldCupGoals} goals, ${player.matchesPlayed} matches, cards, and match-by-match stats for ${player.teamName}.`,
+      title: `${player.name} — ${player.teamName} World Cup 2026 Player Stats`,
+      description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 — ${player.worldCupGoals} goals, ${player.matchesPlayed} matches, position, cards, and match-by-match football stats.`,
       path: `/players/${player.espnId ?? player.id}`,
+      keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS, [
+        player.name,
+        `${player.teamName} players`,
+        "World Cup player stats",
+      ]),
     });
   } catch {
     return createPageMetadata({
@@ -70,12 +77,19 @@ export default async function PlayerPage({ params }: PageProps) {
       name: player.teamName,
     },
     jobTitle: player.position,
-    description: player.bio,
+    description:
+      `${player.name} (${player.teamName}) footballer at FIFA World Cup 2026. Position: ${player.position}. World Cup goals, match stats, and tournament record.`,
   };
 
   return (
     <div className="space-y-6">
       <JsonLd data={playerJsonLd} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Players", path: "/players" },
+          { name: player.name, path: `/players/${player.espnId ?? player.id}` },
+        ])}
+      />
       <nav className="text-sm text-zinc-400">
         <Link href="/players" className="hover:text-blue-600">Players</Link>
         <span className="mx-2">/</span>

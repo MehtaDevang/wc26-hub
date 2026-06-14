@@ -10,6 +10,7 @@ import type {
   MatchLeader,
   MatchStats,
   HeadToHeadMatch,
+  HeadToHeadRecord,
   TeamLineup,
   TeamRecord,
   GroupStandings,
@@ -286,6 +287,7 @@ export function MatchStatsPanel({
   stats,
   leaders,
   headToHead,
+  headToHeadRecord,
   homeRecord,
   awayRecord,
   homeLineup,
@@ -299,6 +301,7 @@ export function MatchStatsPanel({
   stats?: MatchStats;
   leaders?: MatchLeader[];
   headToHead?: HeadToHeadMatch[];
+  headToHeadRecord?: HeadToHeadRecord;
   homeRecord?: TeamRecord;
   awayRecord?: TeamRecord;
   homeLineup?: TeamLineup;
@@ -339,6 +342,7 @@ export function MatchStatsPanel({
     awayRecord ||
     homeStanding ||
     awayStanding ||
+    (headToHeadRecord?.totalMeetings ?? 0) > 0 ||
     (headToHead && headToHead.length > 0) ||
     homeLineup?.formation ||
     awayLineup?.formation ||
@@ -567,8 +571,34 @@ export function MatchStatsPanel({
           </SideCard>
         )}
 
-        {headToHead && headToHead.length > 0 && (
-          <SideCard title="Recent Meetings" icon={History}>
+        {(headToHeadRecord || (headToHead && headToHead.length > 0)) && (
+          <SideCard title="Head-to-Head" icon={History}>
+            {headToHeadRecord && headToHeadRecord.totalMeetings > 0 ? (
+              <>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="rounded-lg bg-[var(--wc-usa-light)] px-2 py-2 text-center">
+                    <p className="text-lg font-bold text-[var(--wc-usa)]">{headToHeadRecord.homeWins}</p>
+                    <p className="text-[9px] font-semibold text-zinc-500 truncate">{home.name}</p>
+                  </div>
+                  <div className="rounded-lg bg-zinc-100 px-2 py-2 text-center">
+                    <p className="text-lg font-bold text-zinc-600">{headToHeadRecord.draws}</p>
+                    <p className="text-[9px] font-semibold text-zinc-500">Draws</p>
+                  </div>
+                  <div className="rounded-lg bg-[var(--wc-canada-light)] px-2 py-2 text-center">
+                    <p className="text-lg font-bold text-[var(--wc-canada)]">{headToHeadRecord.awayWins}</p>
+                    <p className="text-[9px] font-semibold text-zinc-500 truncate">{away.name}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-500 mb-3">
+                  Goals {headToHeadRecord.homeGoals}–{headToHeadRecord.awayGoals}
+                  {headToHeadRecord.worldCupMeetings > 0 &&
+                    ` · ${headToHeadRecord.worldCupMeetings} WC meeting${headToHeadRecord.worldCupMeetings === 1 ? "" : "s"}`}
+                </p>
+              </>
+            ) : (
+              <p className="text-xs text-zinc-500 mb-3">No previous meetings on record.</p>
+            )}
+            {headToHead && headToHead.length > 0 && (
             <div className="space-y-2">
               {headToHead.slice(0, 5).map((h, i) => (
                 <div
@@ -576,17 +606,28 @@ export function MatchStatsPanel({
                   className="flex items-center justify-between gap-3 border-b border-zinc-50 py-2 text-sm last:border-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-zinc-800">{h.opponent}</p>
+                    <p className="truncate font-medium text-zinc-800">
+                      {h.homeTeam} {h.score} {h.awayTeam}
+                    </p>
                     <p className="text-xs text-zinc-400">
                       {h.date} · {h.competition}
                     </p>
                   </div>
-                  <span className="shrink-0 font-bold tabular-nums text-zinc-900">
-                    {h.score}
+                  <span
+                    className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                      h.resultForHome === "W"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : h.resultForHome === "L"
+                          ? "bg-red-50 text-red-600"
+                          : "bg-zinc-100 text-zinc-600"
+                    }`}
+                  >
+                    {h.resultForHome}
                   </span>
                 </div>
               ))}
             </div>
+            )}
           </SideCard>
         )}
 

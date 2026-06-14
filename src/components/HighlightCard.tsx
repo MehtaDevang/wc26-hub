@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Highlight } from "@/lib/types";
 
 const IMAGE_TYPE_LABELS: Record<NonNullable<Highlight["imageType"]>, string> = {
@@ -81,19 +80,30 @@ export function HighlightCard({ highlight, href, compact }: HighlightCardProps) 
   const className =
     "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer";
 
-  if (href) {
+  const externalHref = highlight.videoUrl ?? highlight.webUrl;
+  const linkHref = href ?? externalHref;
+
+  const content = (
+    <>
+      <HighlightImage highlight={highlight} compact={compact} />
+      <HighlightBody highlight={highlight} />
+    </>
+  );
+
+  if (linkHref) {
+    const isExternal = !href && Boolean(externalHref);
     return (
-      <Link href={href} className={className}>
-        <HighlightImage highlight={highlight} compact={compact} />
-        <HighlightBody highlight={highlight} />
-      </Link>
+      <a
+        href={linkHref}
+        className={className}
+        {...(isExternal
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
+      >
+        {content}
+      </a>
     );
   }
 
-  return (
-    <div className={className}>
-      <HighlightImage highlight={highlight} compact={compact} />
-      <HighlightBody highlight={highlight} />
-    </div>
-  );
+  return <div className={className}>{content}</div>;
 }

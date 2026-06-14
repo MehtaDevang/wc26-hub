@@ -44,6 +44,8 @@ export interface Highlight {
   imageAlt?: string;
   imageType?: "player" | "stadium" | "team" | "moment";
   playerName?: string;
+  videoUrl?: string;
+  webUrl?: string;
 }
 
 export interface PlayerProfile {
@@ -352,11 +354,35 @@ export interface MatchLeader {
 }
 
 export interface HeadToHeadMatch {
+  id?: string;
   date: string;
   score: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeScore: number;
+  awayScore: number;
+  competition: string;
+  round?: string;
+  isWorldCup?: boolean;
+  /** W/D/L from the current fixture home team's perspective */
+  resultForHome: "W" | "D" | "L";
+  /** Kept for older UI — opponent relative to fixture home team */
   opponent: string;
   result: string;
-  competition: string;
+}
+
+export interface HeadToHeadRecord {
+  totalMeetings: number;
+  homeWins: number;
+  awayWins: number;
+  draws: number;
+  homeGoals: number;
+  awayGoals: number;
+  worldCupMeetings: number;
+  worldCupHomeWins: number;
+  worldCupAwayWins: number;
+  worldCupDraws: number;
+  summary: string;
 }
 
 export interface BroadcastInfo {
@@ -390,6 +416,10 @@ export interface MatchDetail {
   groupStandings?: GroupStandings;
   leaders?: MatchLeader[];
   headToHead?: HeadToHeadMatch[];
+  headToHeadRecord?: HeadToHeadRecord;
+  rivalryName?: string;
+  rivalryNote?: string;
+  rivalryFunFact?: string;
   broadcasts?: BroadcastInfo[];
   commentary?: Array<{ minute: string; text: string }>;
 }

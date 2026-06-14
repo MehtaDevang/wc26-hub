@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiErrorResponse, isValidMatchId } from "@/lib/api-security";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
-import { transformEvent, transformSummary, goalsToHighlights } from "@/lib/espn/transform";
+import { transformEvent, transformSummary, buildAllMatchHighlights } from "@/lib/espn/transform";
 import { lookupVenue } from "@/lib/venues";
 import { fetchMatchWeather } from "@/lib/weather";
 
@@ -28,7 +28,7 @@ export async function GET(
     const match = transformEvent(event);
     const summary = await fetchEspnSummary(id);
     const detail = transformSummary(summary, match);
-    const highlights = goalsToHighlights(match, summary);
+    const highlights = buildAllMatchHighlights(match, summary);
 
     const venueMeta = lookupVenue(
       detail.venue?.name ?? match.venue,

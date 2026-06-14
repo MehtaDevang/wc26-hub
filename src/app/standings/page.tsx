@@ -6,12 +6,20 @@ import { fetchAllGroupStandings } from "@/lib/espn/standings";
 import { getKnockoutBracket } from "@/lib/espn/services";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "Group Tables & Standings",
-  description: "Live FIFA World Cup 2026 group standings, points, goal difference, and knockout qualification.",
+  title: "World Cup 2026 Standings — Live Group Tables & Points",
+  description:
+    "Live FIFA World Cup 2026 group standings for all 12 groups. Points, goal difference, qualification spots, and knockout bracket — updated after every match.",
   path: "/standings",
+  keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, [
+    "World Cup points table",
+    "group stage standings",
+    "qualification standings",
+    "World Cup table live",
+  ]),
 });
 
 export const revalidate = 120;

@@ -4,9 +4,12 @@ import { getTeamJourney } from "@/lib/espn/team-journey";
 import { TeamJourneyContent } from "@/components/TeamJourneyContent";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidTeamCode } from "@/lib/api-security";
 import { resolveTeamCode, getTeamName } from "@/lib/team-lookup";
 import { getServerTimezone } from "@/lib/timezone";
+import { JsonLd } from "@/components/JsonLd";
+import { buildBreadcrumbJsonLd, buildSportsTeamJsonLd } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ code: string }>;
@@ -27,9 +30,14 @@ export async function generateMetadata({ params }: PageProps) {
 
   const name = getTeamName(teamCode);
   return createPageMetadata({
-    title: `${name} World Cup 2026 — Fixtures, Results & Standings`,
-    description: `Follow ${name} at FIFA World Cup 2026 — group standings, live results, upcoming fixtures, goals, and full tournament journey.`,
+    title: `${name} World Cup 2026 — Live Scores, Fixtures, Squad & Stats`,
+    description: `${name} at FIFA World Cup 2026 — live scores, results, group standings, upcoming fixtures, squad players, goals, and full tournament stats.`,
     path: `/teams/${teamCode}`,
+    keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [
+      `${name} World Cup`,
+      `${name} football team`,
+      `${name} squad`,
+    ]),
   });
 }
 
@@ -47,6 +55,19 @@ export default async function TeamPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
+      <JsonLd
+        data={buildSportsTeamJsonLd({
+          name: journey.teamName,
+          code: journey.teamCode,
+          path: `/teams/${journey.teamCode}`,
+        })}
+      />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Teams", path: "/teams" },
+          { name: journey.teamName, path: `/teams/${journey.teamCode}` },
+        ])}
+      />
       <nav className="text-sm text-zinc-400">
         <Link href="/teams" className="hover:text-blue-600">Teams</Link>
         <span className="mx-2">/</span>

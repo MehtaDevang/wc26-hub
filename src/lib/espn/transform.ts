@@ -1,6 +1,6 @@
 import type {
   Highlight, Match, MatchDetail, MatchEvent, MatchLeader, MatchPhoto, MatchStats,
-  MatchVideo, GroupStandings, HeadToHeadMatch, LineupPlayer, TeamLineup, TeamRecord,
+  MatchVideo, GroupStandings, LineupPlayer, TeamLineup, TeamRecord,
   VenueInfo, BroadcastInfo, StandingsRow,
 } from "../types";
 import { getTeamFlag } from "../teams";
@@ -11,7 +11,9 @@ import { formatKickoffDateKey, formatKickoffTime } from "../timezone";
 import type {
   EspnCompetition, EspnEvent, EspnKeyEvent, EspnSummary, EspnRoster, EspnCompetitor,
 } from "./client";
-import { buildGoalHighlights } from "./highlight-images";
+import { buildGoalHighlights, extractMomentHighlights } from "./highlight-images";
+import { buildHeadToHead } from "./head-to-head";
+import { getRivalryInfo } from "../rivalries";
 
 const DEFAULT_TRANSFORM_TZ = "UTC";
 
@@ -326,22 +328,6 @@ function transformLeaders(summary: EspnSummary): MatchLeader[] {
   return result;
 }
 
-function transformHeadToHead(summary: EspnSummary): HeadToHeadMatch[] {
-  const matches: HeadToHeadMatch[] = [];
-  for (const block of summary.headToHeadGames ?? []) {
-    for (const ev of block.events ?? []) {
-      matches.push({
-        date: ev.gameDate ? ev.gameDate.slice(0, 10) : "",
-        score: ev.score ?? "",
-        opponent: ev.opponent?.displayName ?? "",
-        result: ev.gameResult ?? "",
-        competition: ev.competitionName ?? "FIFA World Cup",
-      });
-    }
-  }
-  return matches.slice(0, 10);
-}
-
 function transformBroadcasts(summary: EspnSummary): BroadcastInfo[] {
   const raw = summary.broadcasts ?? summary.header?.competitions?.[0]?.broadcasts ?? [];
   return raw.map((b) => ({
@@ -395,6 +381,8 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
   const rosters = summary.rosters ?? [];
   const homeRoster = rosters.find((r) => r.homeAway === "home");
   const awayRoster = rosters.find((r) => r.homeAway === "away");
+  const h2h = buildHeadToHead(match, summary);
+  const rivalry = getRivalryInfo(homeCode, awayCode);
 
   return {
     matchId: match.id,
@@ -418,7 +406,11 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
     photos: transformPhotos(summary),
     groupStandings: transformStandings(summary, match.group),
     leaders: transformLeaders(summary),
-    headToHead: transformHeadToHead(summary),
+    headToHead: h2h.meetings,
+    headToHeadRecord: h2h.record,
+    rivalryNote: rivalry?.context,
+    rivalryName: rivalry?.name,
+    rivalryFunFact: rivalry?.funFact,
     broadcasts: transformBroadcasts(summary),
     commentary: (summary.commentary ?? [])
       .filter((c) => c.text && c.time?.displayValue)
@@ -432,6 +424,7 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
 
 export function buildMinimalMatchDetail(match: Match): MatchDetail {
   const meta = lookupVenue(match.venue, match.venueCity, match.venueCountry);
+  const rivalry = getRivalryInfo(match.home, match.away);
   return {
     matchId: match.id,
     summary: `${match.homeName} vs ${match.awayName} at the 2026 FIFA World Cup.`,
@@ -458,11 +451,36 @@ export function buildMinimalMatchDetail(match: Match): MatchDetail {
       country: meta.country || match.venueCountry || "",
       capacity: meta.capacity,
     },
+    rivalryNote: rivalry?.context,
+    rivalryName: rivalry?.name,
+    rivalryFunFact: rivalry?.funFact,
   };
 }
 
 export function goalsToHighlights(match: Match, summary: EspnSummary): Highlight[] {
   return buildGoalHighlights(match, summary);
+}
+
+export function buildAllMatchHighlights(
+  match: Match,
+  summary: EspnSummary,
+  options?: { momentLimit?: number }
+): Highlight[] {
+  const goals = buildGoalHighlights(match, summary);
+  if (match.status === "upcoming") return goals;
+
+  const defaultLimit = match.status === "finished" ? 12 : 8;
+  const usedUrls = new Set(
+    goals.map((g) => g.imageUrl).filter((url): url is string => Boolean(url))
+  );
+  const moments = extractMomentHighlights(
+    match,
+    summary,
+    usedUrls,
+    options?.momentLimit ?? defaultLimit
+  );
+
+  return [...goals, ...moments];
 }
 
 export function transformAllStandings(summary: EspnSummary): GroupStandings[] {

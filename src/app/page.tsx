@@ -10,15 +10,19 @@ import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
 import { LiveNextMatchCountdown } from "@/components/LiveNextMatchCountdown";
 import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, LIVE_SCORES_KEYWORDS, CORE_KEYWORDS } from "@/lib/seo-keywords";
+import { JsonLd } from "@/components/JsonLd";
+import { buildWebPageJsonLd } from "@/lib/structured-data";
 import { getKnockoutBracket, getNextUpcomingMatches, getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
 import { buildHeroSlides } from "@/lib/hero-background";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Live Scores, Fixtures & Daily Puzzles",
+  title: "FIFA World Cup 2026 Live Scores Today — Fixtures, Standings & Stats",
   description:
-    "The Goal Posts — FIFA World Cup 2026 live scores, full fixture list, group standings, match highlights, World Cup history, and free daily football puzzles.",
+    "Live World Cup 2026 scores updated throughout the day. Full fixtures, group standings, team & player stats, match highlights, knockout bracket, and football history.",
   path: "/",
+  keywords: mergeKeywords(CORE_KEYWORDS, LIVE_SCORES_KEYWORDS),
 });
 
 export default async function Home() {
@@ -40,6 +44,14 @@ export default async function Home() {
 
   return (
     <div className="space-y-14">
+      <JsonLd
+        data={buildWebPageJsonLd({
+          path: "/",
+          title: "FIFA World Cup 2026 Live Scores Today",
+          description:
+            "Live World Cup scores, fixtures, standings, teams, players, stats, and history.",
+        })}
+      />
       <HomeHero nextMatch={nextMatches[0] ?? null} />
 
       <LiveMomentsStrip slides={heroSlides} />

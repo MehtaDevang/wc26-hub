@@ -254,6 +254,11 @@ export function extractMomentHighlights(
       imageUrl: video.thumbnail,
       imageAlt: video.headline ?? "Match highlight",
       imageType: "moment",
+      videoUrl:
+        video.links?.source?.href ??
+        video.links?.mobile?.source?.href ??
+        undefined,
+      webUrl: video.links?.web?.href,
     });
     usedUrls.add(video.thumbnail);
     if (moments.length >= limit) return moments;
@@ -278,6 +283,28 @@ export function extractMomentHighlights(
       )
         ? "stadium"
         : "moment",
+    });
+    usedUrls.add(img.url);
+    if (moments.length >= limit) return moments;
+  }
+
+  for (const article of summary.news?.articles ?? []) {
+    const img = article.images?.[0];
+    if (!img?.url || usedUrls.has(img.url)) continue;
+
+    moments.push({
+      id: `m-${match.id}-n-${img.id ?? moments.length}`,
+      matchId: match.id,
+      title: article.headline ?? "Match News",
+      description: img.caption ?? `Coverage from ${match.homeName} vs ${match.awayName}`,
+      type: "moment",
+      minute: "News",
+      teams: `${match.homeName} vs ${match.awayName}`,
+      emoji: "📰",
+      imageUrl: img.url,
+      imageAlt: article.headline ?? "Match news",
+      imageType: "moment",
+      webUrl: article.links?.web?.href,
     });
     usedUrls.add(img.url);
     if (moments.length >= limit) return moments;

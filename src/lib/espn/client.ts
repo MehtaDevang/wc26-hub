@@ -240,13 +240,22 @@ export interface EspnLeaderGroup {
 }
 
 export interface EspnH2H {
-  team: { displayName: string; abbreviation: string };
+  team: { id?: string; displayName: string; abbreviation: string };
   events?: Array<{
+    id?: string;
     gameDate?: string;
     score?: string;
     gameResult?: string;
     competitionName?: string;
-    opponent?: { displayName: string };
+    roundName?: string;
+    leagueName?: string;
+    atVs?: string;
+    homeTeamId?: string;
+    awayTeamId?: string;
+    homeTeamScore?: string;
+    awayTeamScore?: string;
+    opponent?: { id?: string; displayName: string; abbreviation?: string };
+    links?: Array<{ href?: string; text?: string }>;
   }>;
 }
 

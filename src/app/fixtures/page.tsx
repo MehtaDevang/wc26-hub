@@ -3,12 +3,20 @@ import { transformEvents } from "@/lib/espn/transform";
 import { LiveFixturesList } from "@/components/LiveFixturesList";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "Fixtures & Results",
-  description: "Full FIFA World Cup 2026 fixture list with venues, groups, kick-off times, and live scores.",
+  title: "World Cup 2026 Fixtures & Results — Full Schedule & Live Scores",
+  description:
+    "Complete FIFA World Cup 2026 fixture list with kick-off times, venues, groups, live scores, and match results. Every game from the group stage to the final.",
   path: "/fixtures",
+  keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, [
+    "World Cup fixture list",
+    "World Cup match schedule",
+    "World Cup kick off times",
+    "football fixtures today",
+  ]),
 });
 
 export const revalidate = 60;

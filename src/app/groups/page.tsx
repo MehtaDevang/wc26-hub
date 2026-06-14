@@ -2,12 +2,17 @@ import Link from "next/link";
 import { getAllGroupLetters } from "@/lib/espn/groups";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Groups — Standings A to L",
+  title: "World Cup 2026 Groups A–L — Standings, Teams & Fixtures",
   description:
-    "All 12 FIFA World Cup 2026 groups with live standings, fixtures, results, and team hubs for groups A through L.",
+    "All 12 FIFA World Cup 2026 groups with live standings, points tables, fixtures, results, and links to every country in groups A through L.",
   path: "/groups",
+  keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [
+    "World Cup group stage",
+    "group standings live",
+  ]),
 });
 
 export default function GroupsIndexPage() {

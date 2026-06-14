@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft, MapPin, Users, User, Clock, Trophy,
-  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid,
+  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, History, Play,
 } from "lucide-react";
 import { getTeam, isKnownTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
@@ -13,15 +13,18 @@ import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight } from "@
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
-import { HighlightCard } from "./HighlightCard";
 import { AdBanner } from "./AdBanner";
 import { MatchKickoffTime } from "./MatchKickoffTime";
+import { MatchHeadToHead } from "./MatchHeadToHead";
+import { MatchHighlightsPanel } from "./MatchHighlightsPanel";
 import { MatchStatsPanel } from "./MatchStatsPanel";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 
-const TABS = [
+const BASE_TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
+  { id: "history", label: "History", icon: History },
+  { id: "highlights", label: "Highlights", icon: Play },
   { id: "media", label: "Media", icon: ImageIcon },
   { id: "lineups", label: "Lineups", icon: LayoutGrid },
   { id: "stats", label: "Stats", icon: BarChart3 },
@@ -29,10 +32,20 @@ const TABS = [
   { id: "timeline", label: "Timeline", icon: Clock },
 ] as const;
 
-type TabId = (typeof TABS)[number]["id"];
+type TabId = (typeof BASE_TABS)[number]["id"];
 
-function parseTab(value: string | null): TabId {
-  if (value && TABS.some((t) => t.id === value)) return value as TabId;
+function getTabs(match: Match, hasHighlights: boolean) {
+  return BASE_TABS.filter((tab) => {
+    if (tab.id === "highlights" && match.status === "upcoming" && !hasHighlights) {
+      return false;
+    }
+    return true;
+  });
+}
+
+function parseTab(value: string | null, match: Match, hasHighlights: boolean): TabId {
+  const tabs = getTabs(match, hasHighlights);
+  if (value && tabs.some((t) => t.id === value)) return value as TabId;
   return "overview";
 }
 
@@ -100,7 +113,7 @@ export function MatchDetailView(props: {
           <div className="h-4 w-32 rounded bg-zinc-100 animate-pulse" />
           <div className="card-surface rounded-2xl h-48 animate-pulse" />
           <div className="flex gap-2">
-            {TABS.map((t) => (
+            {BASE_TABS.slice(0, 6).map((t) => (
               <div key={t.id} className="h-9 w-20 rounded-lg bg-zinc-100 animate-pulse" />
             ))}
           </div>
@@ -125,7 +138,12 @@ function MatchDetailContent({
   const home = getTeam(match.home, match.homeName, match.homeLogo);
   const away = getTeam(match.away, match.awayName, match.awayLogo);
   const searchParams = useSearchParams();
-  const tab = parseTab(searchParams.get("tab"));
+  const hasHighlights =
+    highlights.length > 0 ||
+    (detail.videos?.length ?? 0) > 0 ||
+    (detail.photos?.length ?? 0) > 0;
+  const tabs = getTabs(match, hasHighlights);
+  const tab = parseTab(searchParams.get("tab"), match, hasHighlights);
   const [liveMinute, setLiveMinute] = useState(match.minute ?? 0);
   const kickoffDateLabel = match.kickoffAt
     ? formatKickoffDateLabel(match.kickoffAt, timezone)
@@ -275,7 +293,7 @@ function MatchDetailContent({
         role="tablist"
         aria-label="Match sections"
       >
-        {TABS.map(({ id, label, icon: Icon }) => (
+        {tabs.map(({ id, label, icon: Icon }) => (
           <Link
             key={id}
             href={`/match/${match.id}?tab=${id}`}
@@ -291,6 +309,11 @@ function MatchDetailContent({
           >
             <Icon size={14} />
             {label}
+            {id === "highlights" && hasHighlights && (
+              <span className="rounded-full bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 leading-none">
+                {highlights.length || (detail.videos?.length ?? 0)}
+              </span>
+            )}
           </Link>
         ))}
       </div>
@@ -307,18 +330,66 @@ function MatchDetailContent({
 
       <AdBanner placement="match" />
 
-      {highlights.length > 0 && (
-        <section>
-          <h2 className="section-title mb-4 text-base">Goal Highlights</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {highlights.map((h) => (
-              <HighlightCard key={h.id} highlight={h} compact />
-            ))}
+      {hasHighlights && match.status === "finished" && (
+        <section className="card-surface rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="font-bold text-zinc-900">Match highlights available</h2>
+            <p className="text-sm text-zinc-500 mt-1">
+              Goals, video clips, and photos from this match
+            </p>
           </div>
+          <Link
+            href={`/match/${match.id}?tab=highlights`}
+            scroll={false}
+            replace
+            className="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm shrink-0"
+          >
+            <Play size={16} />
+            View Highlights
+          </Link>
         </section>
       )}
 
-      <AdBanner placement="match" />
+      {(detail.headToHeadRecord?.totalMeetings ?? 0) > 0 ? (
+        <section className="card-surface rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="font-bold text-zinc-900">Head-to-head record</h2>
+            <p className="text-sm text-zinc-500 mt-1">
+              {match.homeName} {detail.headToHeadRecord!.homeWins}–{detail.headToHeadRecord!.draws}–{detail.headToHeadRecord!.awayWins} {match.awayName}
+              {" "}· {detail.headToHeadRecord!.totalMeetings} meetings
+            </p>
+          </div>
+          <Link
+            href={`/match/${match.id}?tab=history`}
+            scroll={false}
+            replace
+            className="btn-usa inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm shrink-0"
+          >
+            <History size={16} />
+            Full History
+          </Link>
+        </section>
+      ) : (detail.rivalryNote || detail.headToHeadRecord) && (
+        <section className="card-surface rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="font-bold text-zinc-900">
+              {detail.rivalryName ?? "Head-to-head history"}
+            </h2>
+            <p className="text-sm text-zinc-500 mt-1 line-clamp-2">
+              {detail.rivalryNote ?? `History between ${match.homeName} and ${match.awayName}`}
+            </p>
+          </div>
+          <Link
+            href={`/match/${match.id}?tab=history`}
+            scroll={false}
+            replace
+            className="btn-usa inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm shrink-0"
+          >
+            <History size={16} />
+            View History
+          </Link>
+        </section>
+      )}
 
       {detail.leaders && detail.leaders.length > 0 && (
         <section className="card-surface rounded-2xl p-6">
@@ -336,20 +407,32 @@ function MatchDetailContent({
           </div>
         </section>
       )}
-
-      {detail.headToHead && detail.headToHead.length > 0 && (
-        <section className="card-surface rounded-2xl p-6">
-          <h2 className="section-title mb-4 text-base">Recent Meetings</h2>
-          <div className="space-y-2">
-            {detail.headToHead.map((h, i) => (
-              <div key={i} className="flex justify-between text-sm py-2 border-b border-zinc-50 last:border-0">
-                <span className="text-zinc-600">{h.date} · {h.opponent}</span>
-                <span className="font-semibold text-zinc-900">{h.score} ({h.result})</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        </>
       )}
+
+      {tab === "history" && (
+        <>
+          <MatchHeadToHead
+            match={match}
+            meetings={detail.headToHead}
+            record={detail.headToHeadRecord}
+            rivalryName={detail.rivalryName}
+            rivalryNote={detail.rivalryNote}
+            rivalryFunFact={detail.rivalryFunFact}
+          />
+          <AdBanner placement="match" />
+        </>
+      )}
+
+      {tab === "highlights" && (
+        <>
+          <MatchHighlightsPanel
+            match={match}
+            highlights={highlights}
+            videos={detail.videos}
+            photos={detail.photos}
+          />
+          <AdBanner placement="match" />
         </>
       )}
 
@@ -372,6 +455,7 @@ function MatchDetailContent({
           stats={detail.stats}
           leaders={detail.leaders}
           headToHead={detail.headToHead}
+          headToHeadRecord={detail.headToHeadRecord}
           homeRecord={detail.homeRecord}
           awayRecord={detail.awayRecord}
           homeLineup={detail.homeLineup}

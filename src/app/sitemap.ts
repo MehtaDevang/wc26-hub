@@ -5,25 +5,25 @@ import { getAllPlayerSlugs } from "@/lib/espn/player-profile";
 import { TEAMS } from "@/lib/data";
 import { getSiteUrl } from "@/lib/site";
 
-export const revalidate = 3600;
+export const revalidate = 1800;
 
 const STATIC_ROUTES: Array<{
   path: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
   priority: number;
 }> = [
-  { path: "/", changeFrequency: "hourly", priority: 1 },
-  { path: "/fixtures", changeFrequency: "hourly", priority: 0.9 },
-  { path: "/standings", changeFrequency: "hourly", priority: 0.9 },
-  { path: "/bracket", changeFrequency: "hourly", priority: 0.9 },
-  { path: "/teams", changeFrequency: "daily", priority: 0.9 },
+  { path: "/", changeFrequency: "always", priority: 1 },
+  { path: "/fixtures", changeFrequency: "always", priority: 0.95 },
+  { path: "/standings", changeFrequency: "always", priority: 0.95 },
+  { path: "/bracket", changeFrequency: "hourly", priority: 0.95 },
+  { path: "/teams", changeFrequency: "hourly", priority: 0.9 },
   { path: "/groups", changeFrequency: "hourly", priority: 0.9 },
   { path: "/players", changeFrequency: "hourly", priority: 0.85 },
   { path: "/history", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/puzzles", changeFrequency: "daily", priority: 0.8 },
-  { path: "/puzzles/guess-player", changeFrequency: "daily", priority: 0.7 },
-  { path: "/puzzles/scramble", changeFrequency: "daily", priority: 0.7 },
-  { path: "/puzzles/quiz", changeFrequency: "daily", priority: 0.7 },
+  { path: "/puzzles", changeFrequency: "daily", priority: 0.7 },
+  { path: "/puzzles/guess-player", changeFrequency: "daily", priority: 0.6 },
+  { path: "/puzzles/scramble", changeFrequency: "daily", priority: 0.6 },
+  { path: "/puzzles/quiz", changeFrequency: "daily", priority: 0.6 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -75,8 +75,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       entries.push({
         url: `${siteUrl}/match/${event.id}`,
         lastModified: now,
-        changeFrequency: "hourly",
-        priority: 0.85,
+        changeFrequency: "always",
+        priority: 0.9,
       });
     }
   } catch {

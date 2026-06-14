@@ -5,7 +5,7 @@ const OG_IMAGE = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
-  alt: `${SITE_NAME} — World Cup 2026 Live Scores & Puzzles`,
+  alt: `${SITE_NAME} — FIFA World Cup 2026 Live Scores, Teams & Stats`,
 };
 
 function buildVerification(): Metadata["verification"] | undefined {
@@ -19,20 +19,26 @@ export function createPageMetadata({
   description = SITE_DESCRIPTION,
   path = "/",
   noIndex = false,
+  keywords,
 }: {
   title: string;
   description?: string;
   path?: string;
   noIndex?: boolean;
+  keywords?: string[];
 }): Metadata {
   const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
   const canonical = `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+  const pageKeywords = keywords?.length
+    ? [...new Set([...keywords, ...SITE_KEYWORDS])]
+    : SITE_KEYWORDS;
 
   return {
     title: pageTitle,
     description,
-    keywords: SITE_KEYWORDS,
+    keywords: pageKeywords,
     alternates: { canonical },
+    category: "sports",
     openGraph: {
       title: pageTitle,
       description,
@@ -50,7 +56,17 @@ export function createPageMetadata({
     },
     robots: noIndex
       ? { index: false, follow: false }
-      : { index: true, follow: true, googleBot: { index: true, follow: true } },
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
     verification: buildVerification(),
   };
 }
@@ -61,7 +77,7 @@ export function rootMetadata(): Metadata {
   return {
     metadataBase: new URL(url),
     title: {
-      default: `${SITE_NAME} — World Cup 2026 Live Scores, Fixtures & Puzzles`,
+      default: `FIFA World Cup 2026 Live Scores Today — ${SITE_NAME}`,
       template: `%s — ${SITE_NAME}`,
     },
     description: SITE_DESCRIPTION,
@@ -75,7 +91,7 @@ export function rootMetadata(): Metadata {
       canonical: url,
     },
     openGraph: {
-      title: `${SITE_NAME} — World Cup 2026 Live Scores`,
+      title: `FIFA World Cup 2026 Live Scores — ${SITE_NAME}`,
       description: SITE_DESCRIPTION,
       url,
       siteName: SITE_NAME,
@@ -85,7 +101,7 @@ export function rootMetadata(): Metadata {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${SITE_NAME} — World Cup 2026`,
+      title: `World Cup 2026 Live Scores — ${SITE_NAME}`,
       description: SITE_DESCRIPTION,
       images: [OG_IMAGE.url],
     },

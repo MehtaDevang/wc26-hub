@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
-export const alt = `${SITE_NAME} — World Cup 2026`;
+export const alt = `${SITE_NAME} — FIFA World Cup 2026 Live Scores`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -42,7 +42,7 @@ export default function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          FIFA World Cup 2026
+          FIFA World Cup 2026 Live Scores
         </div>
         <div
           style={{
@@ -53,16 +53,17 @@ export default function OpenGraphImage() {
             maxWidth: 820,
           }}
         >
-          {SITE_DESCRIPTION}
+          {SITE_TAGLINE}
         </div>
         <div
           style={{
             marginTop: 48,
             display: "flex",
             gap: 12,
+            flexWrap: "wrap",
           }}
         >
-          {["Live Scores", "Fixtures", "Puzzles", "History"].map((label) => (
+          {["Live Scores", "Teams", "Players", "Stats", "History"].map((label) => (
             <div
               key={label}
               style={{

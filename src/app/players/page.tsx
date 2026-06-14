@@ -4,12 +4,14 @@ import { PlayersExplorer } from "@/components/PlayersExplorer";
 import { PlayerListCard } from "@/components/PlayerPageView";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { mergeKeywords, PLAYERS_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Players — Full Squads by Country",
+  title: "World Cup 2026 Players — Squads, Stats & Top Scorers",
   description:
-    "Every FIFA World Cup 2026 squad player by country — photos, positions, stats, and full profiles for all 48 nations.",
+    "Every FIFA World Cup 2026 player by country — live stats, goals, assists, cards, positions, photos, and full profiles for all 48 squad lists.",
   path: "/players",
+  keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS),
 });
 
 export const revalidate = 300;
