@@ -14,6 +14,9 @@ import {
 import { getTeam } from "@/lib/data";
 import { resolveTeamCode } from "@/lib/team-lookup";
 import { fetchJson } from "@/lib/fetch-json";
+import { useTimezone } from "@/components/TimezoneProvider";
+import { MatchKickoffTime } from "@/components/MatchKickoffTime";
+import { formatKickoffDateLabel } from "@/lib/timezone";
 import type { TeamJourney, TeamJourneyMatch } from "@/lib/types";
 
 const RESULT_STYLES: Record<string, string> = {
@@ -43,6 +46,10 @@ function formatDate(date: string) {
 function JourneyMatchCard({ match }: { match: TeamJourneyMatch }) {
   const opponent = getTeam(match.opponentCode, match.opponent, match.opponentLogo);
   const hasScore = match.goalsFor !== undefined && match.goalsAgainst !== undefined;
+  const timezone = useTimezone();
+  const dateLabel = match.kickoffAt
+    ? formatKickoffDateLabel(match.kickoffAt, timezone)
+    : formatDate(match.date);
 
   return (
     <Link
@@ -57,7 +64,7 @@ function JourneyMatchCard({ match }: { match: TeamJourneyMatch }) {
           </p>
           <p className="text-xs text-zinc-500 mt-0.5 flex items-center gap-1">
             <Calendar size={11} />
-            {formatDate(match.date)} · {match.time}
+            {dateLabel} · <MatchKickoffTime match={match} />
           </p>
         </div>
         <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full shrink-0 ${RESULT_STYLES[match.result]}`}>
@@ -114,6 +121,7 @@ interface TeamJourneyPanelProps {
 }
 
 export function TeamJourneyPanel({ teamKey, onClose }: TeamJourneyPanelProps) {
+  const timezone = useTimezone();
   const [journey, setJourney] = useState<TeamJourney | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -128,13 +136,15 @@ export function TeamJourneyPanel({ teamKey, onClose }: TeamJourneyPanelProps) {
     setLoading(true);
     setError("");
 
-    fetchJson<{ journey: TeamJourney }>(`/api/teams/${encodeURIComponent(code)}/journey`, {
-      timeoutMs: 25_000,
-    })
+    const params = new URLSearchParams({ tz: timezone });
+    fetchJson<{ journey: TeamJourney }>(
+      `/api/teams/${encodeURIComponent(code)}/journey?${params}`,
+      { timeoutMs: 25_000 }
+    )
       .then((d) => setJourney(d.journey))
       .catch((e) => setError(e instanceof Error ? e.message : "Failed to load"))
       .finally(() => setLoading(false));
-  }, [teamKey]);
+  }, [teamKey, timezone]);
 
   useEffect(() => {
     if (!teamKey) return;

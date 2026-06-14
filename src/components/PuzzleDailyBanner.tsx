@@ -17,7 +17,7 @@ export function PuzzleDailyBanner() {
       </div>
       <div className="flex items-center gap-1.5 text-zinc-400 text-xs">
         <Clock size={12} />
-        New puzzles in {formatResetCountdown(resetsInMs)}
+        New puzzles in {formatResetCountdown(resetsInMs)} · local midnight
       </div>
     </div>
   );

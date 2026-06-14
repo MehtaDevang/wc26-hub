@@ -8,6 +8,7 @@ import { fetchMatchWeather } from "@/lib/weather";
 import { createPageMetadata } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site";
 import { isValidMatchId } from "@/lib/api-security";
+import { getServerTimezone } from "@/lib/timezone";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   try {
+    const timeZone = await getServerTimezone();
     const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
     const event = scoreboard.events?.find((e) => e.id === id);
     if (!event) {
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }: PageProps) {
       });
     }
 
-    const match = transformEvent(event);
+    const match = transformEvent(event, timeZone);
     const score =
       match.status !== "upcoming"
         ? `${match.homeScore}-${match.awayScore}`
@@ -62,11 +64,12 @@ export default async function MatchPage({ params }: PageProps) {
 
   if (!isValidMatchId(id)) notFound();
 
+  const timeZone = await getServerTimezone();
   const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
   const event = scoreboard.events?.find((e) => e.id === id);
   if (!event) notFound();
 
-  const match = transformEvent(event);
+  const match = transformEvent(event, timeZone);
   const summary = await fetchEspnSummary(id);
   const detail = transformSummary(summary, match);
   const highlights = goalsToHighlights(match, summary);

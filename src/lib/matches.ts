@@ -1,13 +1,16 @@
 import type { Match, MatchDetail, Highlight } from "./types";
 import { fetchJson } from "./fetch-json";
+import { detectBrowserTimezone } from "./timezone";
 
 export async function fetchMatches(params?: {
   date?: "today" | string;
   range?: "group-stage" | "recent";
+  timeZone?: string;
 }): Promise<Match[]> {
   const search = new URLSearchParams();
   if (params?.date) search.set("date", params.date);
   if (params?.range) search.set("range", params.range);
+  search.set("tz", params?.timeZone ?? detectBrowserTimezone());
 
   const data = await fetchJson<{ matches: Match[] }>(`/api/matches?${search}`);
   return data.matches ?? [];

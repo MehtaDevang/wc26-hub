@@ -3,6 +3,7 @@ import { transformEvents } from "@/lib/espn/transform";
 import { FixturesList } from "@/components/FixturesList";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
+import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
   title: "Fixtures & Results",
@@ -13,15 +14,16 @@ export const metadata = createPageMetadata({
 export const revalidate = 60;
 
 export default async function FixturesPage() {
+  const timeZone = await getServerTimezone();
   const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-  const matches = transformEvents(scoreboard.events ?? []);
+  const matches = transformEvents(scoreboard.events ?? [], timeZone);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="section-title">Fixtures & Results</h1>
         <p className="text-zinc-500 text-sm mt-1">
-          All World Cup 2026 matches · {matches.length} fixtures
+          All World Cup 2026 matches · {matches.length} fixtures · kick-offs in your local time
         </p>
       </div>
       <AdBanner placement="fixtures" />

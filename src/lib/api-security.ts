@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { resolveTeamCode } from "./team-lookup";
+import { isValidTimezone } from "./timezone";
 
 const MATCH_ID_PATTERN = /^\d{6,15}$/;
 const DATE_PATTERN = /^(?:\d{4}-\d{2}-\d{2}|\d{8})$/;
@@ -17,8 +18,11 @@ export function isValidTeamCode(code: string): boolean {
 
 export function parseMatchesQuery(
   date: string | null,
-  range: string | null
-): { ok: true; date?: string | null; range?: string | null } | { ok: false; error: string } {
+  range: string | null,
+  timeZone: string | null = null
+):
+  | { ok: true; date?: string | null; range?: string | null; timeZone?: string | null }
+  | { ok: false; error: string } {
   if (date && date !== "today" && !DATE_PATTERN.test(date)) {
     return { ok: false, error: "Invalid date format. Use YYYY-MM-DD." };
   }
@@ -31,7 +35,11 @@ export function parseMatchesQuery(
     return { ok: false, error: "Provide either date or range, not both." };
   }
 
-  return { ok: true, date, range };
+  if (timeZone && !isValidTimezone(timeZone)) {
+    return { ok: false, error: "Invalid timezone." };
+  }
+
+  return { ok: true, date, range, timeZone };
 }
 
 export function apiErrorResponse(

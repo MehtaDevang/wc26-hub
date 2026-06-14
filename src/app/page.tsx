@@ -8,6 +8,7 @@ import { IconicMoments } from "@/components/IconicMoments";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { createPageMetadata } from "@/lib/seo";
 import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
+import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
   title: "World Cup 2026 Live Scores & Daily Puzzles",
@@ -24,9 +25,10 @@ const STATS = [
 ];
 
 export default async function Home() {
+  const timeZone = await getServerTimezone();
   const [matchesResult, highlightsResult] = await Promise.allSettled([
-    getTodayMatches(),
-    getRecentHighlights(6),
+    getTodayMatches(timeZone),
+    getRecentHighlights(6, timeZone),
   ]);
 
   const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];

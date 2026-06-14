@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { Radio, Clock, ChevronRight, Loader2, RefreshCw } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { fetchMatches } from "@/lib/matches";
+import { useTimezone } from "@/components/TimezoneProvider";
+import { TimezoneBadge } from "@/components/TimezoneBadge";
+import { MatchKickoffTime } from "@/components/MatchKickoffTime";
+import {
+  applyTimezoneToMatches,
+  formatTodayLabel,
+} from "@/lib/timezone";
 import type { Match } from "@/lib/types";
 
 function LiveBadge() {
@@ -38,7 +45,10 @@ function MatchRow({ match, liveMinute }: { match: Match; liveMinute?: number }) 
         ) : isFinished ? (
           <span className="text-[10px] font-semibold text-zinc-400 uppercase">FT</span>
         ) : (
-          <span className="text-[11px] text-zinc-400 tabular-nums">{match.time}</span>
+          <MatchKickoffTime
+            match={match}
+            className="text-[11px] text-zinc-400 tabular-nums"
+          />
         )}
       </div>
 
@@ -85,23 +95,29 @@ interface LiveScoresProps {
 }
 
 export function LiveScores({ initialMatches }: LiveScoresProps) {
+  const timezone = useTimezone();
   const [matches, setMatches] = useState<Match[]>(initialMatches ?? []);
   const [loading, setLoading] = useState(initialMatches === undefined);
   const [error, setError] = useState("");
   const [liveMinute, setLiveMinute] = useState(0);
 
+  const localizedMatches = useMemo(
+    () => applyTimezoneToMatches(matches, timezone),
+    [matches, timezone]
+  );
+
   const loadMatches = useCallback(async (showSpinner = false) => {
     if (showSpinner) setLoading(true);
     setError("");
     try {
-      const data = await fetchMatches({ date: "today" });
+      const data = await fetchMatches({ date: "today", timeZone: timezone });
       setMatches(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load scores");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [timezone]);
 
   useEffect(() => {
     if (initialMatches === undefined) {
@@ -114,9 +130,9 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
     return () => clearInterval(interval);
   }, [initialMatches, loadMatches]);
 
-  const liveMatches = matches.filter((m) => m.status === "live");
-  const upcomingToday = matches.filter((m) => m.status === "upcoming");
-  const finishedToday = matches.filter((m) => m.status === "finished");
+  const liveMatches = localizedMatches.filter((m) => m.status === "live");
+  const upcomingToday = localizedMatches.filter((m) => m.status === "upcoming");
+  const finishedToday = localizedMatches.filter((m) => m.status === "finished");
 
   useEffect(() => {
     if (liveMatches.length === 0) return;
@@ -127,13 +143,8 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
     return () => clearInterval(interval);
   }, [liveMatches.length, liveMatches[0]?.minute]);
 
-  const todayLabel = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-
-  const showSpinner = loading && matches.length === 0;
+  const todayLabel = formatTodayLabel(timezone);
+  const showSpinner = loading && localizedMatches.length === 0;
 
   return (
     <section>
@@ -149,12 +160,15 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
 
       <div className="card-elevated overflow-hidden">
         <div className="host-stripe" />
-        <div className="flex items-center justify-between px-4 py-3 bg-zinc-50 border-b border-zinc-100">
-          <div className="flex items-center gap-2 text-sm text-zinc-600">
-            <Clock size={14} className="text-zinc-400" />
-            {todayLabel}
+        <div className="flex items-center justify-between gap-3 px-4 py-3 bg-zinc-50 border-b border-zinc-100">
+          <div className="flex items-center gap-2 text-sm text-zinc-600 min-w-0">
+            <Clock size={14} className="text-zinc-400 shrink-0" />
+            <span className="truncate">{todayLabel}</span>
           </div>
-          <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">ESPN</span>
+          <div className="flex items-center gap-3 shrink-0">
+            <TimezoneBadge showIcon={false} />
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">ESPN</span>
+          </div>
         </div>
 
         {showSpinner && (
@@ -164,7 +178,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
           </div>
         )}
 
-        {error && matches.length === 0 && (
+        {error && localizedMatches.length === 0 && (
           <div className="px-4 py-10 text-center">
             <p className="text-red-600 text-sm mb-3">{error}</p>
             <button
@@ -176,9 +190,9 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
           </div>
         )}
 
-        {!showSpinner && (matches.length > 0 || error) && (
+        {!showSpinner && (localizedMatches.length > 0 || error) && (
           <>
-            {error && matches.length > 0 && (
+            {error && localizedMatches.length > 0 && (
               <p className="px-4 py-2 text-xs text-amber-600 bg-amber-50 border-b border-amber-100">
                 Couldn&apos;t refresh — showing cached scores
               </p>
@@ -209,7 +223,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
                 {finishedToday.map((m) => <MatchRow key={m.id} match={m} />)}
               </div>
             )}
-            {matches.length === 0 && !error && (
+            {localizedMatches.length === 0 && !error && (
               <p className="px-4 py-10 text-center text-zinc-400 text-sm">No matches today</p>
             )}
           </>

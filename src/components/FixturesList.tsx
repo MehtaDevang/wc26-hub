@@ -6,6 +6,10 @@ import { Calendar, MapPin } from "lucide-react";
 import type { Match } from "@/lib/types";
 import { getTeam } from "@/lib/data";
 import { AdBanner } from "@/components/AdBanner";
+import { MatchKickoffTime } from "@/components/MatchKickoffTime";
+import { TimezoneBadge } from "@/components/TimezoneBadge";
+import { useTimezone } from "@/components/TimezoneProvider";
+import { formatKickoffDateKey, formatKickoffDateLabel } from "@/lib/timezone";
 
 function MatchFixtureRow({ match }: { match: Match }) {
   const home = getTeam(match.home, match.homeName, match.homeLogo);
@@ -17,7 +21,7 @@ function MatchFixtureRow({ match }: { match: Match }) {
       className="match-row group"
     >
       <div className="w-14 shrink-0 text-center">
-        <p className="text-[10px] text-zinc-400">{match.time}</p>
+        <MatchKickoffTime match={match} className="text-[10px] text-zinc-400" />
         {match.status === "live" && <span className="badge-live mt-1">Live</span>}
         {match.status === "finished" && (
           <span className="text-[10px] font-bold text-zinc-400 uppercase">FT</span>
@@ -67,15 +71,20 @@ function MatchFixtureRow({ match }: { match: Match }) {
 }
 
 export function FixturesList({ matches }: { matches: Match[] }) {
+  const timezone = useTimezone();
+
   const byDate = useMemo(() => {
     const map = new Map<string, Match[]>();
     for (const m of matches) {
-      const list = map.get(m.date) ?? [];
+      const dateKey = m.kickoffAt
+        ? formatKickoffDateKey(m.kickoffAt, timezone)
+        : m.date;
+      const list = map.get(dateKey) ?? [];
       list.push(m);
-      map.set(m.date, list);
+      map.set(dateKey, list);
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [matches]);
+  }, [matches, timezone]);
 
   if (!matches.length) {
     return <p className="text-sm text-zinc-400 text-center py-12">No fixtures available.</p>;
@@ -83,18 +92,16 @@ export function FixturesList({ matches }: { matches: Match[] }) {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <TimezoneBadge />
+      </div>
       {byDate.map(([date, dayMatches], index) => (
         <div key={date}>
           <div className="card-surface rounded-2xl overflow-hidden">
             <div className="px-4 py-3 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/50">
               <Calendar size={14} className="text-blue-600" />
               <h3 className="font-semibold text-zinc-900 text-sm">
-                {new Date(date + "T12:00:00").toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                {formatKickoffDateLabel(date, timezone)}
               </h3>
               <span className="text-xs text-zinc-400 ml-auto">{dayMatches.length} matches</span>
             </div>

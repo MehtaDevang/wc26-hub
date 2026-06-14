@@ -16,6 +16,7 @@ export interface Match {
   awayLogo?: string;
   date: string;
   time: string;
+  kickoffAt: string;
   venue: string;
   venueCity?: string;
   venueCountry?: string;
@@ -161,6 +162,7 @@ export interface TeamJourneyMatch {
   matchId: string;
   date: string;
   time: string;
+  kickoffAt?: string;
   opponent: string;
   opponentCode: string;
   opponentLogo?: string;

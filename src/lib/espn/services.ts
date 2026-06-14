@@ -1,11 +1,14 @@
 import {
   fetchEspnScoreboard,
   fetchEspnSummary,
-  todayEspnDate,
-  formatEspnDate,
 } from "./client";
 import { transformEvents, transformEvent, goalsToHighlights } from "./transform";
 import { extractMomentHighlights } from "./highlight-images";
+import {
+  todayEspnDateInTimezone,
+  formatEspnDateInTimezone,
+  DEFAULT_TIMEZONE,
+} from "../timezone";
 import type { Match, Highlight } from "../types";
 
 const ESPN_TIMEOUT_MS = 8_000;
@@ -19,17 +22,21 @@ async function withTimeout<T>(promise: Promise<T>, ms = ESPN_TIMEOUT_MS): Promis
   ]);
 }
 
-export async function getTodayMatches(): Promise<Match[]> {
+export async function getTodayMatches(
+  timeZone: string = DEFAULT_TIMEZONE
+): Promise<Match[]> {
   const data = await withTimeout(
-    fetchEspnScoreboard({ dates: todayEspnDate() })
+    fetchEspnScoreboard({ dates: todayEspnDateInTimezone(timeZone) })
   );
-  return transformEvents(data.events ?? []);
+  return transformEvents(data.events ?? [], timeZone);
 }
 
 export async function getMatchesByParams(params: {
   date?: string | null;
   range?: string | null;
+  timeZone?: string;
 }): Promise<Match[]> {
+  const timeZone = params.timeZone ?? DEFAULT_TIMEZONE;
   let dates: string | undefined;
 
   if (params.range === "group-stage") {
@@ -37,20 +44,20 @@ export async function getMatchesByParams(params: {
   } else if (params.range === "full") {
     dates = "20260611-20260719";
   } else if (params.date === "today") {
-    dates = todayEspnDate();
+    dates = todayEspnDateInTimezone(timeZone);
   } else if (params.date) {
     dates = params.date.replace(/-/g, "");
   } else if (params.range === "recent") {
     const end = new Date();
     const start = new Date();
     start.setDate(start.getDate() - 3);
-    dates = `${formatEspnDate(start)}-${formatEspnDate(end)}`;
+    dates = `${formatEspnDateInTimezone(start, timeZone)}-${formatEspnDateInTimezone(end, timeZone)}`;
   }
 
   const data = await withTimeout(
     fetchEspnScoreboard(dates ? { dates } : undefined)
   );
-  return transformEvents(data.events ?? []);
+  return transformEvents(data.events ?? [], timeZone);
 }
 
 function sortHighlights(highlights: Highlight[]): Highlight[] {
@@ -63,14 +70,17 @@ function sortHighlights(highlights: Highlight[]): Highlight[] {
   });
 }
 
-export async function getRecentHighlights(limit = 6): Promise<Highlight[]> {
+export async function getRecentHighlights(
+  limit = 6,
+  timeZone: string = DEFAULT_TIMEZONE
+): Promise<Highlight[]> {
   const end = new Date();
   const start = new Date();
   start.setDate(start.getDate() - 4);
 
   const data = await withTimeout(
     fetchEspnScoreboard({
-      dates: `${formatEspnDate(start)}-${formatEspnDate(end)}`,
+      dates: `${formatEspnDateInTimezone(start, timeZone)}-${formatEspnDateInTimezone(end, timeZone)}`,
     })
   );
 
@@ -81,7 +91,7 @@ export async function getRecentHighlights(limit = 6): Promise<Highlight[]> {
 
   const results = await Promise.allSettled(
     finished.map(async (event) => {
-      const match = transformEvent(event);
+      const match = transformEvent(event, timeZone);
       const summary = await withTimeout(fetchEspnSummary(event.id), 6_000);
       const goals = goalsToHighlights(match, summary);
       const usedUrls = new Set(

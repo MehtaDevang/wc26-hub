@@ -5,8 +5,10 @@ import { Navbar } from "@/components/Navbar";
 import { AdBanner } from "@/components/AdBanner";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
+import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { rootMetadata } from "@/lib/seo";
 import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
+import { getServerTimezone } from "@/lib/timezone";
 import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -32,11 +34,13 @@ const websiteJsonLd = {
   inLanguage: "en-US",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialTimezone = await getServerTimezone();
+
   return (
     <html
       lang="en"
@@ -50,6 +54,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
+        <TimezoneProvider initialTimezone={initialTimezone}>
         <JsonLd data={websiteJsonLd} />
         <Navbar />
         <AdBanner placement="top" />
@@ -73,6 +78,7 @@ export default function RootLayout({
           </p>
         </footer>
         <Analytics />
+        </TimezoneProvider>
       </body>
     </html>
   );

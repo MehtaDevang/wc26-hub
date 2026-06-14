@@ -7,10 +7,13 @@ import { getTeamFlag } from "../teams";
 import { resolveTeamCode } from "../team-lookup";
 import { lookupVenue } from "../venues";
 import { getCoach } from "../coaches";
+import { formatKickoffDateKey, formatKickoffTime } from "../timezone";
 import type {
   EspnCompetition, EspnEvent, EspnKeyEvent, EspnSummary, EspnRoster, EspnCompetitor,
 } from "./client";
 import { buildGoalHighlights } from "./highlight-images";
+
+const DEFAULT_TRANSFORM_TZ = "UTC";
 
 function parseGroup(note?: string): string {
   if (!note) return "?";
@@ -31,21 +34,12 @@ function parseMinute(displayClock?: string): number | undefined {
   return match ? parseInt(match[1], 10) : undefined;
 }
 
-function formatTime(isoDate: string): string {
-  try {
-    return new Date(isoDate).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "America/New_York",
-    });
-  } catch {
-    return "";
-  }
+function formatTime(isoDate: string, timeZone: string): string {
+  return formatKickoffTime(isoDate, timeZone);
 }
 
-function formatDate(isoDate: string): string {
-  return isoDate.slice(0, 10);
+function formatDate(isoDate: string, timeZone: string): string {
+  return formatKickoffDateKey(isoDate, timeZone);
 }
 
 function getRecord(competitor: EspnCompetitor): string | undefined {
@@ -53,12 +47,16 @@ function getRecord(competitor: EspnCompetitor): string | undefined {
   return total?.displayValue ?? total?.summary;
 }
 
-export function transformEvent(event: EspnEvent): Match {
+export function transformEvent(
+  event: EspnEvent,
+  timeZone: string = DEFAULT_TRANSFORM_TZ
+): Match {
   const comp = event.competitions[0];
   const home = comp.competitors.find((c) => c.homeAway === "home")!;
   const away = comp.competitors.find((c) => c.homeAway === "away")!;
   const status = parseStatus(comp);
   const venue = comp.venue;
+  const kickoffAt = comp.date || event.date;
 
   return {
     id: event.id,
@@ -69,8 +67,9 @@ export function transformEvent(event: EspnEvent): Match {
     awayName: away.team.displayName,
     homeLogo: home.team.logo,
     awayLogo: away.team.logo,
-    date: formatDate(event.date),
-    time: formatTime(comp.date || event.date),
+    kickoffAt,
+    date: formatDate(kickoffAt, timeZone),
+    time: formatTime(kickoffAt, timeZone),
     venue: venue?.fullName ?? "TBD",
     venueCity: venue?.address?.city,
     venueCountry: venue?.address?.country,
@@ -85,8 +84,11 @@ export function transformEvent(event: EspnEvent): Match {
   };
 }
 
-export function transformEvents(events: EspnEvent[]): Match[] {
-  return events.map(transformEvent);
+export function transformEvents(
+  events: EspnEvent[],
+  timeZone: string = DEFAULT_TRANSFORM_TZ
+): Match[] {
+  return events.map((e) => transformEvent(e, timeZone));
 }
 
 function eventType(espnType: string): MatchEvent["type"] {
@@ -328,7 +330,7 @@ function transformHeadToHead(summary: EspnSummary): HeadToHeadMatch[] {
   for (const block of summary.headToHeadGames ?? []) {
     for (const ev of block.events ?? []) {
       matches.push({
-        date: ev.gameDate ? formatDate(ev.gameDate) : "",
+        date: ev.gameDate ? ev.gameDate.slice(0, 10) : "",
         score: ev.score ?? "",
         opponent: ev.opponent?.displayName ?? "",
         result: ev.gameResult ?? "",

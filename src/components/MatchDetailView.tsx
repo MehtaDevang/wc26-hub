@@ -14,6 +14,9 @@ import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
 import { HighlightCard } from "./HighlightCard";
 import { AdBanner } from "./AdBanner";
+import { MatchKickoffTime } from "./MatchKickoffTime";
+import { useTimezone } from "@/components/TimezoneProvider";
+import { formatKickoffDateLabel } from "@/lib/timezone";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
@@ -201,12 +204,16 @@ function MatchDetailContent({
   detail: MatchDetail;
   highlights: Highlight[];
 }) {
+  const timezone = useTimezone();
   const home = getTeam(match.home, match.homeName, match.homeLogo);
   const away = getTeam(match.away, match.awayName, match.awayLogo);
   const searchParams = useSearchParams();
   const tab = parseTab(searchParams.get("tab"));
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerProfile | null>(null);
   const [liveMinute, setLiveMinute] = useState(match.minute ?? 0);
+  const kickoffDateLabel = match.kickoffAt
+    ? formatKickoffDateLabel(match.kickoffAt, timezone)
+    : match.date;
 
   useEffect(() => {
     if (match.status !== "live") return;
@@ -233,7 +240,8 @@ function MatchDetailContent({
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
             <span className="text-xs text-zinc-500 uppercase tracking-wider">
-              Group {match.group} · {match.date} · {match.time}
+              Group {match.group} · {kickoffDateLabel} ·{" "}
+              <MatchKickoffTime match={match} />
             </span>
             {match.status === "live" && <LiveBadge />}
             {match.status === "finished" && <span className="text-xs font-bold text-zinc-400 uppercase">Full Time</span>}

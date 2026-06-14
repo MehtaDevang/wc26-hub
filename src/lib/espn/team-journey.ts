@@ -65,6 +65,7 @@ function matchToJourneyEntry(match: Match, teamCode: string, teamName: string): 
     matchId: match.id,
     date: match.date,
     time: match.time,
+    kickoffAt: match.kickoffAt,
     opponent: opponentName,
     opponentCode,
     opponentLogo,
@@ -104,7 +105,10 @@ function buildForm(matches: TeamJourneyMatch[]): string {
     .join("");
 }
 
-export async function getTeamJourney(teamKey: string): Promise<TeamJourney | null> {
+export async function getTeamJourney(
+  teamKey: string,
+  timeZone = "UTC"
+): Promise<TeamJourney | null> {
   const teamCode = resolveTeamCode(teamKey) ?? teamKey.toUpperCase();
   const teamName = getTeamDisplay(teamCode).name;
 
@@ -113,7 +117,7 @@ export async function getTeamJourney(teamKey: string): Promise<TeamJourney | nul
     fetchAllGroupStandings(),
   ]);
 
-  const allMatches = transformEvents(scoreboard.events ?? []);
+  const allMatches = transformEvents(scoreboard.events ?? [], timeZone);
   const journeyMatches = allMatches
     .map((m) => matchToJourneyEntry(m, teamCode, teamName))
     .filter((m): m is TeamJourneyMatch => m !== null)
