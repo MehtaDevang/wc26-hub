@@ -3,10 +3,10 @@ import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
 import { AdBanner } from "@/components/AdBanner";
-import { AdSenseScript } from "@/components/AdSenseScript";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { rootMetadata } from "@/lib/seo";
+import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -42,9 +42,15 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
         <JsonLd data={websiteJsonLd} />
-        <AdSenseScript />
         <Navbar />
         <AdBanner placement="top" />
         <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">

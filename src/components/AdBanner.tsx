@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import clsx from "clsx";
-import { getAdSlotId, type AdPlacement } from "@/lib/adsense";
+import { getAdSenseClientId, getAdSlotId, type AdPlacement } from "@/lib/adsense";
 
 declare global {
   interface Window {
@@ -68,7 +68,7 @@ export function AdBanner({
   className,
 }: AdBannerProps) {
   const resolvedPlacement = placement ?? slot ?? "inline";
-  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+  const clientId = getAdSenseClientId();
   const adSlotId = getAdSlotId(resolvedPlacement);
   const pushed = useRef(false);
   const insRef = useRef<HTMLModElement>(null);
@@ -89,7 +89,7 @@ export function AdBanner({
         placement={resolvedPlacement}
         label={label}
         className={className}
-        hint="Set NEXT_PUBLIC_ADSENSE_CLIENT_ID"
+        hint="AdSense client ID missing"
       />
     );
   }

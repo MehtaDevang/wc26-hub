@@ -9,9 +9,12 @@ export type AdPlacement =
   | "history"
   | "puzzles";
 
-export function getAdSenseClientId(): string | undefined {
-  const id = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
-  return id && id.length > 0 ? id : undefined;
+/** Google AdSense publisher ID — override with NEXT_PUBLIC_ADSENSE_CLIENT_ID if needed. */
+export const ADSENSE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-8009690168862509";
+
+export function getAdSenseClientId(): string {
+  return ADSENSE_CLIENT_ID;
 }
 
 export function getAdSlotId(placement: AdPlacement): string | undefined {
@@ -32,5 +35,5 @@ export function getAdSlotId(placement: AdPlacement): string | undefined {
 }
 
 export function isAdSenseEnabled(): boolean {
-  return !!getAdSenseClientId();
+  return ADSENSE_CLIENT_ID.length > 0;
 }
