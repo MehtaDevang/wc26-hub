@@ -1,11 +1,13 @@
 import { InteractiveStandingsGrid } from "@/components/InteractiveStandingsGrid";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Group Tables — WC26 Hub",
-  description: "Live FIFA World Cup 2026 group standings, points, and rankings.",
-};
+export const metadata = createPageMetadata({
+  title: "Group Tables & Standings",
+  description: "Live FIFA World Cup 2026 group standings, points, goal difference, and knockout qualification.",
+  path: "/standings",
+});
 
 export const revalidate = 120;
 

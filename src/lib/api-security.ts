@@ -1,0 +1,75 @@
+import { NextResponse } from "next/server";
+import { resolveTeamCode } from "./team-lookup";
+
+const MATCH_ID_PATTERN = /^\d{6,15}$/;
+const DATE_PATTERN = /^(?:\d{4}-\d{2}-\d{2}|\d{8})$/;
+const MATCH_RANGES = new Set(["group-stage", "full", "recent"]);
+
+export function isValidMatchId(id: string): boolean {
+  return MATCH_ID_PATTERN.test(id);
+}
+
+export function isValidTeamCode(code: string): boolean {
+  const trimmed = code.trim();
+  if (!trimmed || trimmed.length > 32) return false;
+  return !!resolveTeamCode(trimmed);
+}
+
+export function parseMatchesQuery(
+  date: string | null,
+  range: string | null
+): { ok: true; date?: string | null; range?: string | null } | { ok: false; error: string } {
+  if (date && date !== "today" && !DATE_PATTERN.test(date)) {
+    return { ok: false, error: "Invalid date format. Use YYYY-MM-DD." };
+  }
+
+  if (range && !MATCH_RANGES.has(range)) {
+    return { ok: false, error: "Invalid range. Use group-stage, full, or recent." };
+  }
+
+  if (date && range) {
+    return { ok: false, error: "Provide either date or range, not both." };
+  }
+
+  return { ok: true, date, range };
+}
+
+export function apiErrorResponse(
+  fallback: string,
+  status = 500,
+  error?: unknown
+): NextResponse {
+  const message =
+    process.env.NODE_ENV === "development" && error instanceof Error
+      ? error.message
+      : fallback;
+
+  return NextResponse.json({ error: message }, { status });
+}
+
+type RateBucket = { count: number; resetAt: number };
+
+const rateBuckets = new Map<string, RateBucket>();
+
+const RATE_LIMIT = 120;
+const RATE_WINDOW_MS = 60_000;
+
+export function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(key);
+
+  if (!bucket || now >= bucket.resetAt) {
+    rateBuckets.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+
+  bucket.count += 1;
+  if (bucket.count > RATE_LIMIT) return true;
+  return false;
+}
+
+export function getClientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() ?? "unknown";
+  return request.headers.get("x-real-ip") ?? "unknown";
+}

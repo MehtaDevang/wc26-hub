@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { apiErrorResponse, isValidMatchId } from "@/lib/api-security";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
 import { transformEvent, transformSummary, goalsToHighlights } from "@/lib/espn/transform";
 import { lookupVenue } from "@/lib/venues";
@@ -11,6 +12,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+
+  if (!isValidMatchId(id)) {
+    return NextResponse.json({ error: "Invalid match id" }, { status: 400 });
+  }
 
   try {
     const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
@@ -35,9 +40,6 @@ export async function GET(
 
     return NextResponse.json({ match, detail, highlights, source: "espn" });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch match" },
-      { status: 500 }
-    );
+    return apiErrorResponse("Failed to fetch match", 500, error);
   }
 }

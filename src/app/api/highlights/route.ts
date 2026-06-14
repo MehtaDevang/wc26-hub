@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiErrorResponse } from "@/lib/api-security";
 import { getRecentHighlights } from "@/lib/espn/services";
 
 export const revalidate = 120;
@@ -13,12 +14,6 @@ export async function GET() {
       source: "espn",
     });
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Failed to fetch highlights",
-        highlights: [],
-      },
-      { status: 500 }
-    );
+    return apiErrorResponse("Failed to fetch highlights", 500, error);
   }
 }

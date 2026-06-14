@@ -2,8 +2,12 @@ import { notFound } from "next/navigation";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
 import { transformEvent, transformSummary, goalsToHighlights } from "@/lib/espn/transform";
 import { MatchDetailView } from "@/components/MatchDetailView";
+import { JsonLd } from "@/components/JsonLd";
 import { lookupVenue } from "@/lib/venues";
 import { fetchMatchWeather } from "@/lib/weather";
+import { createPageMetadata } from "@/lib/seo";
+import { getSiteUrl } from "@/lib/site";
+import { isValidMatchId } from "@/lib/api-security";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -11,26 +15,52 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
+
+  if (!isValidMatchId(id)) {
+    return createPageMetadata({
+      title: "Match Not Found",
+      description: "The requested World Cup 2026 match could not be found.",
+      path: `/match/${id}`,
+      noIndex: true,
+    });
+  }
+
   try {
     const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
     const event = scoreboard.events?.find((e) => e.id === id);
-    if (!event) return { title: "Match Not Found — WC26 Hub" };
+    if (!event) {
+      return createPageMetadata({
+        title: "Match Not Found",
+        description: "The requested World Cup 2026 match could not be found.",
+        path: `/match/${id}`,
+        noIndex: true,
+      });
+    }
+
     const match = transformEvent(event);
     const score =
       match.status !== "upcoming"
         ? `${match.homeScore}-${match.awayScore}`
         : "vs";
-    return {
-      title: `${match.homeName} ${score} ${match.awayName} — WC26 Hub`,
-      description: `Live match details, scorers, stats and highlights for ${match.homeName} vs ${match.awayName}.`,
-    };
+
+    return createPageMetadata({
+      title: `${match.homeName} ${score} ${match.awayName}`,
+      description: `Live match details, scorers, stats, lineups, and highlights for ${match.homeName} vs ${match.awayName} at the FIFA World Cup 2026.`,
+      path: `/match/${id}`,
+    });
   } catch {
-    return { title: "Match — WC26 Hub" };
+    return createPageMetadata({
+      title: "Match Details",
+      description: "World Cup 2026 match details, stats, and highlights.",
+      path: `/match/${id}`,
+    });
   }
 }
 
 export default async function MatchPage({ params }: PageProps) {
   const { id } = await params;
+
+  if (!isValidMatchId(id)) notFound();
 
   const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
   const event = scoreboard.events?.find((e) => e.id === id);
@@ -49,11 +79,38 @@ export default async function MatchPage({ params }: PageProps) {
   const weather = await fetchMatchWeather(venueMeta.lat, venueMeta.lon, match.date);
   if (weather) detail.weather = weather;
 
+  const matchJsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    name: `${match.homeName} vs ${match.awayName}`,
+    sport: "Soccer",
+    startDate: match.date,
+    location: {
+      "@type": "Place",
+      name: match.venue,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: match.venueCity,
+        addressCountry: match.venueCountry,
+      },
+    },
+    homeTeam: { "@type": "SportsTeam", name: match.homeName },
+    awayTeam: { "@type": "SportsTeam", name: match.awayName },
+    url: `${getSiteUrl()}/match/${id}`,
+  };
+
+  if (match.status !== "finished") {
+    matchJsonLd.eventStatus = "https://schema.org/EventScheduled";
+  }
+
   return (
-    <MatchDetailView
-      match={match}
-      detail={detail}
-      highlights={highlights}
-    />
+    <>
+      <JsonLd data={matchJsonLd} />
+      <MatchDetailView
+        match={match}
+        detail={detail}
+        highlights={highlights}
+      />
+    </>
   );
 }

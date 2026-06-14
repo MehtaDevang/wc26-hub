@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { apiErrorResponse, isValidTeamCode } from "@/lib/api-security";
 import { getTeamJourney } from "@/lib/espn/team-journey";
 
 export const revalidate = 120;
@@ -10,6 +11,10 @@ export async function GET(
 ) {
   const { code } = await params;
 
+  if (!isValidTeamCode(code)) {
+    return NextResponse.json({ error: "Invalid team code" }, { status: 400 });
+  }
+
   try {
     const journey = await getTeamJourney(code);
     if (!journey) {
@@ -17,9 +22,6 @@ export async function GET(
     }
     return NextResponse.json({ journey });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to load team journey" },
-      { status: 500 }
-    );
+    return apiErrorResponse("Failed to load team journey", 500, error);
   }
 }

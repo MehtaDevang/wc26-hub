@@ -1,9 +1,11 @@
 import { PuzzlesHub } from "@/components/PuzzlesHub";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Daily Puzzles — WC26 Hub",
-  description: "Daily football puzzles: guess the player, name scramble, and World Cup trivia quiz.",
-};
+export const metadata = createPageMetadata({
+  title: "Daily Football Puzzles",
+  description: "Daily World Cup puzzles: guess the player, name scramble, and football trivia quiz.",
+  path: "/puzzles",
+});
 
 export default function PuzzlesPage() {
   return <PuzzlesHub />;

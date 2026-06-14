@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Outfit, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
 import { AdBanner } from "@/components/AdBanner";
 import { WC26MascotStrip } from "@/components/WC26Brand";
+import { JsonLd } from "@/components/JsonLd";
+import { rootMetadata } from "@/lib/seo";
+import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -16,16 +20,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "WC26 Hub — World Cup 2026 Live Scores & Daily Game",
-  description:
-    "Live World Cup 2026 scores, match details, fixtures, standings, and daily football puzzles.",
-  keywords: ["World Cup 2026", "live scores", "FIFA", "fixtures", "standings", "football puzzles"],
-  openGraph: {
-    title: "WC26 Hub — World Cup 2026",
-    description: "Live scores, match details, fixtures, and daily football puzzles.",
-    type: "website",
-  },
+export const metadata: Metadata = rootMetadata();
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_NAME,
+  url: getSiteUrl(),
+  description: SITE_DESCRIPTION,
+  inLanguage: "en-US",
 };
 
 export default function RootLayout({
@@ -39,6 +42,7 @@ export default function RootLayout({
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
+        <JsonLd data={websiteJsonLd} />
         <Navbar />
         <AdBanner slot="top" />
         <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
@@ -57,6 +61,7 @@ export default function RootLayout({
             <a href="mailto:hello@wc26hub.com" className="hover:text-[var(--wc-usa)] transition-colors">Contact</a>
           </p>
         </footer>
+        <Analytics />
       </body>
     </html>
   );

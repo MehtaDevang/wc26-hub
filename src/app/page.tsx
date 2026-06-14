@@ -5,7 +5,15 @@ import { AdBanner } from "@/components/AdBanner";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
 import { WC26MascotStrip } from "@/components/WC26Brand";
+import { createPageMetadata } from "@/lib/seo";
 import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
+
+export const metadata = createPageMetadata({
+  title: "World Cup 2026 Live Scores & Daily Puzzles",
+  description:
+    "Follow FIFA World Cup 2026 live scores, match highlights, fixtures, standings, history, and daily football puzzles.",
+  path: "/",
+});
 
 const STATS = [
   { label: "Matches", value: "104", color: "text-[var(--wc-usa)]" },

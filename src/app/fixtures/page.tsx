@@ -1,11 +1,13 @@
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvents } from "@/lib/espn/transform";
 import { FixturesList } from "@/components/FixturesList";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Fixtures — WC26 Hub",
-  description: "Full FIFA World Cup 2026 fixture list with venues, groups, and live scores.",
-};
+export const metadata = createPageMetadata({
+  title: "Fixtures & Results",
+  description: "Full FIFA World Cup 2026 fixture list with venues, groups, kick-off times, and live scores.",
+  path: "/fixtures",
+});
 
 export const revalidate = 60;
 

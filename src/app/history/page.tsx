@@ -1,11 +1,13 @@
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { WorldCupHistoryHub } from "@/components/history/WorldCupHistoryHub";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "World Cup History — WC26 Hub",
+export const metadata = createPageMetadata({
+  title: "World Cup History",
   description:
     "Complete FIFA World Cup history: winners, finals, records, awards, prize money, and documented controversies from 1930 to 2026.",
-};
+  path: "/history",
+});
 
 export default function HistoryPage() {
   return (
