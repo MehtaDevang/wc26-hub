@@ -1,25 +1,28 @@
 export const SITE_NAME = "The Goal Posts";
 
 export const SITE_DESCRIPTION =
-  "Live football scores, World Cup match details, fixtures, standings, history, and daily puzzles from The Goal Posts.";
+  "FIFA World Cup 2026 live scores, fixtures, group standings, match stats, highlights, World Cup history, and daily football puzzles on The Goal Posts.";
 
 export const SITE_KEYWORDS = [
   "The Goal Posts",
   "World Cup 2026",
   "FIFA World Cup",
-  "live scores",
-  "fixtures",
-  "standings",
+  "World Cup live scores",
+  "World Cup fixtures",
+  "World Cup standings",
+  "World Cup schedule",
+  "football live scores",
+  "soccer scores",
   "football puzzles",
-  "soccer",
-  "USA Mexico Canada",
+  "World Cup history",
+  "USA Mexico Canada World Cup",
 ];
 
-export const SITE_CONTACT_EMAIL = "hello@thegoalposts.com";
-export const SITE_ADS_EMAIL = "ads@thegoalposts.com";
+export const SITE_CONTACT_EMAIL = "hello@thegoalposts.in";
+export const SITE_ADS_EMAIL = "ads@thegoalposts.in";
 
-/** Production URL; override with NEXT_PUBLIC_SITE_URL when deploying. */
+/** Canonical production URL including www. Override with NEXT_PUBLIC_SITE_URL on deploy. */
 export function getSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL ?? "https://thegoalposts.com";
+  const url = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.thegoalposts.in";
   return url.replace(/\/$/, "");
 }

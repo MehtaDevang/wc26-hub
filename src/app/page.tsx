@@ -11,9 +11,9 @@ import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Live Scores & Daily Puzzles",
+  title: "World Cup 2026 Live Scores, Fixtures & Daily Puzzles",
   description:
-    "Follow FIFA World Cup 2026 live scores, match highlights, fixtures, standings, history, and daily football puzzles.",
+    "The Goal Posts — FIFA World Cup 2026 live scores, full fixture list, group standings, match highlights, World Cup history, and free daily football puzzles.",
   path: "/",
 });
 

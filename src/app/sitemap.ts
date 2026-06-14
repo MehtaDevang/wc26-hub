@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { getSiteUrl } from "@/lib/site";
 
+export const revalidate = 3600;
+
 const STATIC_ROUTES: Array<{
   path: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];

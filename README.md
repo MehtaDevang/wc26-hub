@@ -2,7 +2,7 @@
 
 Live football hub — World Cup scores, match details, fixtures, standings, history, and daily puzzles.
 
-**Site:** [thegoalposts.com](https://thegoalposts.com)
+**Live site:** [thegoalposts.in](https://www.thegoalposts.in)
 
 ## Live Data
 
@@ -21,6 +21,7 @@ For production scale, you can also add `API_FOOTBALL_KEY` from [api-football.com
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -28,12 +29,30 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Deploy to Vercel
 
-Set `NEXT_PUBLIC_SITE_URL=https://thegoalposts.com` in your Vercel project environment variables.
+**Required environment variables:**
+
+| Variable | Example |
+|----------|---------|
+| `NEXT_PUBLIC_SITE_URL` | `https://www.thegoalposts.in` |
+| `GOOGLE_SITE_VERIFICATION` | (from Search Console) |
 
 ```bash
 npx vercel login
 npx vercel --prod
 ```
+
+Add `www.thegoalposts.in` and `thegoalposts.in` in Vercel **Domains**. Apex redirects to `www` automatically.
+
+## SEO checklist (get on Google)
+
+1. **Set `NEXT_PUBLIC_SITE_URL`** to `https://www.thegoalposts.in` and redeploy.
+2. **[Google Search Console](https://search.google.com/search-console)** → Add property `https://www.thegoalposts.in`.
+3. Verify via `GOOGLE_SITE_VERIFICATION` env var → redeploy.
+4. Submit sitemap: `https://www.thegoalposts.in/sitemap.xml`
+5. Use **URL Inspection** → “Request indexing” for homepage, `/fixtures`, `/standings`.
+6. New sites often take **3–14 days** for first results; live scores help freshness.
+
+Built-in SEO: canonical URLs, `robots.txt`, dynamic sitemap (static pages + match URLs), Open Graph image, Organization + WebSite JSON-LD, per-page metadata.
 
 ## Features
 
@@ -44,6 +63,6 @@ npx vercel --prod
 
 ## Monetization
 
-1. **Google AdSense** — Replace `<AdBanner />` placeholders
+1. **Google AdSense** — Configure slot env vars (see `.env.example`)
 2. **Stripe** — Wire up Premium upsell in `PremiumUpsell.tsx`
 3. **Sponsored contests** — Customize `SponsoredBanner.tsx`

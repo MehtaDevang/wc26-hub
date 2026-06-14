@@ -8,6 +8,12 @@ const OG_IMAGE = {
   alt: `${SITE_NAME} — World Cup 2026 Live Scores & Puzzles`,
 };
 
+function buildVerification(): Metadata["verification"] | undefined {
+  const google = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+  if (!google) return undefined;
+  return { google };
+}
+
 export function createPageMetadata({
   title,
   description = SITE_DESCRIPTION,
@@ -44,7 +50,8 @@ export function createPageMetadata({
     },
     robots: noIndex
       ? { index: false, follow: false }
-      : { index: true, follow: true },
+      : { index: true, follow: true, googleBot: { index: true, follow: true } },
+    verification: buildVerification(),
   };
 }
 
@@ -54,15 +61,21 @@ export function rootMetadata(): Metadata {
   return {
     metadataBase: new URL(url),
     title: {
-      default: `${SITE_NAME} — World Cup 2026 Live Scores & Daily Puzzles`,
+      default: `${SITE_NAME} — World Cup 2026 Live Scores, Fixtures & Puzzles`,
       template: `%s — ${SITE_NAME}`,
     },
     description: SITE_DESCRIPTION,
     keywords: SITE_KEYWORDS,
     applicationName: SITE_NAME,
-    alternates: { canonical: url },
+    authors: [{ name: SITE_NAME, url }],
+    creator: SITE_NAME,
+    publisher: SITE_NAME,
+    category: "sports",
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-      title: `${SITE_NAME} — World Cup 2026`,
+      title: `${SITE_NAME} — World Cup 2026 Live Scores`,
       description: SITE_DESCRIPTION,
       url,
       siteName: SITE_NAME,
@@ -76,7 +89,18 @@ export function rootMetadata(): Metadata {
       description: SITE_DESCRIPTION,
       images: [OG_IMAGE.url],
     },
-    robots: { index: true, follow: true },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    verification: buildVerification(),
     icons: {
       icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
       apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml" }],

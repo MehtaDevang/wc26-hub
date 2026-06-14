@@ -7,13 +7,12 @@ import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { rootMetadata } from "@/lib/seo";
+import { buildOrganizationJsonLd, buildWebsiteJsonLd } from "@/lib/structured-data";
 import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { getServerTimezone } from "@/lib/timezone";
 import {
-  getSiteUrl,
   SITE_ADS_EMAIL,
   SITE_CONTACT_EMAIL,
-  SITE_DESCRIPTION,
   SITE_NAME,
 } from "@/lib/site";
 import "./globals.css";
@@ -30,15 +29,6 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = rootMetadata();
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: SITE_NAME,
-  url: getSiteUrl(),
-  description: SITE_DESCRIPTION,
-  inLanguage: "en-US",
-};
 
 export default async function RootLayout({
   children,
@@ -61,7 +51,8 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
         <TimezoneProvider initialTimezone={initialTimezone}>
-        <JsonLd data={websiteJsonLd} />
+        <JsonLd data={buildOrganizationJsonLd()} />
+        <JsonLd data={buildWebsiteJsonLd()} />
         <Navbar />
         <AdBanner placement="top" />
         <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
