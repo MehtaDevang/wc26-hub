@@ -86,8 +86,8 @@ export function getPlayerFlag(player: GuessPlayer): string {
   return player.flag ?? NATIONALITY_FLAGS[player.nationality] ?? "⚽";
 }
 
-export function getDailyPlayers(date = new Date()): GuessPlayer[] {
-  return pickDailySet(GUESS_PLAYERS, 5, date, 0);
+export function getDailyPlayers(dateKey: string): GuessPlayer[] {
+  return pickDailySet(GUESS_PLAYERS, 5, dateKey, 0);
 }
 
 export function normalizeGuess(input: string): string {

@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, X, ArrowRight, Sparkles } from "lucide-react";
-import { PUZZLE_CATALOG, COMING_SOON } from "@/lib/puzzles/catalog";
-import { getPuzzleStatus } from "@/lib/storage";
+import { Check, X, ArrowRight } from "lucide-react";
+import { PUZZLE_CATALOG } from "@/lib/puzzles/catalog";
+import {
+  getPuzzleStatus,
+  clearStalePuzzleState,
+} from "@/lib/storage";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { formatTodayDisplay } from "@/lib/puzzles/daily";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
@@ -42,10 +45,12 @@ function StatusBadge({ status }: { status: "done" | "lost" | "pending" }) {
 }
 
 export function PuzzlesHub() {
-  const { today } = useTodayKey();
+  const { today, ready: dateReady } = useTodayKey();
   const [statuses, setStatuses] = useState<Record<string, "done" | "lost" | "pending">>({});
 
   useEffect(() => {
+    if (!today) return;
+    clearStalePuzzleState(today);
     setStatuses({
       "guess-player": getPuzzleStatus("guess-player", today),
       scramble: getPuzzleStatus("scramble", today),
@@ -63,7 +68,9 @@ export function PuzzlesHub() {
           Daily <span className="text-blue-600">Puzzles</span>
         </h1>
         <p className="text-zinc-500 text-sm mt-1">
-          {formatTodayDisplay(today)} · {completed}/{PUZZLE_CATALOG.length} completed today
+          {dateReady && today
+            ? `${formatTodayDisplay(today)} · ${completed}/${PUZZLE_CATALOG.length} completed today`
+            : "Loading today's puzzles…"}
         </p>
       </div>
 
@@ -123,35 +130,6 @@ export function PuzzlesHub() {
       </div>
 
       <AdBanner placement="puzzles" />
-
-      <div>
-        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Coming Soon</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {COMING_SOON.map((puzzle) => {
-            const c = COLOR_MAP[puzzle.color];
-            const Icon = puzzle.icon;
-            return (
-              <div
-                key={puzzle.title}
-                className="card-surface rounded-xl p-4 opacity-60 cursor-not-allowed"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`rounded-lg p-2 ${c.icon}`}>
-                    <Icon size={18} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-zinc-900 text-sm flex items-center gap-2">
-                      {puzzle.title}
-                      <Sparkles size={12} className="text-amber-500" />
-                    </p>
-                    <p className="text-xs text-zinc-400 mt-0.5">{puzzle.description}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

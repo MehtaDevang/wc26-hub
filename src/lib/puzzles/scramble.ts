@@ -1,5 +1,5 @@
 import { GUESS_PLAYERS, normalizeGuess, checkGuess } from "../guess-player";
-import { pickDailySet, getTodayKey } from "./daily";
+import { pickDailySet } from "./daily";
 import type { GuessPlayer } from "../types";
 
 function hashSeed(seed: string): number {
@@ -35,12 +35,11 @@ export interface ScrambleRound {
   wordLengths: number[];
 }
 
-export function getDailyScrambles(date = new Date()): ScrambleRound[] {
-  const today = getTodayKey(date);
-  const players = pickDailySet(GUESS_PLAYERS, 5, date, 3);
+export function getDailyScrambles(dateKey: string): ScrambleRound[] {
+  const players = pickDailySet(GUESS_PLAYERS, 5, dateKey, 3);
   return players.map((player, i) => ({
     player,
-    scrambled: scrambleText(player.name, `scramble-${today}-${i}`),
+    scrambled: scrambleText(player.name, `scramble-${dateKey}-${i}`),
     wordLengths: player.name.split(" ").map((w) => w.length),
   }));
 }

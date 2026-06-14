@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { User, Shuffle, Brain, Sparkles } from "lucide-react";
+import { User, Shuffle, Brain } from "lucide-react";
 
 export type PuzzleId = "guess-player" | "scramble" | "quiz";
 
@@ -40,15 +40,5 @@ export const PUZZLE_CATALOG: PuzzleMeta[] = [
     icon: Brain,
     color: "amber",
     badge: "Trivia",
-  },
-];
-
-export const COMING_SOON = [
-  {
-    title: "Higher or Lower",
-    description: "Compare player stats — is the next number higher or lower?",
-    icon: Sparkles,
-    color: "emerald" as const,
-    badge: "Soon",
   },
 ];

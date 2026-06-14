@@ -113,6 +113,25 @@ export function countWins(rounds: RoundResult[]): number {
   return rounds.filter((r) => r.won).length;
 }
 
+export function clearStalePuzzleState(today: string): void {
+  if (typeof window === "undefined") return;
+
+  const guess = getGuessState();
+  if (guess && guess.date !== today) {
+    localStorage.removeItem("wc26_guess");
+  }
+
+  const scramble = getScrambleState();
+  if (scramble && scramble.date !== today) {
+    localStorage.removeItem("wc26_scramble");
+  }
+
+  const quiz = getQuizState();
+  if (quiz && quiz.date !== today) {
+    localStorage.removeItem("wc26_quiz");
+  }
+}
+
 export function getPuzzleStatus(id: "guess-player" | "scramble" | "quiz", today: string): "done" | "lost" | "pending" {
   if (typeof window === "undefined") return "pending";
 

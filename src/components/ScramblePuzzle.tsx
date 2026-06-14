@@ -11,12 +11,12 @@ import { getPlayerFlag } from "@/lib/guess-player";
 import {
   getScrambleState,
   saveScrambleState,
+  clearStalePuzzleState,
   countWins,
   PUZZLES_PER_DAY,
 } from "@/lib/storage";
 import type { RoundResult } from "@/lib/storage";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
-import { parseLocalDate } from "@/lib/puzzles/daily";
 import { PuzzleShell } from "./PuzzleShell";
 import { PuzzleProgress } from "./PuzzleProgress";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
@@ -24,8 +24,11 @@ import { PuzzleCelebration } from "./PuzzleCelebration";
 import { AdBanner } from "./AdBanner";
 
 export function ScramblePuzzle() {
-  const { today } = useTodayKey();
-  const scrambles = useMemo(() => getDailyScrambles(parseLocalDate(today)), [today]);
+  const { today, ready: dateReady } = useTodayKey();
+  const scrambles = useMemo(
+    () => (today ? getDailyScrambles(today) : []),
+    [today]
+  );
 
   const [ready, setReady] = useState(false);
   const [roundIndex, setRoundIndex] = useState(0);
@@ -53,6 +56,13 @@ export function ScramblePuzzle() {
   }, [resetRound]);
 
   useEffect(() => {
+    if (!today) {
+      setReady(false);
+      return;
+    }
+
+    setReady(false);
+    clearStalePuzzleState(today);
     const state = getScrambleState();
     if (state?.date === today) {
       setRoundIndex(state.currentRound);
@@ -67,12 +77,13 @@ export function ScramblePuzzle() {
 
   const persist = useCallback(
     (nextRound: number, nextRounds: RoundResult[], done: boolean) => {
+      if (!today) return;
       saveScrambleState({ date: today, currentRound: nextRound, rounds: nextRounds, finished: done });
     },
     [today]
   );
 
-  if (!ready) {
+  if (!dateReady || !ready || !today) {
     return (
       <PuzzleShell title="Name Scramble" subtitle="Loading today's puzzle…">
         <div className="card-elevated rounded-2xl p-8 text-center text-sm text-zinc-500">

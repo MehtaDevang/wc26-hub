@@ -6,11 +6,11 @@ import { getDailyQuizzes, checkQuizAnswer } from "@/lib/puzzles/quiz";
 import {
   getQuizState,
   saveQuizState,
+  clearStalePuzzleState,
   PUZZLES_PER_DAY,
 } from "@/lib/storage";
 import type { QuizRoundResult } from "@/lib/storage";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
-import { parseLocalDate } from "@/lib/puzzles/daily";
 import { PuzzleShell } from "./PuzzleShell";
 import { PuzzleProgress } from "./PuzzleProgress";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
@@ -18,9 +18,9 @@ import { PuzzleCelebration } from "./PuzzleCelebration";
 import { AdBanner } from "./AdBanner";
 
 export function QuizPuzzle() {
-  const { today } = useTodayKey();
+  const { today, ready: dateReady } = useTodayKey();
   const { questions } = useMemo(
-    () => getDailyQuizzes(parseLocalDate(today)),
+    () => (today ? getDailyQuizzes(today) : { questions: [] }),
     [today]
   );
 
@@ -46,6 +46,13 @@ export function QuizPuzzle() {
   }, [resetRound]);
 
   useEffect(() => {
+    if (!today) {
+      setReady(false);
+      return;
+    }
+
+    setReady(false);
+    clearStalePuzzleState(today);
     const state = getQuizState();
     if (state?.date === today) {
       setRoundIndex(state.currentRound);
@@ -62,12 +69,13 @@ export function QuizPuzzle() {
 
   const persist = useCallback(
     (nextRound: number, nextRounds: QuizRoundResult[], done: boolean) => {
+      if (!today) return;
       saveQuizState({ date: today, currentRound: nextRound, rounds: nextRounds, finished: done });
     },
     [today]
   );
 
-  if (!ready) {
+  if (!dateReady || !ready || !today) {
     return (
       <PuzzleShell title="Daily Quiz" subtitle="Loading today's quiz…">
         <div className="card-elevated rounded-2xl p-8 text-center text-sm text-zinc-500">

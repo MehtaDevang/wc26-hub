@@ -1,4 +1,4 @@
-import { pickDailySet, getTodayKey, PUZZLES_PER_DAY } from "./daily";
+import { pickDailySet, PUZZLES_PER_DAY } from "./daily";
 
 export interface QuizQuestion {
   question: string;
@@ -191,10 +191,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
 ];
 
-export function getDailyQuizzes(date = new Date()) {
-  const today = getTodayKey(date);
-  const questions = pickDailySet(QUIZ_QUESTIONS, PUZZLES_PER_DAY, date, 2);
-  return { questions, date: today };
+export function getDailyQuizzes(dateKey: string) {
+  const questions = pickDailySet(QUIZ_QUESTIONS, PUZZLES_PER_DAY, dateKey, 2);
+  return { questions, date: dateKey };
 }
 
 export function checkQuizAnswer(selectedIndex: number, correctIndex: number): boolean {

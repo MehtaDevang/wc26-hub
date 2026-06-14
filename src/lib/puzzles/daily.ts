@@ -1,11 +1,15 @@
 export const PUZZLES_PER_DAY = 5;
 
-/** Local calendar date YYYY-MM-DD (not UTC). */
+/** Local calendar date YYYY-MM-DD (browser local timezone). */
 export function getTodayKey(date = new Date()): string {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+function resolveDateKey(dateOrKey: Date | string): string {
+  return typeof dateOrKey === "string" ? dateOrKey : getTodayKey(dateOrKey);
 }
 
 export function parseLocalDate(dateKey: string): Date {
@@ -31,12 +35,12 @@ function dateSeed(key: string, salt = 0): number {
 export function pickDailySet<T>(
   items: T[],
   count: number = PUZZLES_PER_DAY,
-  date = new Date(),
+  dateOrKey: Date | string = new Date(),
   seed = 0
 ): T[] {
   if (items.length === 0) return [];
 
-  const key = getTodayKey(date);
+  const key = resolveDateKey(dateOrKey);
   const indices = items.map((_, i) => i);
   let h = dateSeed(key, seed);
 
@@ -58,6 +62,26 @@ export function pickDaily<T>(items: T[], date = new Date(), offset = 0): T {
 export function getMsUntilNextPuzzleReset(now = new Date()): number {
   const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   return next.getTime() - now.getTime();
+}
+
+/** Milliseconds until midnight in an IANA timezone. */
+export function getMsUntilNextPuzzleResetInTimezone(
+  timeZone: string,
+  now = new Date()
+): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+
+  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  const second = Number(parts.find((p) => p.type === "second")?.value ?? 0);
+  const msElapsed = ((hour * 60 + minute) * 60 + second) * 1000;
+  return 86400000 - msElapsed;
 }
 
 export function formatResetCountdown(ms: number): string {

@@ -1,26 +1,41 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTimezone } from "@/components/TimezoneProvider";
+import { todayDateKey } from "@/lib/timezone";
 import {
-  getTodayKey,
-  getMsUntilNextPuzzleReset,
+  getMsUntilNextPuzzleResetInTimezone,
 } from "@/lib/puzzles/daily";
 
+/**
+ * Calendar date for daily puzzles in the user's active timezone.
+ * Waits for client mount so SSR UTC never seeds yesterday's set.
+ */
 export function useTodayKey() {
-  const [today, setToday] = useState(() => getTodayKey());
-  const [resetsInMs, setResetsInMs] = useState(() => getMsUntilNextPuzzleReset());
+  const timezone = useTimezone();
+  const [today, setToday] = useState<string | null>(null);
+  const [resetsInMs, setResetsInMs] = useState(0);
 
   useEffect(() => {
     const tick = () => {
-      const next = getTodayKey();
+      const next = todayDateKey(timezone);
       setToday((prev) => (prev !== next ? next : prev));
-      setResetsInMs(getMsUntilNextPuzzleReset());
+      setResetsInMs(getMsUntilNextPuzzleResetInTimezone(timezone));
     };
 
     tick();
-    const id = setInterval(tick, 30_000);
-    return () => clearInterval(id);
-  }, []);
+    const interval = setInterval(tick, 30_000);
 
-  return { today, resetsInMs };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [timezone]);
+
+  return { today, resetsInMs, ready: today !== null };
 }
