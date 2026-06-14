@@ -4,6 +4,7 @@ import { SponsoredBanner } from "@/components/SponsoredBanner";
 import { AdBanner } from "@/components/AdBanner";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
+import { IconicMoments } from "@/components/IconicMoments";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { createPageMetadata } from "@/lib/seo";
 import { getTodayMatches, getRecentHighlights } from "@/lib/espn/services";
@@ -73,7 +74,14 @@ export default async function Home() {
       </div>
 
       <LiveScores initialMatches={initialMatches} />
+
+      <AdBanner placement="inline" />
+
       <MatchHighlights initialHighlights={initialHighlights} />
+
+      <AdBanner placement="inline" />
+
+      <IconicMoments limit={6} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/fixtures" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between">
@@ -127,7 +135,7 @@ export default async function Home() {
         </Link>
       </section>
 
-      <AdBanner slot="inline" />
+      <AdBanner placement="inline" />
 
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">

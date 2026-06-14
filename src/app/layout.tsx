@@ -3,6 +3,7 @@ import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSenseScript } from "@/components/AdSenseScript";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { rootMetadata } from "@/lib/seo";
@@ -43,11 +44,15 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
         <JsonLd data={websiteJsonLd} />
+        <AdSenseScript />
         <Navbar />
-        <AdBanner slot="top" />
+        <AdBanner placement="top" />
         <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
           {children}
         </main>
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-4">
+          <AdBanner placement="footer" />
+        </div>
         <footer className="border-t border-zinc-200 bg-white py-8">
           <WC26MascotStrip variant="footer" className="mb-4" />
           <p className="text-center text-xs text-zinc-400">

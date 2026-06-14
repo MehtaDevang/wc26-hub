@@ -10,6 +10,7 @@ import { getCoach } from "../coaches";
 import type {
   EspnCompetition, EspnEvent, EspnKeyEvent, EspnSummary, EspnRoster, EspnCompetitor,
 } from "./client";
+import { buildGoalHighlights } from "./highlight-images";
 
 function parseGroup(note?: string): string {
   if (!note) return "?";
@@ -427,20 +428,7 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
 }
 
 export function goalsToHighlights(match: Match, summary: EspnSummary): Highlight[] {
-  const goals = (summary.keyEvents ?? []).filter(
-    (e) => e.type.type === "goal" || e.scoringPlay
-  );
-
-  return goals.map((g) => ({
-    id: `h-${match.id}-${g.id}`,
-    matchId: match.id,
-    title: g.shortText ?? "Goal",
-    description: g.text ?? "",
-    type: "goal" as const,
-    minute: g.clock?.displayValue ?? "",
-    teams: `${match.homeName} ${match.homeScore ?? 0}-${match.awayScore ?? 0} ${match.awayName}`,
-    emoji: "⚽",
-  }));
+  return buildGoalHighlights(match, summary);
 }
 
 export function transformAllStandings(summary: EspnSummary): GroupStandings[] {

@@ -1,5 +1,7 @@
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { WorldCupHistoryHub } from "@/components/history/WorldCupHistoryHub";
+import { AdBanner } from "@/components/AdBanner";
+import { IconicMoments } from "@/components/IconicMoments";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -16,6 +18,8 @@ export default function HistoryPage() {
         title="World Cup History"
         subtitle="Winners, finals, records, awards, prizes & controversies — 1930 to 2026"
       />
+      <IconicMoments limit={6} showClassicLink={false} />
+      <AdBanner placement="history" />
       <WorldCupHistoryHub />
     </div>
   );

@@ -8,6 +8,7 @@ import { getPuzzleStatus } from "@/lib/storage";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { formatTodayDisplay } from "@/lib/puzzles/daily";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
+import { AdBanner } from "./AdBanner";
 
 const COLOR_MAP = {
   blue: { icon: "bg-blue-50 text-blue-600", badge: "bg-blue-50 text-blue-700", ring: "hover:border-blue-200" },
@@ -65,6 +66,8 @@ export function PuzzlesHub() {
 
       <PuzzleDailyBanner />
 
+      <AdBanner placement="puzzles" />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {PUZZLE_CATALOG.map((puzzle) => {
           const c = COLOR_MAP[puzzle.color];
@@ -99,6 +102,8 @@ export function PuzzlesHub() {
           );
         })}
       </div>
+
+      <AdBanner placement="puzzles" />
 
       <div>
         <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Coming Soon</h2>

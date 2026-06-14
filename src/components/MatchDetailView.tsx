@@ -12,6 +12,8 @@ import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight, MatchSta
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
+import { HighlightCard } from "./HighlightCard";
+import { AdBanner } from "./AdBanner";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
@@ -340,23 +342,20 @@ function MatchDetailContent({
         <p className="text-zinc-600 leading-relaxed">{detail.summary}</p>
       </section>
 
+      <AdBanner placement="match" />
+
       {highlights.length > 0 && (
         <section>
           <h2 className="section-title mb-4 text-base">Goal Highlights</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {highlights.map((h) => (
-              <div key={h.id} className="card-surface rounded-xl p-4 flex items-start gap-3">
-                <span className="text-2xl">{h.emoji}</span>
-                <div>
-                  <p className="text-[10px] text-amber-600 font-medium">{h.minute} · {h.teams}</p>
-                  <p className="font-semibold text-zinc-900 text-sm mt-0.5">{h.title}</p>
-                  <p className="text-xs text-zinc-500 mt-1">{h.description}</p>
-                </div>
-              </div>
+              <HighlightCard key={h.id} highlight={h} compact />
             ))}
           </div>
         </section>
       )}
+
+      <AdBanner placement="match" />
 
       {detail.leaders && detail.leaders.length > 0 && (
         <section className="card-surface rounded-2xl p-6">

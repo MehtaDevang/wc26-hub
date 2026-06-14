@@ -98,7 +98,7 @@ export function ScramblePuzzle() {
             ))}
           </div>
         </div>
-        <AdBanner slot="inline" />
+        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }
@@ -232,7 +232,7 @@ export function ScramblePuzzle() {
         </button>
       )}
 
-      <AdBanner slot="inline" />
+      <AdBanner placement="puzzles" />
     </PuzzleShell>
   );
 }

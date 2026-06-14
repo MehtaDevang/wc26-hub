@@ -38,6 +38,10 @@ export interface Highlight {
   minute: string;
   teams: string;
   emoji: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  imageType?: "player" | "stadium" | "team" | "moment";
+  playerName?: string;
 }
 
 export interface PlayerProfile {

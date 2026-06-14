@@ -1,6 +1,7 @@
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvents } from "@/lib/espn/transform";
 import { FixturesList } from "@/components/FixturesList";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -23,6 +24,7 @@ export default async function FixturesPage() {
           All World Cup 2026 matches · {matches.length} fixtures
         </p>
       </div>
+      <AdBanner placement="fixtures" />
       <FixturesList matches={matches} />
     </div>
   );

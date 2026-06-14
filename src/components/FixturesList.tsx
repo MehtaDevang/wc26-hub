@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { Calendar, MapPin } from "lucide-react";
 import type { Match } from "@/lib/types";
 import { getTeam } from "@/lib/data";
+import { AdBanner } from "@/components/AdBanner";
 
 function MatchFixtureRow({ match }: { match: Match }) {
   const home = getTeam(match.home, match.homeName, match.homeLogo);
@@ -82,25 +83,32 @@ export function FixturesList({ matches }: { matches: Match[] }) {
 
   return (
     <div className="space-y-6">
-      {byDate.map(([date, dayMatches]) => (
-        <div key={date} className="card-surface rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/50">
-            <Calendar size={14} className="text-blue-600" />
-            <h3 className="font-semibold text-zinc-900 text-sm">
-              {new Date(date + "T12:00:00").toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </h3>
-            <span className="text-xs text-zinc-400 ml-auto">{dayMatches.length} matches</span>
+      {byDate.map(([date, dayMatches], index) => (
+        <div key={date}>
+          <div className="card-surface rounded-2xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/50">
+              <Calendar size={14} className="text-blue-600" />
+              <h3 className="font-semibold text-zinc-900 text-sm">
+                {new Date(date + "T12:00:00").toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </h3>
+              <span className="text-xs text-zinc-400 ml-auto">{dayMatches.length} matches</span>
+            </div>
+            <div>
+              {dayMatches.map((m) => (
+                <MatchFixtureRow key={m.id} match={m} />
+              ))}
+            </div>
           </div>
-          <div>
-            {dayMatches.map((m) => (
-              <MatchFixtureRow key={m.id} match={m} />
-            ))}
-          </div>
+          {(index + 1) % 3 === 0 && index < byDate.length - 1 && (
+            <div className="mt-6">
+              <AdBanner placement="fixtures" />
+            </div>
+          )}
         </div>
       ))}
     </div>

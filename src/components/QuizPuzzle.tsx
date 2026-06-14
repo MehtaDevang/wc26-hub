@@ -92,7 +92,7 @@ export function QuizPuzzle() {
             ))}
           </div>
         </div>
-        <AdBanner slot="inline" />
+        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }
@@ -203,7 +203,7 @@ export function QuizPuzzle() {
         </div>
       )}
 
-      <AdBanner slot="inline" />
+      <AdBanner placement="puzzles" />
     </PuzzleShell>
   );
 }

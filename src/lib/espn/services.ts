@@ -5,6 +5,7 @@ import {
   formatEspnDate,
 } from "./client";
 import { transformEvents, transformEvent, goalsToHighlights } from "./transform";
+import { extractMomentHighlights } from "./highlight-images";
 import type { Match, Highlight } from "../types";
 
 const ESPN_TIMEOUT_MS = 8_000;
@@ -52,6 +53,16 @@ export async function getMatchesByParams(params: {
   return transformEvents(data.events ?? []);
 }
 
+function sortHighlights(highlights: Highlight[]): Highlight[] {
+  return [...highlights].sort((a, b) => {
+    if (a.type === "goal" && b.type !== "goal") return -1;
+    if (b.type === "goal" && a.type !== "goal") return 1;
+    if (a.imageUrl && !b.imageUrl) return -1;
+    if (b.imageUrl && !a.imageUrl) return 1;
+    return 0;
+  });
+}
+
 export async function getRecentHighlights(limit = 6): Promise<Highlight[]> {
   const end = new Date();
   const start = new Date();
@@ -72,17 +83,24 @@ export async function getRecentHighlights(limit = 6): Promise<Highlight[]> {
     finished.map(async (event) => {
       const match = transformEvent(event);
       const summary = await withTimeout(fetchEspnSummary(event.id), 6_000);
-      return goalsToHighlights(match, summary);
+      const goals = goalsToHighlights(match, summary);
+      const usedUrls = new Set(
+        goals.map((g) => g.imageUrl).filter((url): url is string => !!url)
+      );
+      const moments = extractMomentHighlights(match, summary, usedUrls, 3);
+      return { goals, moments };
     })
   );
 
-  const highlights: Highlight[] = [];
+  const goals: Highlight[] = [];
+  const moments: Highlight[] = [];
+
   for (const result of results) {
-    if (result.status === "fulfilled") {
-      highlights.push(...result.value);
-      if (highlights.length >= limit) break;
-    }
+    if (result.status !== "fulfilled") continue;
+    goals.push(...result.value.goals);
+    moments.push(...result.value.moments);
   }
 
-  return highlights.slice(0, limit);
+  const combined = sortHighlights([...goals, ...moments]);
+  return combined.slice(0, limit);
 }

@@ -1,6 +1,7 @@
 import { InteractiveStandingsGrid } from "@/components/InteractiveStandingsGrid";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -20,6 +21,7 @@ export default async function StandingsPage() {
         title="Group Standings"
         subtitle="Live tables for all 12 World Cup groups — tap any team row to explore their journey"
       />
+      <AdBanner placement="standings" />
       <InteractiveStandingsGrid groups={standings} />
     </div>
   );

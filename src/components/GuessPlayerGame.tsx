@@ -96,7 +96,7 @@ export function GuessPlayerGame() {
             ))}
           </div>
         </div>
-        <AdBanner slot="inline" />
+        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }
@@ -309,7 +309,7 @@ export function GuessPlayerGame() {
         </button>
       )}
 
-      <AdBanner slot="inline" />
+      <AdBanner placement="puzzles" />
     </PuzzleShell>
   );
 }

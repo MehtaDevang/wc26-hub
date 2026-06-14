@@ -5,18 +5,19 @@ export interface VenueMeta {
   capacity: number;
   lat: number;
   lon: number;
+  imageUrl?: string;
 }
 
 const VENUES: VenueMeta[] = [
   { name: "BC Place", city: "Vancouver", country: "Canada", capacity: 54500, lat: 49.2768, lon: -123.112 },
   { name: "BMO Field", city: "Toronto", country: "Canada", capacity: 45736, lat: 43.6332, lon: -79.4186 },
   { name: "Commonwealth Stadium", city: "Edmonton", country: "Canada", capacity: 56418, lat: 53.5597, lon: -113.4761 },
-  { name: "Estadio Azteca", city: "Mexico City", country: "Mexico", capacity: 87523, lat: 19.3029, lon: -99.1505 },
-  { name: "Estadio Banorte", city: "Mexico City", country: "Mexico", capacity: 87523, lat: 19.3029, lon: -99.1505 },
+  { name: "Estadio Azteca", city: "Mexico City", country: "Mexico", capacity: 87523, lat: 19.3029, lon: -99.1505, imageUrl: "https://a.espncdn.com/photo/2026/0611/r1671535_1296x729_16-9.jpg" },
+  { name: "Estadio Banorte", city: "Mexico City", country: "Mexico", capacity: 87523, lat: 19.3029, lon: -99.1505, imageUrl: "https://a.espncdn.com/photo/2026/0611/r1671535_1296x729_16-9.jpg" },
   { name: "Estadio Akron", city: "Guadalajara", country: "Mexico", capacity: 48071, lat: 20.6818, lon: -103.4626 },
   { name: "Estadio BBVA", city: "Monterrey", country: "Mexico", capacity: 53460, lat: 25.6866, lon: -100.2455 },
-  { name: "MetLife Stadium", city: "East Rutherford", country: "USA", capacity: 82500, lat: 40.8128, lon: -74.0742 },
-  { name: "SoFi Stadium", city: "Inglewood", country: "USA", capacity: 70240, lat: 33.9535, lon: -118.339 },
+  { name: "SoFi Stadium", city: "Inglewood", country: "USA", capacity: 70240, lat: 33.9535, lon: -118.339, imageUrl: "https://a.espncdn.com/photo/2025/1204/r1584809_2_1296x729_16-9.jpg" },
+  { name: "MetLife Stadium", city: "East Rutherford", country: "USA", capacity: 82500, lat: 40.8128, lon: -74.0742, imageUrl: "https://a.espncdn.com/photo/2025/1204/r1584809_2_1296x729_16-9.jpg" },
   { name: "AT&T Stadium", city: "Arlington", country: "USA", capacity: 80000, lat: 32.7473, lon: -97.0945 },
   { name: "Mercedes-Benz Stadium", city: "Atlanta", country: "USA", capacity: 71000, lat: 33.7553, lon: -84.4006 },
   { name: "Levi's Stadium", city: "Santa Clara", country: "USA", capacity: 68500, lat: 37.403, lon: -121.9694 },
