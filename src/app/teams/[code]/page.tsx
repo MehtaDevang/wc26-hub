@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTeamJourney } from "@/lib/espn/team-journey";
 import { getTeamSquadPlayers } from "@/lib/espn/player-profile";
+import { getTeamQualification } from "@/lib/team-qualification";
 import { TeamJourneyContent } from "@/components/TeamJourneyContent";
 import { TeamSquad } from "@/components/TeamSquad";
+import { TeamQualificationCard } from "@/components/TeamQualification";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
@@ -33,7 +35,7 @@ export async function generateMetadata({ params }: PageProps) {
   const name = getTeamName(teamCode);
   return createPageMetadata({
     title: `${name} World Cup 2026 — Live Scores, Fixtures, Squad & Stats`,
-    description: `${name} at FIFA World Cup 2026 — live scores, results, group standings, upcoming fixtures, squad players, goals, and full tournament stats.`,
+    description: `${name} at FIFA World Cup 2026 — how they qualified, live scores, results, group standings, upcoming fixtures, squad players, goals, and full tournament stats.`,
     path: `/teams/${teamCode}`,
     ogImagePath: `/teams/${teamCode}/opengraph-image`,
     keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [
@@ -59,6 +61,8 @@ export default async function TeamPage({ params }: PageProps) {
   ]);
   if (!journey) notFound();
 
+  const qualification = getTeamQualification(journey.teamCode);
+
   return (
     <div className="space-y-6">
       <JsonLd
@@ -80,6 +84,9 @@ export default async function TeamPage({ params }: PageProps) {
         <span className="text-zinc-600">{journey.teamName}</span>
       </nav>
       <AdBanner placement="match" />
+      {qualification && (
+        <TeamQualificationCard teamName={journey.teamName} qualification={qualification} />
+      )}
       <TeamSquad teamName={journey.teamName} players={players} />
       <TeamJourneyContent journey={journey} timezone={timeZone} />
     </div>

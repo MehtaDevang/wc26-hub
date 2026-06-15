@@ -35,6 +35,10 @@ export default async function LeadersPage() {
           All players →
         </Link>
         <span className="text-zinc-300">·</span>
+        <Link href="/history#goals" className="text-blue-600 hover:underline font-medium">
+          All-time goal records →
+        </Link>
+        <span className="text-zinc-300">·</span>
         <Link href="/standings" className="text-blue-600 hover:underline font-medium">
           Group standings →
         </Link>

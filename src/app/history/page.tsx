@@ -8,7 +8,7 @@ import { mergeKeywords, HISTORY_KEYWORDS } from "@/lib/seo-keywords";
 export const metadata = createPageMetadata({
   title: "World Cup History — Winners, Finals, Records & Football Stats",
   description:
-    "Complete FIFA World Cup history from 1930 to 2026 — every winner, final score, Golden Ball, all-time records, prize money, iconic moments, and controversies.",
+    "Complete FIFA World Cup history from 1930 to 2026 — every winner, final score, all-time goal records, Golden Boot leaders, records, prizes, and controversies.",
   path: "/history",
   keywords: mergeKeywords(HISTORY_KEYWORDS, [
     "World Cup champions",

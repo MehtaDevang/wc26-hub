@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Trophy,
   Medal,
@@ -33,10 +33,12 @@ import {
   type ControversyCategory,
   type WorldCupControversy,
 } from "@/lib/world-cup-controversies";
+import { GoalRecordsTab } from "@/components/history/GoalRecordsTab";
 
 const TABS = [
   { id: "winners", label: "Winners", icon: Crown },
   { id: "editions", label: "All Cups", icon: Calendar },
+  { id: "goals", label: "Goal Records", icon: Goal },
   { id: "records", label: "Records", icon: BarChart3 },
   { id: "awards", label: "Awards & Prizes", icon: Gift },
   { id: "controversies", label: "Controversies", icon: AlertTriangle },
@@ -566,8 +568,15 @@ function ControversiesTab() {
 export function WorldCupHistoryHub() {
   const [tab, setTab] = useState<TabId>("winners");
 
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "goals" || hash === "records" || hash === "winners" || hash === "editions" || hash === "awards" || hash === "controversies") {
+      setTab(hash as TabId);
+    }
+  }, []);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="history-hub">
       <SummaryStrip />
 
       <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1">
@@ -575,7 +584,10 @@ export function WorldCupHistoryHub() {
           <button
             key={id}
             type="button"
-            onClick={() => setTab(id)}
+            onClick={() => {
+              setTab(id);
+              window.history.replaceState(null, "", `#${id}`);
+            }}
             className={`flex items-center gap-1.5 shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
               tab === id
                 ? "bg-[var(--wc-usa)] text-white shadow-sm"
@@ -590,6 +602,7 @@ export function WorldCupHistoryHub() {
 
       {tab === "winners" && <WinnersTab />}
       {tab === "editions" && <EditionsTab />}
+      {tab === "goals" && <GoalRecordsTab />}
       {tab === "records" && <RecordsTab />}
       {tab === "awards" && <AwardsTab />}
       {tab === "controversies" && <ControversiesTab />}
