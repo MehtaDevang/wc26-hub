@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History } from "lucide-react";
+import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History, GitBranch, Calculator, Tv, BarChart3 } from "lucide-react";
 import { SponsoredBanner } from "@/components/SponsoredBanner";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
@@ -8,6 +8,8 @@ import { HomeHero } from "@/components/HomeHero";
 import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
 import { LiveNextMatchCountdown } from "@/components/LiveNextMatchCountdown";
 import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
+import { MyTeamsMatches } from "@/components/MyTeamsMatches";
+import { MyTeamsPicker } from "@/components/MyTeams";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS, CORE_KEYWORDS } from "@/lib/seo-keywords";
 import { JsonLd } from "@/components/JsonLd";
@@ -59,6 +61,8 @@ export default async function Home() {
 
       <LiveScores initialMatches={initialMatches} />
 
+      <MyTeamsMatches matches={initialMatches} />
+
       <LiveMomentsStrip slides={heroSlides} />
 
       <LiveNextMatchCountdown initialMatches={nextMatches} />
@@ -92,6 +96,37 @@ export default async function Home() {
           <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
         </Link>
       </div>
+
+      <MyTeamsPicker />
+
+      <section>
+        <h2 className="section-title mb-5 flex items-center gap-2">
+          <GitBranch size={22} className="text-blue-600" />
+          Fan Tools
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/bracket/predict" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <GitBranch size={20} className="text-blue-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Bracket Predictor</h3>
+            <p className="text-sm text-zinc-500 mt-1">Pick winners & share your bracket</p>
+          </Link>
+          <Link href="/scenarios" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <Calculator size={20} className="text-violet-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Qualification Scenarios</h3>
+            <p className="text-sm text-zinc-500 mt-1">What does each team need to advance?</p>
+          </Link>
+          <Link href="/watch" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <Tv size={20} className="text-emerald-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Where to Watch</h3>
+            <p className="text-sm text-zinc-500 mt-1">TV channels for every match</p>
+          </Link>
+          <Link href="/leaders" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <BarChart3 size={20} className="text-amber-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Stat Leaders</h3>
+            <p className="text-sm text-zinc-500 mt-1">Golden Boot, assists & more</p>
+          </Link>
+        </div>
+      </section>
 
       <SponsoredBanner />
 

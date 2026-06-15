@@ -16,6 +16,11 @@ import {
   Globe,
   MapPin,
   ChevronDown,
+  GitBranch,
+  Calculator,
+  Tv,
+  BarChart3,
+  Star,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME } from "@/lib/site";
@@ -35,6 +40,13 @@ const HOSTS_VENUES_LINKS = [
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
 ] as const;
 
+const FAN_TOOLS_LINKS = [
+  { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
+  { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
+  { href: "/watch", label: "Where to Watch", icon: Tv },
+  { href: "/leaders", label: "Stat Leaders", icon: BarChart3 },
+] as const;
+
 const NAV_AFTER_HOSTS = [
   { href: "/history", label: "History", icon: History },
   { href: "/puzzles", label: "Puzzles", icon: Puzzle },
@@ -48,6 +60,10 @@ function isNavLinkActive(pathname: string, href: string): boolean {
   if (href === "/players" && pathname.startsWith("/players")) return true;
   if (href === "/hosts" && pathname.startsWith("/hosts")) return true;
   if (href === "/stadiums" && pathname.startsWith("/stadiums")) return true;
+  if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
+  if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;
+  if (href === "/watch" && pathname.startsWith("/watch")) return true;
+  if (href === "/leaders" && pathname.startsWith("/leaders")) return true;
   return false;
 }
 
@@ -83,6 +99,90 @@ function NavLink({
       <Icon size={15} strokeWidth={active ? 2.5 : 2} />
       <span className="hidden lg:inline">{label}</span>
     </Link>
+  );
+}
+
+function isFanToolsActive(pathname: string): boolean {
+  return FAN_TOOLS_LINKS.some((item) => isNavLinkActive(pathname, item.href));
+}
+
+function FanToolsDropdown({ pathname }: { pathname: string }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const active = isFanToolsActive(pathname);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={clsx(
+          "flex items-center gap-1 rounded-lg px-2.5 lg:px-3 py-2 text-[13px] font-medium transition-colors",
+          active || open
+            ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
+            : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+        )}
+      >
+        <Star size={15} strokeWidth={active ? 2.5 : 2} />
+        <span className="hidden lg:inline">Fan Tools</span>
+        <ChevronDown
+          size={14}
+          className={clsx("transition-transform opacity-70", open && "rotate-180")}
+        />
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="nav-dropdown-panel absolute left-0 top-full z-50 mt-1 min-w-[12rem] rounded-xl border border-zinc-200 bg-white py-1 shadow-lg"
+        >
+          {FAN_TOOLS_LINKS.map(({ href, label, icon: Icon }) => {
+            const itemActive = isNavLinkActive(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                role="menuitem"
+                className={clsx(
+                  "flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors",
+                  itemActive
+                    ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
+                    : "text-zinc-700 hover:bg-zinc-50"
+                )}
+                onClick={() => setOpen(false)}
+              >
+                <Icon size={16} strokeWidth={itemActive ? 2.5 : 2} />
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -237,6 +337,7 @@ export function Navbar() {
             <NavLink key={item.href} {...item} pathname={pathname} />
           ))}
           <HostsVenuesDropdown pathname={pathname} />
+          <FanToolsDropdown pathname={pathname} />
           {NAV_AFTER_HOSTS.map((item) => (
             <NavLink key={item.href} {...item} pathname={pathname} />
           ))}
@@ -273,6 +374,17 @@ export function Navbar() {
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {HOSTS_VENUES_LINKS.map((item) => (
+                    <MobileNavLink key={item.href} {...item} pathname={pathname} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="col-span-2 rounded-xl border border-zinc-100 bg-zinc-50/80 p-2">
+                <p className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Fan Tools
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {FAN_TOOLS_LINKS.map((item) => (
                     <MobileNavLink key={item.href} {...item} pathname={pathname} />
                   ))}
                 </div>

@@ -5,6 +5,7 @@ import { getAllPlayerSlugs } from "@/lib/espn/player-profile";
 import { TEAMS } from "@/lib/data";
 import { getSiteUrl } from "@/lib/site";
 import { getAllVenues, getVenueSlug } from "@/lib/venues";
+import { getAllWatchCountryIds } from "@/lib/watch-by-country";
 
 export const revalidate = 1800;
 
@@ -17,6 +18,10 @@ const STATIC_ROUTES: Array<{
   { path: "/fixtures", changeFrequency: "always", priority: 0.95 },
   { path: "/standings", changeFrequency: "always", priority: 0.95 },
   { path: "/bracket", changeFrequency: "hourly", priority: 0.95 },
+  { path: "/bracket/predict", changeFrequency: "daily", priority: 0.9 },
+  { path: "/scenarios", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/watch", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/leaders", changeFrequency: "hourly", priority: 0.9 },
   { path: "/teams", changeFrequency: "hourly", priority: 0.9 },
   { path: "/hosts", changeFrequency: "weekly", priority: 0.85 },
   { path: "/stadiums", changeFrequency: "weekly", priority: 0.85 },
@@ -55,6 +60,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
+    });
+  }
+
+  for (const countryId of getAllWatchCountryIds()) {
+    entries.push({
+      url: `${siteUrl}/watch/${countryId}`,
+      lastModified: now,
+      changeFrequency: "hourly",
+      priority: 0.85,
     });
   }
 

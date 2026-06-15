@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
@@ -30,6 +31,15 @@ export default async function BracketPage() {
         title="Knockout Bracket"
         subtitle="Follow the road to the Final — Round of 32, Round of 16, quarters, semis & the trophy match"
       />
+      <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
+        <Link href="/bracket/predict" className="text-blue-600 hover:underline font-medium">
+          Fill in your bracket predictor →
+        </Link>
+        <span className="text-zinc-300">·</span>
+        <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
+          Qualification scenarios →
+        </Link>
+      </p>
       <AdBanner placement="inline" />
       <LiveKnockoutBracket initialData={bracket} />
     </div>

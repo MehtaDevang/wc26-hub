@@ -45,6 +45,10 @@ export default async function StandingsPage() {
         <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
           Full knockout bracket →
         </Link>
+        <span className="text-zinc-300">·</span>
+        <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
+          Qualification scenarios →
+        </Link>
       </p>
       <AdBanner placement="standings" />
       <InteractiveStandingsGrid groups={standings} />

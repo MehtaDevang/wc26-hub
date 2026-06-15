@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft, MapPin, Users, User, Clock, Trophy,
-  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, Play,
+  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, Play, ExternalLink, Globe,
 } from "lucide-react";
 import { getTeam, isKnownTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
@@ -23,6 +23,7 @@ import { ShareButtons } from "./ShareButtons";
 import { buildMatchSharePayload } from "@/lib/share";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
+import { resolveNetworkUrl } from "@/lib/watch-by-country";
 
 const BASE_TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
@@ -364,11 +365,31 @@ function MatchDetailContent({
 
           {(detail.broadcasts?.length || detail.homeRecord || detail.awayRecord) && (
             <div className="flex flex-wrap justify-center gap-3 mt-4">
-              {detail.broadcasts?.map((b) => (
-                <span key={b.network} className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium">
-                  <Tv size={12} /> {b.network}
-                </span>
-              ))}
+              {detail.broadcasts?.map((b) => {
+                const url = resolveNetworkUrl(b.network);
+                const className = "inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium hover:bg-blue-100 transition-colors";
+                return url ? (
+                  <a
+                    key={b.network}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={className}
+                  >
+                    <Tv size={12} /> {b.network} <ExternalLink size={10} className="opacity-60" />
+                  </a>
+                ) : (
+                  <span key={b.network} className={className}>
+                    <Tv size={12} /> {b.network}
+                  </span>
+                );
+              })}
+              <Link
+                href="/watch"
+                className="inline-flex items-center gap-1 rounded-full bg-zinc-100 text-zinc-600 px-3 py-1 text-xs font-medium hover:bg-zinc-200 transition-colors"
+              >
+                <Globe size={12} /> Watch by country
+              </Link>
               {detail.homeRecord && (
                 <span className="text-xs text-zinc-500">{home.name}: {detail.homeRecord.summary} ({detail.homeRecord.points} pts)</span>
               )}

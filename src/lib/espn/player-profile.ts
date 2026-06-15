@@ -494,14 +494,24 @@ export async function getPlayerWorldCupProfile(
 }
 
 export async function getTopScorers(limit = 48): Promise<PlayerListItem[]> {
-  const index = await getPlayerIndex();
-
-  return [...index.values()]
-    .filter((p) => p.goals.length > 0)
-    .sort((a, b) => b.goals.length - a.goals.length || a.name.localeCompare(b.name))
-    .slice(0, limit)
-    .map(toListItem);
+  const { getTournamentLeaders } = await import("./tournament-stats");
+  const leaders = await getTournamentLeaders();
+  return leaders.scorers.slice(0, limit).map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    teamCode: p.teamCode,
+    teamName: p.teamName,
+    flag: p.flag,
+    goals: p.goals,
+    position: p.position,
+    number: p.number,
+    headshot: p.headshot,
+  }));
 }
+
+export { getTournamentLeaders } from "./tournament-stats";
+export type { TournamentLeaderEntry, TournamentLeaders } from "./tournament-stats";
 
 export async function getPlayersByCountry(): Promise<PlayerCountrySection[]> {
   const index = await getPlayerIndex();

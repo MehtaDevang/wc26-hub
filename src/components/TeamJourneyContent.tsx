@@ -3,6 +3,7 @@ import { Trophy, Calendar, MapPin, ChevronRight, TrendingUp } from "lucide-react
 import { getTeam } from "@/lib/data";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import { ShareButtons } from "@/components/ShareButtons";
+import { StarTeamButton } from "@/components/MyTeams";
 import { buildTeamSharePayload } from "@/lib/share";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 import type { TeamJourney, TeamJourneyMatch } from "@/lib/types";
@@ -157,13 +158,16 @@ export function TeamJourneyContent({
                 )}
                 {journey.rank && ` · ${journey.rank}${getOrdinal(journey.rank)} in group`}
               </p>
-              <ShareButtons
-                url={share.url}
-                title={share.title}
-                text={share.text}
-                label={share.label}
-                className="mt-4 justify-start"
-              />
+              <div className="flex flex-wrap items-center gap-3 mt-4">
+                <StarTeamButton teamCode={journey.teamCode} />
+                <ShareButtons
+                  url={share.url}
+                  title={share.title}
+                  text={share.text}
+                  label={share.label}
+                  className="justify-start"
+                />
+              </div>
             </div>
           </div>
         </div>
