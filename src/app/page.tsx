@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History, GitBranch, Calculator, Tv, BarChart3 } from "lucide-react";
-import { SponsoredBanner } from "@/components/SponsoredBanner";
+import { Puzzle, Trophy, TrendingUp, ArrowRight, Calendar, Table2, History, GitBranch, Calculator, Tv, BarChart3, MapPin } from "lucide-react";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
 import { IconicMoments } from "@/components/IconicMoments";
@@ -10,6 +9,8 @@ import { LiveNextMatchCountdown } from "@/components/LiveNextMatchCountdown";
 import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { MyTeamsMatches } from "@/components/MyTeamsMatches";
 import { MyTeamsPicker } from "@/components/MyTeams";
+import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
+import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS, CORE_KEYWORDS } from "@/lib/seo-keywords";
 import { JsonLd } from "@/components/JsonLd";
@@ -99,6 +100,8 @@ export default async function Home() {
 
       <MyTeamsPicker />
 
+      <TeamJourneyPromo />
+
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">
           <GitBranch size={22} className="text-blue-600" />
@@ -128,14 +131,24 @@ export default async function Home() {
         </div>
       </section>
 
-      <SponsoredBanner />
+      <Link href="/cities" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between">
+        <div>
+          <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
+            <MapPin size={18} className="text-emerald-600" />
+            Host City Travel Guides
+          </h3>
+          <p className="text-sm text-zinc-500 mt-1">Airports, stadium transit, fan zones & tips for every host city</p>
+        </div>
+        <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
+      </Link>
 
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">
           <TrendingUp size={22} className="text-blue-600" />
           Daily Puzzles
         </h2>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <PuzzleStreakCard />
+        <div className="grid gap-4 sm:grid-cols-3 mt-5">
           <Link href="/puzzles/guess-player" className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5">
             <div className="rounded-xl p-2.5 bg-blue-50 text-blue-600 w-fit mb-4">
               <Puzzle size={22} />

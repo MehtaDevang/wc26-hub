@@ -23,6 +23,8 @@ import { ShareButtons } from "./ShareButtons";
 import { buildMatchSharePayload } from "@/lib/share";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
+import { MatchNarrative } from "./MatchNarrative";
+import { AddToCalendar } from "./AddToCalendar";
 import { resolveNetworkUrl } from "@/lib/watch-by-country";
 
 const BASE_TABS = [
@@ -337,6 +339,10 @@ function MatchDetailContent({
             </div>
           </div>
 
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+            <AddToCalendar match={match} />
+          </div>
+
           <ShareButtons
             url={share.url}
             title={share.title}
@@ -433,6 +439,8 @@ function MatchDetailContent({
 
       {tab === "overview" && (
         <>
+      <MatchNarrative match={match} detail={detail} />
+
       <section className="card-surface rounded-2xl p-6">
         <h2 className="section-title mb-3 flex items-center gap-2 text-base">
           <Trophy size={18} className="text-amber-500" />

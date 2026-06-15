@@ -18,6 +18,7 @@ import {
   PUZZLES_PER_DAY,
 } from "@/lib/storage";
 import type { RoundResult } from "@/lib/storage";
+import { recordPuzzleSessionEnd } from "@/lib/puzzle-streaks";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { AdBanner } from "./AdBanner";
 import { PuzzleShell } from "./PuzzleShell";
@@ -130,6 +131,7 @@ export function GuessPlayerGame() {
   function persist(nextRound: number, nextRounds: typeof rounds, done: boolean) {
     if (!today) return;
     saveGuessState({ date: today, currentRound: nextRound, rounds: nextRounds, finished: done });
+    if (done) recordPuzzleSessionEnd(today);
   }
 
   function handleGuess() {

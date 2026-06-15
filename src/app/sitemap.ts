@@ -5,6 +5,7 @@ import { getAllPlayerSlugs } from "@/lib/espn/player-profile";
 import { TEAMS } from "@/lib/data";
 import { getSiteUrl } from "@/lib/site";
 import { getAllVenues, getVenueSlug } from "@/lib/venues";
+import { getAllCityGuides } from "@/lib/city-guides";
 import { getAllWatchCountryIds } from "@/lib/watch-by-country";
 
 export const revalidate = 1800;
@@ -24,6 +25,7 @@ const STATIC_ROUTES: Array<{
   { path: "/leaders", changeFrequency: "hourly", priority: 0.9 },
   { path: "/teams", changeFrequency: "hourly", priority: 0.9 },
   { path: "/hosts", changeFrequency: "weekly", priority: 0.85 },
+  { path: "/cities", changeFrequency: "weekly", priority: 0.85 },
   { path: "/stadiums", changeFrequency: "weekly", priority: 0.85 },
   { path: "/groups", changeFrequency: "hourly", priority: 0.9 },
   { path: "/players", changeFrequency: "hourly", priority: 0.85 },
@@ -57,6 +59,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const venue of getAllVenues()) {
     entries.push({
       url: `${siteUrl}/stadiums/${getVenueSlug(venue)}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
+  }
+
+  for (const city of getAllCityGuides()) {
+    entries.push({
+      url: `${siteUrl}/cities/${city.slug}`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,

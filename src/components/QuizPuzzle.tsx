@@ -10,6 +10,7 @@ import {
   PUZZLES_PER_DAY,
 } from "@/lib/storage";
 import type { QuizRoundResult } from "@/lib/storage";
+import { recordPuzzleSessionEnd } from "@/lib/puzzle-streaks";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { PuzzleShell } from "./PuzzleShell";
 import { PuzzleProgress } from "./PuzzleProgress";
@@ -71,6 +72,7 @@ export function QuizPuzzle() {
     (nextRound: number, nextRounds: QuizRoundResult[], done: boolean) => {
       if (!today) return;
       saveQuizState({ date: today, currentRound: nextRound, rounds: nextRounds, finished: done });
+      if (done) recordPuzzleSessionEnd(today);
     },
     [today]
   );

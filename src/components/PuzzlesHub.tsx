@@ -11,6 +11,7 @@ import {
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
 import { formatTodayDisplay } from "@/lib/puzzles/daily";
 import { PuzzleDailyBanner } from "./PuzzleDailyBanner";
+import { PuzzleStreakCard } from "./PuzzleStreakCard";
 import { ShareButtons } from "./ShareButtons";
 import { buildPuzzlesSharePayload } from "@/lib/share";
 import { AdBanner } from "./AdBanner";
@@ -75,6 +76,8 @@ export function PuzzlesHub() {
       </div>
 
       <PuzzleDailyBanner />
+
+      <PuzzleStreakCard />
 
       <div className="card-surface rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

@@ -136,6 +136,21 @@ export default function HostsPage() {
       </div>
 
       <Link
+        href="/cities"
+        className="card-surface rounded-2xl p-5 flex items-center justify-between gap-4 hover:shadow-md transition-all group"
+      >
+        <div>
+          <h2 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
+            Host city travel guides
+          </h2>
+          <p className="text-sm text-zinc-500 mt-1">
+            Airports, stadium transit, fan zones & tips for every host city
+          </p>
+        </div>
+        <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600 shrink-0" />
+      </Link>
+
+      <Link
         href="/stadiums"
         className="card-surface rounded-2xl p-5 flex items-center justify-between gap-4 hover:shadow-md transition-all group"
       >

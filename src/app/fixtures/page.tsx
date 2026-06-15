@@ -1,6 +1,7 @@
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvents } from "@/lib/espn/transform";
 import { LiveFixturesList } from "@/components/LiveFixturesList";
+import { AddTournamentCalendar } from "@/components/AddTournamentCalendar";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
@@ -28,11 +29,14 @@ export default async function FixturesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="section-title">Fixtures & Results</h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          All World Cup 2026 matches · {matches.length} fixtures · kick-offs in your local time
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="section-title">Fixtures & Results</h1>
+          <p className="text-zinc-500 text-sm mt-1">
+            All World Cup 2026 matches · {matches.length} fixtures · kick-offs in your local time
+          </p>
+        </div>
+        <AddTournamentCalendar matches={matches} />
       </div>
       <AdBanner placement="fixtures" />
       <LiveFixturesList initialMatches={matches} />
