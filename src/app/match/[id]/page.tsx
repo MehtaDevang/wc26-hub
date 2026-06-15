@@ -130,8 +130,12 @@ export default async function MatchPage({ params }: PageProps) {
 
   return (
     <>
-      <JsonLd data={matchJsonLd} />
-      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [matchJsonLd, breadcrumbJsonLd],
+        }}
+      />
       <MatchDetailView
         match={match}
         detail={detail}

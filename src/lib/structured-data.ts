@@ -19,17 +19,39 @@ function countryToIso(country?: string): string {
   return "US";
 }
 
+function normalizeIsoDate(iso: string): string {
+  const ms = Date.parse(iso);
+  if (Number.isNaN(ms)) return "2026-06-11T19:00:00.000Z";
+  return new Date(ms).toISOString();
+}
+
 function ensureIsoStartDate(kickoffAt?: string, fallbackDate?: string): string {
-  if (kickoffAt && !Number.isNaN(Date.parse(kickoffAt))) return kickoffAt;
-  if (fallbackDate?.match(/^\d{4}-\d{2}-\d{2}$/)) return `${fallbackDate}T18:00:00Z`;
-  return "2026-06-11T18:00:00Z";
+  if (kickoffAt && !Number.isNaN(Date.parse(kickoffAt))) {
+    return normalizeIsoDate(kickoffAt);
+  }
+  if (fallbackDate?.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    return normalizeIsoDate(`${fallbackDate}T18:00:00Z`);
+  }
+  return "2026-06-11T19:00:00.000Z";
 }
 
 function matchEndDate(kickoffAt: string): string {
   const start = Date.parse(kickoffAt);
-  if (Number.isNaN(start)) return kickoffAt;
+  if (Number.isNaN(start)) return normalizeIsoDate(kickoffAt);
   // Typical match window: 105 minutes (90 + stoppage)
   return new Date(start + 105 * 60 * 1000).toISOString();
+}
+
+/** Minimal tournament reference — use when nesting under SportsTeam.memberOf */
+export function buildWorldCup2026EventRef(siteUrl?: string) {
+  const base = siteUrl ?? getSiteUrl();
+  return {
+    "@type": "SportsEvent" as const,
+    "@id": worldCup2026EventId(base),
+    name: "FIFA World Cup 2026",
+    startDate: "2026-06-11T19:00:00.000Z",
+    endDate: "2026-07-19T23:59:59.000Z",
+  };
 }
 
 function buildFifaOrganizer() {
@@ -75,8 +97,8 @@ export function buildWorldCup2026EventJsonLd() {
     name: "FIFA World Cup 2026",
     alternateName: "World Cup 2026",
     sport: "Association Football",
-    startDate: "2026-06-11T19:00:00Z",
-    endDate: "2026-07-19T23:59:59Z",
+    startDate: "2026-06-11T19:00:00.000Z",
+    endDate: "2026-07-19T23:59:59.000Z",
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     url: FIFA_TOURNAMENT_URL,
@@ -95,9 +117,21 @@ export function buildWorldCup2026EventJsonLd() {
       "@type": "Offer",
       url: FIFA_TOURNAMENT_URL,
       availability: "https://schema.org/InStock",
-      validFrom: "2026-01-01T00:00:00Z",
+      validFrom: "2026-01-01T00:00:00.000Z",
       description: "Official FIFA World Cup 2026 tournament information",
     },
+  };
+}
+
+/** Single @graph block so @id references (WebSite.about, team memberOf) always resolve */
+export function buildSiteStructuredDataGraph() {
+  const organization = buildOrganizationJsonLd();
+  const website = buildWebsiteJsonLd();
+  const tournament = buildWorldCup2026EventJsonLd();
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [organization, website, tournament],
   };
 }
 
@@ -218,7 +252,7 @@ export function buildSportsEventJsonLd(match: Match, matchId: string) {
       { "@type": "SportsTeam", name: match.awayName },
     ],
     organizer: buildFifaOrganizer(),
-    isPartOf: { "@id": worldCup2026EventId(siteUrl) },
+    isPartOf: buildWorldCup2026EventRef(siteUrl),
     offers: {
       "@type": "Offer",
       url: `${siteUrl}/watch`,
@@ -265,7 +299,7 @@ export function buildSportsTeamJsonLd({
     sport: "Association Football",
     url,
     identifier: code,
-    memberOf: { "@id": worldCup2026EventId(siteUrl) },
+    memberOf: buildWorldCup2026EventRef(siteUrl),
   };
 }
 

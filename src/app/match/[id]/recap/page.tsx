@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { MatchNarrativePageView } from "@/components/MatchNarrativePageView";
 import { JsonLd } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo";
-import { buildBreadcrumbJsonLd } from "@/lib/structured-data";
+import { buildBreadcrumbJsonLd, buildSportsEventJsonLd } from "@/lib/structured-data";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidMatchId } from "@/lib/api-security";
 import { getServerTimezone } from "@/lib/timezone";
@@ -67,7 +67,12 @@ export default async function MatchRecapPage({ params }: PageProps) {
 
   return (
     <>
-      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [buildSportsEventJsonLd(match, id), breadcrumbJsonLd],
+        }}
+      />
       <MatchNarrativePageView match={match} detail={detail} mode="recap" timeZone={timeZone} />
     </>
   );
