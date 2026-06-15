@@ -1,5 +1,105 @@
 import type { Match } from "./types";
 import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "./site";
+import { lookupVenue } from "./venues";
+
+const FIFA_ORGANIZER_URL = "https://www.fifa.com/";
+const FIFA_TOURNAMENT_URL =
+  "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026";
+
+/** Stable @id for the tournament — referenced from WebSite, teams, and matches */
+export function worldCup2026EventId(siteUrl?: string): string {
+  return `${siteUrl ?? getSiteUrl()}/#wc2026`;
+}
+
+function countryToIso(country?: string): string {
+  if (!country) return "US";
+  const c = country.toLowerCase();
+  if (c.includes("mexico") || c === "mx") return "MX";
+  if (c.includes("canada") || c === "ca") return "CA";
+  return "US";
+}
+
+function ensureIsoStartDate(kickoffAt?: string, fallbackDate?: string): string {
+  if (kickoffAt && !Number.isNaN(Date.parse(kickoffAt))) return kickoffAt;
+  if (fallbackDate?.match(/^\d{4}-\d{2}-\d{2}$/)) return `${fallbackDate}T18:00:00Z`;
+  return "2026-06-11T18:00:00Z";
+}
+
+function matchEndDate(kickoffAt: string): string {
+  const start = Date.parse(kickoffAt);
+  if (Number.isNaN(start)) return kickoffAt;
+  // Typical match window: 105 minutes (90 + stoppage)
+  return new Date(start + 105 * 60 * 1000).toISOString();
+}
+
+function buildFifaOrganizer() {
+  return {
+    "@type": "Organization",
+    name: "Fédération Internationale de Football Association",
+    alternateName: "FIFA",
+    url: FIFA_ORGANIZER_URL,
+  };
+}
+
+function buildMatchEventLocation(match: Match) {
+  const venueMeta = lookupVenue(match.venue, match.venueCity, match.venueCountry);
+  const city = match.venueCity ?? venueMeta?.city;
+  const country = match.venueCountry ?? venueMeta?.country;
+  const streetAddress = match.venue !== "TBD" ? match.venue : venueMeta?.name;
+
+  const address: Record<string, string> = {
+    "@type": "PostalAddress",
+    addressCountry: countryToIso(country),
+  };
+  if (streetAddress) address.streetAddress = streetAddress;
+  if (city) address.addressLocality = city;
+
+  const place: Record<string, unknown> = {
+    "@type": "Place",
+    name: match.venue !== "TBD" ? match.venue : (city ?? "World Cup 2026 host venue"),
+    address,
+  };
+  if (venueMeta?.imageUrl) place.image = venueMeta.imageUrl;
+
+  return place;
+}
+
+/** Full tournament SportsEvent — emitted once sitewide in layout */
+export function buildWorldCup2026EventJsonLd() {
+  const siteUrl = getSiteUrl();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    "@id": worldCup2026EventId(siteUrl),
+    name: "FIFA World Cup 2026",
+    alternateName: "World Cup 2026",
+    sport: "Association Football",
+    startDate: "2026-06-11T19:00:00Z",
+    endDate: "2026-07-19T23:59:59Z",
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    url: FIFA_TOURNAMENT_URL,
+    image: `${siteUrl}/opengraph-image`,
+    location: {
+      "@type": "Place",
+      name: "United States, Mexico, and Canada",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "USA, Mexico, Canada",
+        addressCountry: "US",
+      },
+    },
+    organizer: buildFifaOrganizer(),
+    offers: {
+      "@type": "Offer",
+      url: FIFA_TOURNAMENT_URL,
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-01-01T00:00:00Z",
+      description: "Official FIFA World Cup 2026 tournament information",
+    },
+  };
+}
 
 export function buildOrganizationJsonLd() {
   const siteUrl = getSiteUrl();
@@ -28,15 +128,7 @@ export function buildWebsiteJsonLd() {
     description: SITE_DESCRIPTION,
     inLanguage: "en-US",
     publisher: { "@id": `${siteUrl}/#organization` },
-    about: {
-      "@type": "SportsEvent",
-      name: "FIFA World Cup 2026",
-      sport: "Association Football",
-      location: {
-        "@type": "Place",
-        name: "United States, Mexico, and Canada",
-      },
-    },
+    about: { "@id": worldCup2026EventId(siteUrl) },
     potentialAction: {
       "@type": "ReadAction",
       target: [
@@ -94,6 +186,8 @@ export function buildBreadcrumbJsonLd(
 export function buildSportsEventJsonLd(match: Match, matchId: string) {
   const siteUrl = getSiteUrl();
   const url = `${siteUrl}/match/${matchId}`;
+  const startDate = ensureIsoStartDate(match.kickoffAt, match.date);
+  const endDate = matchEndDate(startDate);
 
   const event: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -101,49 +195,48 @@ export function buildSportsEventJsonLd(match: Match, matchId: string) {
     "@id": `${url}#event`,
     name: `${match.homeName} vs ${match.awayName} — FIFA World Cup 2026`,
     sport: "Association Football",
-    startDate: match.kickoffAt || `${match.date}T00:00:00Z`,
+    startDate,
+    endDate,
     url,
+    image: `${siteUrl}/match/${matchId}/opengraph-image`,
     description: `Live score, stats, lineups, highlights, and head-to-head history for ${match.homeName} vs ${match.awayName} at the FIFA World Cup 2026.`,
-    location: {
-      "@type": "Place",
-      name: match.venue,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: match.venueCity,
-        addressCountry: match.venueCountry,
-      },
-    },
+    location: buildMatchEventLocation(match),
     homeTeam: {
       "@type": "SportsTeam",
       name: match.homeName,
       sport: "Association Football",
+      ...(match.homeLogo ? { logo: match.homeLogo } : {}),
     },
     awayTeam: {
       "@type": "SportsTeam",
       name: match.awayName,
       sport: "Association Football",
+      ...(match.awayLogo ? { logo: match.awayLogo } : {}),
     },
     competitor: [
       { "@type": "SportsTeam", name: match.homeName },
       { "@type": "SportsTeam", name: match.awayName },
     ],
-    organizer: {
-      "@type": "Organization",
-      name: "FIFA World Cup 2026",
-    },
-    isPartOf: {
-      "@type": "SportsEvent",
-      name: "FIFA World Cup 2026",
+    organizer: buildFifaOrganizer(),
+    isPartOf: { "@id": worldCup2026EventId(siteUrl) },
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}/watch`,
+      availability: "https://schema.org/InStock",
+      validFrom: startDate,
+      description: "Where to watch this match on TV and streaming",
     },
   };
 
   if (match.status === "upcoming") {
     event.eventStatus = "https://schema.org/EventScheduled";
+    event.eventAttendanceMode = "https://schema.org/OfflineEventAttendanceMode";
   } else if (match.status === "live") {
     event.eventStatus = "https://schema.org/EventScheduled";
     event.eventAttendanceMode = "https://schema.org/OfflineEventAttendanceMode";
   } else if (match.status === "finished") {
     event.eventStatus = "https://schema.org/EventCompleted";
+    event.eventAttendanceMode = "https://schema.org/OfflineEventAttendanceMode";
   }
 
   if (match.status !== "upcoming" && match.homeScore != null && match.awayScore != null) {
@@ -172,10 +265,7 @@ export function buildSportsTeamJsonLd({
     sport: "Association Football",
     url,
     identifier: code,
-    memberOf: {
-      "@type": "SportsEvent",
-      name: "FIFA World Cup 2026",
-    },
+    memberOf: { "@id": worldCup2026EventId(siteUrl) },
   };
 }
 

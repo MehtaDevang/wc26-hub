@@ -10,7 +10,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { AppProviders } from "@/components/AppProviders";
 import { rootMetadata } from "@/lib/seo";
-import { buildOrganizationJsonLd, buildWebsiteJsonLd } from "@/lib/structured-data";
+import { buildOrganizationJsonLd, buildWebsiteJsonLd, buildWorldCup2026EventJsonLd } from "@/lib/structured-data";
 import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { getServerTimezone } from "@/lib/timezone";
 import {
@@ -57,6 +57,7 @@ export default async function RootLayout({
           <AppProviders>
             <JsonLd data={buildOrganizationJsonLd()} />
             <JsonLd data={buildWebsiteJsonLd()} />
+            <JsonLd data={buildWorldCup2026EventJsonLd()} />
             <Navbar />
             <SiteTopAd />
             <main className="site-main flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
