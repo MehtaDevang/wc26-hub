@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTeamJourney } from "@/lib/espn/team-journey";
+import { getTeamSquadPlayers } from "@/lib/espn/player-profile";
 import { TeamJourneyContent } from "@/components/TeamJourneyContent";
+import { TeamSquad } from "@/components/TeamSquad";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
@@ -51,7 +53,10 @@ export default async function TeamPage({ params }: PageProps) {
   if (!isValidTeamCode(code)) notFound();
 
   const timeZone = await getServerTimezone();
-  const journey = await getTeamJourney(code, timeZone);
+  const [journey, players] = await Promise.all([
+    getTeamJourney(code, timeZone),
+    getTeamSquadPlayers(code).catch(() => []),
+  ]);
   if (!journey) notFound();
 
   return (
@@ -75,6 +80,7 @@ export default async function TeamPage({ params }: PageProps) {
         <span className="text-zinc-600">{journey.teamName}</span>
       </nav>
       <AdBanner placement="match" />
+      <TeamSquad teamName={journey.teamName} players={players} />
       <TeamJourneyContent journey={journey} timezone={timeZone} />
     </div>
   );

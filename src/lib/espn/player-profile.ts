@@ -540,6 +540,84 @@ export async function getPlayersByCountry(): Promise<PlayerCountrySection[]> {
     .sort((a, b) => a.teamName.localeCompare(b.teamName));
 }
 
+export async function getPlayersByTeamCode(teamCode: string): Promise<PlayerListItem[]> {
+  const code = resolveTeamCode(teamCode) ?? teamCode.toUpperCase();
+  const index = await getPlayerIndex();
+  return [...index.values()]
+    .filter((entry) => entry.teamCode === code)
+    .map(toListItem)
+    .sort(sortPlayers);
+}
+
+/** Fast squad list for a single nation — roster + tournament goal counts */
+export async function fetchTeamSquadPlayers(teamCode: string): Promise<PlayerListItem[]> {
+  const code = resolveTeamCode(teamCode) ?? teamCode.toUpperCase();
+  const teamsResponse = await fetchEspnTeams();
+  const teams = teamsResponse.sports?.[0]?.leagues?.[0]?.teams ?? [];
+  const teamEntry = teams.find((t) => {
+    const abbrev = resolveTeamCode(t.team.abbreviation) ?? t.team.abbreviation.toUpperCase();
+    return abbrev === code;
+  });
+  if (!teamEntry) return [];
+
+  const roster = await fetchEspnTeamRoster(teamEntry.team.id);
+  const teamName = getTeamName(code) || teamEntry.team.displayName;
+  const flag = getTeamFlag(code);
+
+  return (roster.athletes ?? [])
+    .filter((a) => a.id && a.displayName)
+    .map((a) => ({
+      id: a.id!,
+      slug: slugifyPlayerName(a.displayName!),
+      name: a.displayName!,
+      teamCode: code,
+      teamName,
+      flag,
+      goals: 0,
+      position:
+        a.position?.displayName ??
+        a.position?.abbreviation ??
+        a.position?.name ??
+        "Player",
+      number: parseInt(a.jersey ?? "0", 10) || 0,
+      headshot: a.headshot?.href,
+    }))
+    .sort(sortPlayers);
+}
+
+export async function getTeamSquadPlayers(teamCode: string): Promise<PlayerListItem[]> {
+  const code = resolveTeamCode(teamCode) ?? teamCode.toUpperCase();
+
+  const [fromIndex, fromRoster, leaders] = await Promise.all([
+    getPlayersByTeamCode(code).catch(() => [] as PlayerListItem[]),
+    fetchTeamSquadPlayers(code).catch(() => [] as PlayerListItem[]),
+    import("./tournament-stats")
+      .then((m) => m.getTournamentLeaders())
+      .catch(() => null),
+  ]);
+
+  const base = fromIndex.length > 0 ? fromIndex : fromRoster;
+  if (base.length === 0) return [];
+
+  if (!leaders) return base;
+
+  const statsById = new Map(
+    leaders.scorers
+      .filter((p) => p.teamCode === code)
+      .map((p) => [p.id, { goals: p.goals, headshot: p.headshot }])
+  );
+
+  return base.map((player) => {
+    const stats = statsById.get(player.id);
+    if (!stats) return player;
+    return {
+      ...player,
+      goals: stats.goals > 0 ? stats.goals : player.goals,
+      headshot: player.headshot ?? stats.headshot,
+    };
+  });
+}
+
 export async function getAllPlayerSlugs(): Promise<Array<{ id: string; slug: string }>> {
   const index = await getPlayerIndex();
   return [...index.values()].map((p) => ({
