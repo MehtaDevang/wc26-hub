@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import { resolveTeamCode } from "./team-lookup";
 import { isValidTimezone } from "./timezone";
 
+/** Headers applied to all JSON API responses */
+export const API_SECURITY_HEADERS: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Robots-Tag": "noindex, nofollow",
+  "Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
+};
+
+export function withApiSecurityHeaders(response: NextResponse): NextResponse {
+  for (const [key, value] of Object.entries(API_SECURITY_HEADERS)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
+export function apiJsonResponse(body: unknown, init?: ResponseInit): NextResponse {
+  return withApiSecurityHeaders(NextResponse.json(body, init));
+}
+
 const MATCH_ID_PATTERN = /^\d{6,15}$/;
 const DATE_PATTERN = /^(?:\d{4}-\d{2}-\d{2}|\d{8})$/;
 const MATCH_RANGES = new Set(["group-stage", "full", "recent"]);
@@ -62,7 +80,7 @@ export function apiErrorResponse(
       ? error.message
       : fallback;
 
-  return NextResponse.json({ error: message }, { status });
+  return withApiSecurityHeaders(NextResponse.json({ error: message }, { status }));
 }
 
 type RateBucket = { count: number; resetAt: number };
@@ -74,6 +92,14 @@ const RATE_WINDOW_MS = 60_000;
 
 export function isRateLimited(key: string): boolean {
   const now = Date.now();
+
+  // Prune expired buckets periodically to limit memory growth
+  if (rateBuckets.size > 500) {
+    for (const [k, bucket] of rateBuckets) {
+      if (now >= bucket.resetAt) rateBuckets.delete(k);
+    }
+  }
+
   const bucket = rateBuckets.get(key);
 
   if (!bucket || now >= bucket.resetAt) {

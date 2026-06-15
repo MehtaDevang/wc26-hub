@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiErrorResponse, parseMatchesQuery } from "@/lib/api-security";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiJsonResponse, parseMatchesQuery } from "@/lib/api-security";
 import { getMatchesByParams } from "@/lib/espn/services";
 import { resolveTimezone } from "@/lib/timezone";
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   );
 
   if (!parsed.ok) {
-    return NextResponse.json({ error: parsed.error }, { status: 400 });
+    return apiJsonResponse({ error: parsed.error }, { status: 400 });
   }
 
   const timeZone = resolveTimezone(parsed.timeZone);
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       timeZone,
     });
 
-    return NextResponse.json({
+    return apiJsonResponse({
       matches,
       source: "espn",
       timeZone,

@@ -78,6 +78,15 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification.data?.url ?? "/";
-  event.waitUntil(self.clients.openWindow(url));
+  var raw = event.notification.data?.url ?? "/";
+  var target = "/";
+  try {
+    var parsed = new URL(raw, self.location.origin);
+    if (parsed.origin === self.location.origin) {
+      target = parsed.pathname + parsed.search + parsed.hash;
+    }
+  } catch (e) {
+    target = "/";
+  }
+  event.waitUntil(self.clients.openWindow(target));
 });

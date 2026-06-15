@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiErrorResponse } from "@/lib/api-security";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiJsonResponse } from "@/lib/api-security";
 import { getKnockoutBracket } from "@/lib/espn/services";
 import { resolveTimezone } from "@/lib/timezone";
 
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const bracket = await getKnockoutBracket(timeZone);
-    return NextResponse.json({
+    return apiJsonResponse({
       bracket,
       source: "espn",
       timeZone,

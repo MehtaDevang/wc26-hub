@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiErrorResponse, isValidMatchId } from "@/lib/api-security";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiJsonResponse, isValidMatchId } from "@/lib/api-security";
 import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
 import { transformEvent, transformSummary, buildAllMatchHighlights } from "@/lib/espn/transform";
 import { lookupVenue } from "@/lib/venues";
@@ -14,7 +14,7 @@ export async function GET(
   const { id } = await params;
 
   if (!isValidMatchId(id)) {
-    return NextResponse.json({ error: "Invalid match id" }, { status: 400 });
+    return apiJsonResponse({ error: "Invalid match id" }, { status: 400 });
   }
 
   try {
@@ -22,7 +22,7 @@ export async function GET(
     const event = scoreboard.events?.find((e) => e.id === id);
 
     if (!event) {
-      return NextResponse.json({ error: "Match not found" }, { status: 404 });
+      return apiJsonResponse({ error: "Match not found" }, { status: 404 });
     }
 
     const match = transformEvent(event);
@@ -38,7 +38,7 @@ export async function GET(
     const weather = await fetchMatchWeather(venueMeta.lat, venueMeta.lon, match.date);
     if (weather) detail.weather = weather;
 
-    return NextResponse.json({ match, detail, highlights, source: "espn" });
+    return apiJsonResponse({ match, detail, highlights, source: "espn" });
   } catch (error) {
     return apiErrorResponse("Failed to fetch match", 500, error);
   }

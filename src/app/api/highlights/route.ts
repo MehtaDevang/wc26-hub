@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { apiErrorResponse } from "@/lib/api-security";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiJsonResponse } from "@/lib/api-security";
 import { getRecentHighlights } from "@/lib/espn/services";
 
 export const revalidate = 120;
@@ -9,7 +9,7 @@ export async function GET() {
   try {
     const highlights = await getRecentHighlights(6);
 
-    return NextResponse.json({
+    return apiJsonResponse({
       highlights,
       source: "espn",
     });
