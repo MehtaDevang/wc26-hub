@@ -1,5 +1,6 @@
 import type { Match, MatchDetail } from "./types";
 import { buildMatchInsights } from "./match-insights";
+import { buildRankingInsight } from "./fifa-rankings";
 
 export function buildMatchPreview(match: Match, detail: MatchDetail): string[] {
   const lines: string[] = [];
@@ -11,6 +12,9 @@ export function buildMatchPreview(match: Match, detail: MatchDetail): string[] {
       match.group !== "?" ? `Group ${match.group}` : match.stageLabel ?? "knockout"
     } fixture.`
   );
+
+  const rankingLine = buildRankingInsight(match.home, home, match.away, away);
+  if (rankingLine) lines.push(rankingLine);
 
   if (detail.homeRecord && detail.awayRecord) {
     lines.push(

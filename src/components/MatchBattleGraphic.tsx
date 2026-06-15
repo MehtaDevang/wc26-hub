@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTeam } from "@/lib/data";
+import { FifaRankBadge } from "@/components/FifaRankBadge";
 import { getTeamColors } from "@/lib/team-colors";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import type { Match } from "@/lib/types";
@@ -123,6 +124,7 @@ export function MatchClashRow({
           >
             {home.name}
           </span>
+          <FifaRankBadge code={match.home} variant="compact" />
         </div>
         <div className="flex items-center gap-2 min-w-0 mt-1.5">
           {away.logo ? (
@@ -135,6 +137,7 @@ export function MatchClashRow({
           >
             {away.name}
           </span>
+          <FifaRankBadge code={match.away} variant="compact" />
         </div>
       </div>
 

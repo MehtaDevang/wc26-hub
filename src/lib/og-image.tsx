@@ -127,6 +127,8 @@ export function OgMatchLayout({
   awayName,
   homeCode,
   awayCode,
+  homeRank,
+  awayRank,
   score,
   statusLabel,
   subtitle,
@@ -138,6 +140,8 @@ export function OgMatchLayout({
   awayName: string;
   homeCode: string;
   awayCode: string;
+  homeRank?: number;
+  awayRank?: number;
   score: string;
   statusLabel: string;
   subtitle: string;
@@ -179,6 +183,11 @@ export function OgMatchLayout({
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 300 }}>
           <div style={{ fontSize: 88, lineHeight: 1 }}>{homeFlag}</div>
           <div style={{ marginTop: 16, fontSize: 34, fontWeight: 800, textAlign: "center" }}>{homeName}</div>
+          {homeRank != null && (
+            <div style={{ marginTop: 8, fontSize: 20, fontWeight: 600, color: "#a1a1aa" }}>
+              FIFA #{homeRank}
+            </div>
+          )}
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 220 }}>
           <div style={{ fontSize: 88, fontWeight: 800, letterSpacing: "-0.04em" }}>{score}</div>
@@ -187,6 +196,11 @@ export function OgMatchLayout({
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 300 }}>
           <div style={{ fontSize: 88, lineHeight: 1 }}>{awayFlag}</div>
           <div style={{ marginTop: 16, fontSize: 34, fontWeight: 800, textAlign: "center" }}>{awayName}</div>
+          {awayRank != null && (
+            <div style={{ marginTop: 8, fontSize: 20, fontWeight: 600, color: "#a1a1aa" }}>
+              FIFA #{awayRank}
+            </div>
+          )}
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>

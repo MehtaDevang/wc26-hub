@@ -1,5 +1,7 @@
 import { ExternalLink, Play } from "lucide-react";
-import type { Highlight } from "@/lib/types";
+import type { Highlight, Match } from "@/lib/types";
+import { MediaShareButton } from "./MediaShareButton";
+import { buildHighlightSharePayload } from "@/lib/share";
 
 const IMAGE_TYPE_LABELS: Record<NonNullable<Highlight["imageType"]>, string> = {
   player: "Player",
@@ -12,6 +14,10 @@ interface HighlightCardProps {
   highlight: Highlight;
   href?: string;
   compact?: boolean;
+  match?: Pick<
+    Match,
+    "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status"
+  >;
 }
 
 function HighlightImage({ highlight, compact, hasLink }: { highlight: Highlight; compact?: boolean; hasLink: boolean }) {
@@ -65,10 +71,14 @@ function HighlightImage({ highlight, compact, hasLink }: { highlight: Highlight;
 function HighlightBody({
   highlight,
   hasExternalWatch,
+  match,
 }: {
   highlight: Highlight;
   hasExternalWatch: boolean;
+  match?: HighlightCardProps["match"];
 }) {
+  const share = match ? buildHighlightSharePayload(match, highlight) : null;
+
   return (
     <div className="p-4">
       {!highlight.imageUrl && (
@@ -86,17 +96,27 @@ function HighlightBody({
         <p className="mt-1 truncate text-[10px] text-zinc-400">{highlight.teams}</p>
       )}
       <p className="mt-1 line-clamp-2 text-xs text-zinc-500">{highlight.description}</p>
-      {hasExternalWatch && (
-        <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600">
-          Watch on ESPN
-          <ExternalLink size={12} />
-        </p>
-      )}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {share && !highlight.imageUrl && (
+          <MediaShareButton
+            url={share.url}
+            title={share.title}
+            text={share.text}
+            label={share.label}
+          />
+        )}
+        {hasExternalWatch && (
+          <p className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600">
+            Watch on ESPN
+            <ExternalLink size={12} />
+          </p>
+        )}
+      </div>
     </div>
   );
 }
 
-export function HighlightCard({ highlight, href, compact }: HighlightCardProps) {
+export function HighlightCard({ highlight, href, compact, match }: HighlightCardProps) {
   const className =
     "group card-surface overflow-hidden rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md";
 
@@ -104,11 +124,25 @@ export function HighlightCard({ highlight, href, compact }: HighlightCardProps) 
   const linkHref = href ?? externalHref;
   const hasLink = Boolean(linkHref);
   const hasExternalWatch = Boolean(externalHref);
+  const share = match ? buildHighlightSharePayload(match, highlight) : null;
 
   const content = (
     <>
-      <HighlightImage highlight={highlight} compact={compact} hasLink={hasExternalWatch} />
-      <HighlightBody highlight={highlight} hasExternalWatch={hasExternalWatch} />
+      <div className="relative">
+        <HighlightImage highlight={highlight} compact={compact} hasLink={hasExternalWatch} />
+        {share && (
+          <div className="absolute right-3 top-3 z-10">
+            <MediaShareButton
+              url={share.url}
+              title={share.title}
+              text={share.text}
+              label={share.label}
+              variant="overlay"
+            />
+          </div>
+        )}
+      </div>
+      <HighlightBody highlight={highlight} hasExternalWatch={hasExternalWatch} match={match} />
     </>
   );
 

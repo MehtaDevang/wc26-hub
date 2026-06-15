@@ -53,7 +53,7 @@ export function MatchHighlightsPanel({
             <Play size={18} className="text-[var(--wc-usa)]" />
             Watch Highlights
           </h2>
-          <MatchMedia videos={videos} photos={[]} />
+          <MatchMedia videos={videos} photos={[]} match={match} />
         </section>
       )}
 
@@ -65,7 +65,7 @@ export function MatchHighlightsPanel({
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             {goalHighlights.map((h) => (
-              <HighlightCard key={h.id} highlight={h} />
+              <HighlightCard key={h.id} highlight={h} match={match} />
             ))}
           </div>
         </section>
@@ -81,7 +81,7 @@ export function MatchHighlightsPanel({
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {otherHighlights.map((h) => (
-              <HighlightCard key={h.id} highlight={h} compact />
+              <HighlightCard key={h.id} highlight={h} compact match={match} />
             ))}
           </div>
         </section>
@@ -90,7 +90,7 @@ export function MatchHighlightsPanel({
       {photos.length > 0 && (
         <section>
           <h2 className="section-title mb-4 text-base">Match Photos</h2>
-          <MatchMedia videos={[]} photos={photos} />
+          <MatchMedia videos={[]} photos={photos} match={match} />
         </section>
       )}
     </div>

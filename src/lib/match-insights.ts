@@ -5,6 +5,7 @@ import type {
   TeamLineup,
   VenueInfo,
 } from "./types";
+import { buildRankingInsight } from "./fifa-rankings";
 
 interface MatchInsightsInput {
   match: Match;
@@ -36,6 +37,16 @@ export function buildMatchInsights({
   referee,
 }: MatchInsightsInput): string[] {
   const facts: string[] = [];
+
+  const rankingLine = buildRankingInsight(
+    match.home,
+    homeName,
+    match.away,
+    awayName
+  );
+  if (rankingLine && match.status === "upcoming") {
+    facts.push(rankingLine);
+  }
 
   if (stats) {
     const [homePoss, awayPoss] = stats.possession;

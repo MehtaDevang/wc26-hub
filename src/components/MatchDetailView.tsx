@@ -27,6 +27,9 @@ import { MatchNarrative } from "./MatchNarrative";
 import { AddToCalendar } from "./AddToCalendar";
 import { TeamJourneyButton } from "./TeamJourneyProvider";
 import { resolveNetworkUrl } from "@/lib/watch-by-country";
+import { FifaRankBadge, FifaRankMatchup } from "@/components/FifaRankBadge";
+import { MatchWinPredictor } from "@/components/MatchWinPredictor";
+import { predictMatchOutcome } from "@/lib/win-predictor";
 
 const BASE_TABS = [
   { id: "overview", label: "Overview", icon: Trophy },
@@ -253,6 +256,22 @@ function MatchDetailContent({
   }));
 
   const share = buildMatchSharePayload(match, liveMinute);
+  const winPrediction =
+    match.status === "live" || match.status === "upcoming"
+      ? predictMatchOutcome({
+          homeCode: match.home,
+          awayCode: match.away,
+          homeName: home.name,
+          awayName: away.name,
+          status: match.status,
+          homeScore: match.homeScore,
+          awayScore: match.awayScore,
+          minute: match.status === "live" ? liveMinute : match.minute,
+          displayClock: match.displayClock,
+          stats: detail.stats,
+          events: detail.events,
+        })
+      : null;
 
   return (
     <div className="space-y-8">
@@ -314,11 +333,19 @@ function MatchDetailContent({
                     {home.name}
                   </Link>
                   <div className="flex justify-center">
+                    <FifaRankBadge code={match.home} />
+                  </div>
+                  <div className="flex justify-center">
                     <TeamJourneyButton teamCode={match.home} />
                   </div>
                 </div>
               ) : (
-                <p className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</p>
+                <div className="space-y-1">
+                  <p className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</p>
+                  <div className="flex justify-center">
+                    <FifaRankBadge code={match.home} />
+                  </div>
+                </div>
               )}
               {detail.homeManager && detail.homeManager !== "TBD" && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.homeManager}</p>
@@ -348,11 +375,19 @@ function MatchDetailContent({
                     {away.name}
                   </Link>
                   <div className="flex justify-center">
+                    <FifaRankBadge code={match.away} />
+                  </div>
+                  <div className="flex justify-center">
                     <TeamJourneyButton teamCode={match.away} />
                   </div>
                 </div>
               ) : (
-                <p className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</p>
+                <div className="space-y-1">
+                  <p className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</p>
+                  <div className="flex justify-center">
+                    <FifaRankBadge code={match.away} />
+                  </div>
+                </div>
               )}
               {detail.awayManager && detail.awayManager !== "TBD" && (
                 <p className="text-xs text-zinc-400 mt-0.5">{detail.awayManager}</p>
@@ -375,6 +410,7 @@ function MatchDetailContent({
           />
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-zinc-500">
+            <FifaRankMatchup homeCode={match.home} awayCode={match.away} />
             <span className="flex items-center gap-1.5"><MapPin size={14} />{detail.venue?.name ?? match.venue}</span>
             {detail.venue?.city && (
               <span className="text-zinc-400">{detail.venue.city}, {detail.venue.country}</span>
@@ -430,6 +466,18 @@ function MatchDetailContent({
         </div>
       </div>
 
+      {winPrediction && match.status === "live" && (
+        <MatchWinPredictor
+          homeName={home.name}
+          awayName={away.name}
+          matchId={match.id}
+          homeScore={match.homeScore}
+          awayScore={match.awayScore}
+          status="live"
+          prediction={winPrediction}
+        />
+      )}
+
       <div
         className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scroll-smooth"
         role="tablist"
@@ -462,6 +510,18 @@ function MatchDetailContent({
 
       {tab === "overview" && (
         <>
+      {winPrediction && match.status === "upcoming" && (
+        <MatchWinPredictor
+          homeName={home.name}
+          awayName={away.name}
+          matchId={match.id}
+          homeScore={match.homeScore}
+          awayScore={match.awayScore}
+          status="upcoming"
+          prediction={winPrediction}
+        />
+      )}
+
       <MatchNarrative match={match} detail={detail} />
 
       <section className="card-surface rounded-2xl p-6">
@@ -524,7 +584,7 @@ function MatchDetailContent({
       )}
 
       {tab === "media" && (
-        <MatchMedia videos={detail.videos} photos={detail.photos} />
+        <MatchMedia videos={detail.videos} photos={detail.photos} match={match} />
       )}
 
       {tab === "lineups" && (

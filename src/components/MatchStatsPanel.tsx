@@ -4,6 +4,7 @@ import {
   Target, Shield, LayoutGrid, BarChart3, Sparkles, TrendingUp,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
+import { FifaRankBadge } from "@/components/FifaRankBadge";
 import { buildMatchInsights } from "@/lib/match-insights";
 import type {
   Match,
@@ -378,17 +379,23 @@ export function MatchStatsPanel({
                   ) : (
                     <span className="text-xl shrink-0">{home.flag}</span>
                   )}
-                  <span className="truncate text-right text-sm font-bold text-zinc-900">
-                    {home.name}
-                  </span>
+                  <div className="min-w-0 text-right">
+                    <span className="block truncate text-sm font-bold text-zinc-900">
+                      {home.name}
+                    </span>
+                    <FifaRankBadge code={match.home} variant="compact" className="mt-0.5" />
+                  </div>
                 </div>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
                   vs
                 </span>
                 <div className="flex min-w-0 items-center gap-2">
-                  <span className="truncate text-left text-sm font-bold text-zinc-900">
-                    {away.name}
-                  </span>
+                  <div className="min-w-0 text-left">
+                    <span className="block truncate text-sm font-bold text-zinc-900">
+                      {away.name}
+                    </span>
+                    <FifaRankBadge code={match.away} variant="compact" className="mt-0.5" />
+                  </div>
                   {away.logo ? (
                     <img src={away.logo} alt="" className="h-7 w-7 shrink-0 object-contain" />
                   ) : (
@@ -496,7 +503,10 @@ export function MatchStatsPanel({
                 <div className="rounded-lg bg-zinc-50 px-3 py-3">
                   <div className="mb-2 flex items-center gap-2">
                     <span className="text-base">{home.flag}</span>
-                    <p className="text-sm font-bold text-zinc-900">{home.name}</p>
+                    <div>
+                      <p className="text-sm font-bold text-zinc-900">{home.name}</p>
+                      <FifaRankBadge code={match.home} variant="compact" />
+                    </div>
                   </div>
                   {homeRecord && (
                     <p className="text-sm text-zinc-600">
@@ -518,7 +528,10 @@ export function MatchStatsPanel({
                 <div className="rounded-lg bg-zinc-50 px-3 py-3">
                   <div className="mb-2 flex items-center gap-2">
                     <span className="text-base">{away.flag}</span>
-                    <p className="text-sm font-bold text-zinc-900">{away.name}</p>
+                    <div>
+                      <p className="text-sm font-bold text-zinc-900">{away.name}</p>
+                      <FifaRankBadge code={match.away} variant="compact" />
+                    </div>
                   </div>
                   {awayRecord && (
                     <p className="text-sm text-zinc-600">

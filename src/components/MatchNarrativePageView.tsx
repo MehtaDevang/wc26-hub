@@ -6,6 +6,7 @@ import { MatchNarrative } from "./MatchNarrative";
 import { AddToCalendar } from "./AddToCalendar";
 import { MatchKickoffTime } from "./MatchKickoffTime";
 import { formatKickoffDateLabel } from "@/lib/timezone";
+import { FifaRankBadge, FifaRankMatchup } from "@/components/FifaRankBadge";
 
 export function MatchNarrativePageView({
   match,
@@ -56,6 +57,7 @@ export function MatchNarrativePageView({
             <div className="flex-1 text-center">
               <span className="text-4xl block mb-2">{home.flag}</span>
               <p className="text-lg font-bold text-zinc-900">{home.name}</p>
+              <FifaRankBadge code={match.home} className="mt-1" />
             </div>
             <div className="text-center shrink-0">
               {match.status !== "upcoming" ? (
@@ -71,7 +73,12 @@ export function MatchNarrativePageView({
             <div className="flex-1 text-center">
               <span className="text-4xl block mb-2">{away.flag}</span>
               <p className="text-lg font-bold text-zinc-900">{away.name}</p>
+              <FifaRankBadge code={match.away} className="mt-1" />
             </div>
+          </div>
+
+          <div className="flex justify-center mb-4">
+            <FifaRankMatchup homeCode={match.home} awayCode={match.away} />
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">

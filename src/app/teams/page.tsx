@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { TEAMS } from "@/lib/data";
+import { getFifaRank } from "@/lib/fifa-rankings";
+import { FifaRankBadge } from "@/components/FifaRankBadge";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS } from "@/lib/seo-keywords";
@@ -17,14 +19,18 @@ export const metadata = createPageMetadata({
 });
 
 export default function TeamsIndexPage() {
-  const teams = Object.values(TEAMS).sort((a, b) => a.name.localeCompare(b.name));
+  const teams = Object.values(TEAMS).sort((a, b) => {
+    const rankA = getFifaRank(a.code) ?? 999;
+    const rankB = getFifaRank(b.code) ?? 999;
+    return rankA - rankB || a.name.localeCompare(b.name);
+  });
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="section-title text-2xl sm:text-3xl">World Cup 2026 Teams</h1>
         <p className="text-sm text-zinc-500 mt-2 max-w-2xl">
-          Every nation at the FIFA World Cup 2026 — tap a team for fixtures, results, group position, and full tournament journey.
+          Every nation at the FIFA World Cup 2026 — sorted by FIFA world ranking (June 2026). Tap a team for fixtures, results, group position, and full tournament journey.
         </p>
       </div>
       <AdBanner placement="inline" />
@@ -40,7 +46,10 @@ export default function TeamsIndexPage() {
               <p className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors truncate">
                 {team.name}
               </p>
-              <p className="text-xs text-zinc-400 mt-0.5">{team.code}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-xs text-zinc-400">{team.code}</p>
+                <FifaRankBadge code={team.code} variant="compact" />
+              </div>
             </div>
           </Link>
         ))}

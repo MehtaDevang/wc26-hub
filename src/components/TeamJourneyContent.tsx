@@ -4,6 +4,8 @@ import { getTeam } from "@/lib/data";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import { ShareButtons } from "@/components/ShareButtons";
 import { StarTeamButton } from "@/components/MyTeams";
+import { FifaRankBadge } from "@/components/FifaRankBadge";
+import { getFifaRank } from "@/lib/fifa-rankings";
 import { buildTeamSharePayload } from "@/lib/share";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 import type { TeamJourney, TeamJourneyMatch } from "@/lib/types";
@@ -148,6 +150,9 @@ export function TeamJourneyContent({
               </h1>
               <p className="text-sm text-zinc-500 mt-1">
                 FIFA World Cup 2026
+                {getFifaRank(journey.teamCode) != null && (
+                  <> · FIFA #{getFifaRank(journey.teamCode)} world ranking</>
+                )}
                 {groupLetter && (
                   <>
                     {" · "}

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { Play, ExternalLink } from "lucide-react";
-import type { MatchPhoto, MatchVideo } from "@/lib/types";
+import type { Match, MatchPhoto, MatchVideo } from "@/lib/types";
+import { MediaShareButton } from "./MediaShareButton";
+import { buildPhotoSharePayload, buildVideoSharePayload } from "@/lib/share";
 
 function WatchOnEspnLink({ url, className }: { url?: string; className?: string }) {
   if (!url) return null;
@@ -19,9 +21,17 @@ function WatchOnEspnLink({ url, className }: { url?: string; className?: string 
   );
 }
 
-export function MatchMedia({ videos = [], photos = [] }: {
+export function MatchMedia({
+  videos = [],
+  photos = [],
+  match,
+}: {
   videos?: MatchVideo[];
   photos?: MatchPhoto[];
+  match?: Pick<
+    Match,
+    "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status"
+  >;
 }) {
   const [activeVideo, setActiveVideo] = useState<string | null>(
     videos[0]?.videoUrl ?? videos[0]?.webUrl ?? null
@@ -49,7 +59,15 @@ export function MatchMedia({ videos = [], photos = [] }: {
                 playsInline
               />
               <div className="p-4 space-y-2">
-                <p className="font-semibold text-zinc-900 text-sm">{active.title}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-semibold text-zinc-900 text-sm">{active.title}</p>
+                  {match && (
+                    <MediaShareButton
+                      {...buildVideoSharePayload(match, active)}
+                      variant="overlay"
+                    />
+                  )}
+                </div>
                 {active.description && (
                   <p className="text-xs text-zinc-500">{active.description}</p>
                 )}
@@ -143,22 +161,40 @@ export function MatchMedia({ videos = [], photos = [] }: {
         <div>
           <h3 className="text-sm font-semibold text-zinc-900 mb-3">Match Photos</h3>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {photos.map((p) => (
-              <a
+            {photos.map((p) => {
+              const share = match ? buildPhotoSharePayload(match, p) : null;
+              return (
+              <div
                 key={p.id}
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="card-surface rounded-xl overflow-hidden hover:shadow-md transition-shadow"
+                className="card-surface rounded-xl overflow-hidden hover:shadow-md transition-shadow relative"
               >
-                <div className="relative aspect-video">
-                  <img src={p.url} alt={p.caption ?? ""} className="w-full h-full object-cover" />
-                </div>
-                {p.caption && (
-                  <p className="p-2.5 text-[11px] text-zinc-500 line-clamp-2">{p.caption}</p>
+                <a
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <div className="relative aspect-video">
+                    <img src={p.url} alt={p.caption ?? ""} className="w-full h-full object-cover" />
+                  </div>
+                  {p.caption && (
+                    <p className="p-2.5 text-[11px] text-zinc-500 line-clamp-2">{p.caption}</p>
+                  )}
+                </a>
+                {share && (
+                  <div className="absolute right-2 top-2 z-10">
+                    <MediaShareButton
+                      url={share.url}
+                      title={share.title}
+                      text={share.text}
+                      label={share.label}
+                      variant="overlay"
+                    />
+                  </div>
                 )}
-              </a>
-            ))}
+              </div>
+            );
+            })}
           </div>
         </div>
       )}

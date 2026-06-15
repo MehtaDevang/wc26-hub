@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvent } from "@/lib/espn/transform";
 import { getTeam } from "@/lib/data";
+import { getFifaRank } from "@/lib/fifa-rankings";
 import { OgMatchLayout, OG_SIZE } from "@/lib/og-image";
 import { isValidMatchId } from "@/lib/api-security";
 import { getServerTimezone } from "@/lib/timezone";
@@ -87,6 +88,8 @@ export default async function Image({ params }: OgProps) {
           awayName={away.name}
           homeCode={match.home}
           awayCode={match.away}
+          homeRank={getFifaRank(match.home)}
+          awayRank={getFifaRank(match.away)}
           score={score}
           statusLabel={statusLabel}
           subtitle={`${groupLabel} · ${match.venue}`}

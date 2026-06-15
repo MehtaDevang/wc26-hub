@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight, Clock } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
+import { FifaRankBadge } from "@/components/FifaRankBadge";
 import { fetchMatches } from "@/lib/matches";
 import { MatchKickoffTime } from "@/components/MatchKickoffTime";
 import { useTimezone } from "@/components/TimezoneProvider";
@@ -89,6 +90,7 @@ function MatchSpotlightCard({
             <span className="font-bold text-sm text-zinc-900 text-center truncate w-full">
               {home.name}
             </span>
+            <FifaRankBadge code={match.home} variant="compact" />
           </div>
 
           <div className="shrink-0 text-center px-2">
@@ -117,6 +119,7 @@ function MatchSpotlightCard({
             <span className="font-bold text-sm text-zinc-900 text-center truncate w-full">
               {away.name}
             </span>
+            <FifaRankBadge code={match.away} variant="compact" />
           </div>
         </div>
 

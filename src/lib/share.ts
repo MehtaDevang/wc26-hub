@@ -1,5 +1,5 @@
 import { getSiteUrl, SITE_NAME } from "./site";
-import type { Match } from "./types";
+import type { Highlight, Match, MatchPhoto, MatchVideo } from "./types";
 
 export function absoluteUrl(path: string): string {
   return `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
@@ -90,4 +90,82 @@ export function buildTwitterShareUrl(text: string, url: string): string {
 
 export function buildWhatsAppShareUrl(text: string, url: string): string {
   return `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`;
+}
+
+export function buildHighlightSharePayload(
+  match: Pick<Match, "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status">,
+  highlight: Pick<
+    Highlight,
+    "type" | "title" | "minute" | "playerName" | "imageUrl" | "imageType" | "videoUrl" | "webUrl"
+  >
+): SharePayload {
+  const url = absoluteUrl(`/match/${match.id}?tab=highlights`);
+  const score =
+    match.status !== "upcoming" && match.homeScore != null && match.awayScore != null
+      ? ` (${match.homeScore}–${match.awayScore})`
+      : "";
+  const liveTag = match.status === "live" ? " LIVE" : "";
+
+  if (highlight.type === "goal") {
+    const scorer = highlight.playerName ?? highlight.title.replace(/\s+Goal\b.*$/i, "").trim();
+    const minute = highlight.minute && highlight.minute !== "Clip" ? ` ${highlight.minute}` : "";
+    return {
+      url,
+      title: `Goal — ${match.homeName} vs ${match.awayName}`,
+      text: `⚽ GOAL! ${scorer}${minute} — ${match.homeName} vs ${match.awayName}${score}${liveTag} · World Cup 2026 on ${SITE_NAME}`,
+      label: "Share goal",
+    };
+  }
+
+  if (highlight.imageType === "player" && highlight.playerName) {
+    return {
+      url,
+      title: highlight.title,
+      text: `📸 ${highlight.playerName} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+      label: "Share moment",
+    };
+  }
+
+  const emoji = highlight.videoUrl || highlight.webUrl ? "🎬" : "📸";
+  return {
+    url,
+    title: highlight.title,
+    text: `${emoji} ${highlight.title} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+    label: highlight.videoUrl || highlight.webUrl ? "Share clip" : "Share photo",
+  };
+}
+
+export function buildVideoSharePayload(
+  match: Pick<Match, "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status">,
+  video: Pick<MatchVideo, "title" | "webUrl" | "videoUrl">
+): SharePayload {
+  const url = absoluteUrl(`/match/${match.id}?tab=highlights`);
+  const score =
+    match.status !== "upcoming" && match.homeScore != null && match.awayScore != null
+      ? ` (${match.homeScore}–${match.awayScore})`
+      : "";
+  return {
+    url: video.webUrl ?? url,
+    title: video.title,
+    text: `🎬 ${video.title} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+    label: "Share video",
+  };
+}
+
+export function buildPhotoSharePayload(
+  match: Pick<Match, "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status">,
+  photo: Pick<MatchPhoto, "caption" | "url">
+): SharePayload {
+  const url = absoluteUrl(`/match/${match.id}?tab=highlights`);
+  const score =
+    match.status !== "upcoming" && match.homeScore != null && match.awayScore != null
+      ? ` (${match.homeScore}–${match.awayScore})`
+      : "";
+  const caption = photo.caption?.trim() || `${match.homeName} vs ${match.awayName}`;
+  return {
+    url,
+    title: caption,
+    text: `📸 ${caption}${score} — World Cup 2026 on ${SITE_NAME}`,
+    label: "Share photo",
+  };
 }
