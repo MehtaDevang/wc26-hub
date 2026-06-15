@@ -5,6 +5,7 @@ import { buildHeadToHead } from "@/lib/espn/head-to-head";
 import { getRivalryInfo } from "@/lib/rivalries";
 import { getLiveMatchesExcluding, getRelatedMatchesForMatch } from "@/lib/related-matches";
 import { MatchDetailView } from "@/components/MatchDetailView";
+import { MatchQualificationContext } from "@/components/MatchQualificationContext";
 import { JsonLd } from "@/components/JsonLd";
 import { lookupVenue } from "@/lib/venues";
 import { fetchMatchWeather } from "@/lib/weather";
@@ -135,6 +136,11 @@ export default async function MatchPage({ params }: PageProps) {
           "@context": "https://schema.org",
           "@graph": [matchJsonLd, breadcrumbJsonLd],
         }}
+      />
+      <MatchQualificationContext
+        match={match}
+        standings={detail.groupStandings}
+        allMatches={allMatches}
       />
       <MatchDetailView
         match={match}

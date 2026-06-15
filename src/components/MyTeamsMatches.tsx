@@ -48,6 +48,9 @@ export function MyTeamsMatches({ matches }: MyTeamsMatchesProps) {
           <Star size={18} className="text-amber-500 fill-amber-500" />
           My Teams Today
         </h2>
+        <Link href="/my" className="text-xs font-semibold text-blue-600 hover:underline shrink-0">
+          My World Cup →
+        </Link>
         <div className="flex gap-1.5">
           {codes.map((code) => {
             const team = getTeam(code);

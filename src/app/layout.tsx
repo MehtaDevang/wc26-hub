@@ -9,9 +9,9 @@ import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { AppProviders } from "@/components/AppProviders";
+import { DeferredAdSense } from "@/components/DeferredAdSense";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
-import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { getServerTimezone } from "@/lib/timezone";
 import {
   SITE_ADS_EMAIL,
@@ -45,20 +45,21 @@ export default async function RootLayout({
       lang="en"
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
-          crossOrigin="anonymous"
-        />
-      </head>
+      <head />
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:rounded-lg focus:bg-[var(--wc-usa)] focus:px-4 focus:py-2 focus:text-white focus:text-sm focus:font-semibold"
+        >
+          Skip to content
+        </a>
+        <DeferredAdSense />
         <TimezoneProvider initialTimezone={initialTimezone}>
           <AppProviders>
             <JsonLd data={buildSiteStructuredDataGraph()} />
             <Navbar />
             <SiteTopAd />
-            <main className="site-main flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
+            <main id="main-content" className="site-main flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
               {children}
             </main>
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-4">

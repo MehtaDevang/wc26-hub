@@ -8,9 +8,7 @@ import {
   Calendar,
   Table2,
   Users,
-  Puzzle,
-  History,
-  Target,
+  Star,
   Menu,
   X,
   Globe,
@@ -24,32 +22,37 @@ import {
   Wrench,
   Swords,
   Code2,
+  History,
+  Puzzle,
+  Target,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
 import { MascotStackLogo } from "@/components/MascotStackLogo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { CommandPalette } from "@/components/CommandPalette";
 
 const PRIMARY_LINKS = [
-  { href: "/", label: "Home", icon: Trophy },
+  { href: "/", label: "Today", icon: Trophy },
+  { href: "/my", label: "My WC", icon: Star },
   { href: "/fixtures", label: "Fixtures", icon: Calendar },
   { href: "/standings", label: "Tables", icon: Table2 },
   { href: "/teams", label: "Teams", icon: Users },
-  { href: "/players", label: "Players", icon: Target },
-  { href: "/history", label: "History", icon: History },
-  { href: "/puzzles", label: "Puzzles", icon: Puzzle },
 ] as const;
 
 const EXPLORE_LINKS = [
+  { href: "/players", label: "Players", icon: Target },
+  { href: "/history", label: "History", icon: History },
   { href: "/hosts", label: "Host Nations", icon: Globe },
   { href: "/cities", label: "City Guides", icon: MapPin },
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
   { href: "/rivalries", label: "Rivalries", icon: Swords },
+  { href: "/puzzles", label: "Puzzles", icon: Puzzle },
 ] as const;
 
 const TOOL_LINKS = [
-  { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
   { href: "/bracket", label: "Live Bracket", icon: Trophy },
+  { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
   { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
   { href: "/watch", label: "Where to Watch", icon: Tv },
   { href: "/leaders", label: "Stat Leaders", icon: BarChart3 },
@@ -59,6 +62,7 @@ const TOOL_LINKS = [
 
 function isActive(pathname: string, href: string): boolean {
   if (pathname === href) return true;
+  if (href === "/my" && pathname.startsWith("/my")) return true;
   if (href === "/puzzles" && pathname.startsWith("/puzzles")) return true;
   if (href === "/history" && pathname.startsWith("/history")) return true;
   if (href === "/teams" && pathname.startsWith("/teams")) return true;
@@ -159,14 +163,13 @@ function BrandLogo() {
   return (
     <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0 group">
       <MascotStackLogo />
-
       <div className="min-w-0">
         <p className="font-bold text-zinc-900 text-sm sm:text-[15px] leading-tight truncate group-hover:text-[var(--wc-usa)] transition-colors">
           <span className="sm:hidden">{SITE_SHORT_NAME}</span>
           <span className="hidden sm:inline">{SITE_NAME}</span>
         </p>
         <p className="hidden lg:block text-[10px] text-zinc-400 leading-none mt-0.5 tracking-wide uppercase">
-          Scores · Stats · Puzzles
+          All football updates
         </p>
       </div>
     </Link>
@@ -184,140 +187,145 @@ export function Navbar() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200">
-      <div className="host-stripe" />
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 h-14">
-        <BrandLogo />
+    <>
+      <CommandPalette />
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200">
+        <div className="host-stripe" />
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 h-14">
+          <BrandLogo />
 
-        <nav className="hidden lg:flex items-center gap-0.5">
-          {PRIMARY_LINKS.map(({ href, label, icon }) => {
-            const active = isActive(pathname, href);
-            const Icon = icon;
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={clsx(
-                  "rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
-                  active
-                    ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
-                    : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
-                )}
-              >
-                {label}
-              </Link>
-            );
-          })}
-          <NavDropdown label="Explore" icon={Compass} links={EXPLORE_LINKS} pathname={pathname} />
-          <NavDropdown label="Fan Tools" icon={Wrench} links={TOOL_LINKS} pathname={pathname} />
-          <LocaleSwitcher className="ml-1 pl-2 border-l border-zinc-100" />
-        </nav>
+          <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+            {PRIMARY_LINKS.map(({ href, label }) => {
+              const active = isActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={clsx(
+                    "rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+                    active
+                      ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+                  )}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+            <NavDropdown label="Explore" icon={Compass} links={EXPLORE_LINKS} pathname={pathname} />
+            <NavDropdown label="Tools" icon={Wrench} links={TOOL_LINKS} pathname={pathname} />
+          </nav>
 
-        <div className="hidden md:flex lg:hidden items-center gap-1">
-          {PRIMARY_LINKS.slice(0, 3).map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={clsx(
-                "rounded-lg px-2 py-2 text-xs font-medium",
-                isActive(pathname, href) ? "text-[var(--wc-usa)]" : "text-zinc-500"
-              )}
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("wc26-open-search"))}
+              className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/80 px-2.5 py-1.5 text-xs text-zinc-500 hover:border-zinc-300 hover:bg-white transition-colors"
+              aria-label="Search"
             >
-              {label}
-            </Link>
-          ))}
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Search…</span>
+              <kbd className="rounded bg-white border border-zinc-200 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘K</kbd>
+            </button>
+            <LocaleSwitcher />
+          </div>
+
+          <div className="flex lg:hidden items-center gap-1">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("wc26-open-search"))}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 lg:hidden"
+              aria-label="Search"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((o) => !o)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setMenuOpen((o) => !o)}
-          className="lg:hidden flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100"
-          aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
+        {menuOpen && (
+          <>
+            <button
+              type="button"
+              className="lg:hidden fixed inset-0 top-14 z-30 bg-black/20"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+            />
+            <nav className="lg:hidden relative z-40 border-t border-zinc-100 bg-white px-4 py-4 shadow-lg max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Main</p>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {[...PRIMARY_LINKS, { href: "/players", label: "Players", icon: Target }].map(({ href, label, icon }) => {
+                  const Icon = icon;
+                  const active = isActive(pathname, href);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={clsx(
+                        "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
+                        active ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
+                      )}
+                    >
+                      <Icon size={18} />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
 
-      {menuOpen && (
-        <>
-          <button
-            type="button"
-            className="lg:hidden fixed inset-0 top-14 z-30 bg-black/20"
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-          />
-          <nav className="lg:hidden relative z-40 border-t border-zinc-100 bg-white px-4 py-4 shadow-lg max-h-[calc(100vh-3.5rem)] overflow-y-auto">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Main</p>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {PRIMARY_LINKS.map(({ href, label, icon }) => {
-                const Icon = icon;
-                const active = isActive(pathname, href);
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={clsx(
-                      "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
-                      active ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
-                    )}
-                  >
-                    <Icon size={18} />
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Explore</p>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {EXPLORE_LINKS.map(({ href, label, icon }) => {
+                  const Icon = icon;
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={clsx(
+                        "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
+                        isActive(pathname, href) ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
+                      )}
+                    >
+                      <Icon size={18} />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
 
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Explore</p>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {EXPLORE_LINKS.map(({ href, label, icon }) => {
-                const Icon = icon;
-                const active = isActive(pathname, href);
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={clsx(
-                      "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
-                      active ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
-                    )}
-                  >
-                    <Icon size={18} />
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Tools</p>
+              <div className="grid grid-cols-1 gap-1 mb-4">
+                {TOOL_LINKS.map(({ href, label, icon }) => {
+                  const Icon = icon;
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={clsx(
+                        "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
+                        isActive(pathname, href) ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
+                      )}
+                    >
+                      <Icon size={18} />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
 
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Fan Tools</p>
-            <div className="grid grid-cols-1 gap-1">
-              {TOOL_LINKS.map(({ href, label, icon }) => {
-                const Icon = icon;
-                const active = isActive(pathname, href);
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={clsx(
-                      "flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium",
-                      active ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]" : "text-zinc-700 hover:bg-zinc-50"
-                    )}
-                  >
-                    <Icon size={18} />
-                    {label}
-                  </Link>
-                );
-              })}
-            </div>
-
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2 mt-2">Language</p>
-            <div className="px-1 mb-4">
               <LocaleSwitcher />
-            </div>
-          </nav>
-        </>
-      )}
-    </header>
+            </nav>
+          </>
+        )}
+      </header>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FixturesList } from "@/components/FixturesList";
+import { FixturesExplorer } from "@/components/FixturesExplorer";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { fetchMatches } from "@/lib/matches";
 import type { Match } from "@/lib/types";
@@ -42,7 +42,7 @@ export function LiveFixturesList({ initialMatches }: LiveFixturesListProps) {
       {refreshing && (
         <p className="text-center text-xs text-zinc-400">Refreshing fixtures…</p>
       )}
-      <FixturesList matches={matches} />
+      <FixturesExplorer matches={matches} />
     </div>
   );
 }

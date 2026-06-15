@@ -28,6 +28,7 @@ import { MyTeamsPicker } from "@/components/MyTeams";
 import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
+import { HomeJumpNav } from "@/components/HomeJumpNav";
 import { JsonLd } from "@/components/JsonLd";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
 import {
@@ -97,6 +98,13 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
 
       <HomeHero initialTodayMatches={initialMatches} initialUpcomingMatches={nextMatches} />
 
+      <HomeJumpNav />
+
+      <div id="my-teams">
+        <MyTeamsMatches matches={initialMatches} />
+      </div>
+
+      <section id="live">
       <LiveScores
         initialMatches={initialMatches}
         fixturesHref={fixturesHref}
@@ -111,20 +119,25 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
           autoUpdates: t.autoUpdates,
         }}
       />
-
-      <MyTeamsMatches matches={initialMatches} />
+      </section>
 
       <LiveMomentsStrip slides={heroSlides} />
 
       <LiveNextMatchCountdown initialMatches={nextMatches} />
 
-      {bracket && <LiveKnockoutBracket initialData={bracket} compact showLink />}
+      {bracket && (
+        <div id="bracket">
+          <LiveKnockoutBracket initialData={bracket} compact showLink />
+        </div>
+      )}
 
+      <section id="highlights">
       <MatchHighlights initialHighlights={initialHighlights} />
+      </section>
 
       <IconicMoments limit={9} />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="explore">
         <Link
           href={fixturesHref}
           className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
@@ -164,6 +177,15 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
       </div>
 
       <MyTeamsPicker />
+
+      <div className="text-center">
+        <Link
+          href="/my"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--wc-usa)] hover:underline"
+        >
+          Open My World Cup dashboard →
+        </Link>
+      </div>
 
       <TeamJourneyPromo />
 

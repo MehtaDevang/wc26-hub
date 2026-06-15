@@ -18,6 +18,7 @@ const STATIC_ROUTES: Array<{
   priority: number;
 }> = [
   { path: "/", changeFrequency: "always", priority: 1 },
+  { path: "/my", changeFrequency: "hourly", priority: 0.92 },
   { path: "/fixtures", changeFrequency: "always", priority: 0.95 },
   { path: "/standings", changeFrequency: "always", priority: 0.95 },
   { path: "/bracket", changeFrequency: "hourly", priority: 0.95 },

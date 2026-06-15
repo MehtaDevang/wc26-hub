@@ -56,6 +56,7 @@ export function LiveScores({
   const [loading, setLoading] = useState(initialMatches === undefined);
   const [error, setError] = useState("");
   const [liveMinute, setLiveMinute] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const localizedMatches = useMemo(() => {
     const localized = applyTimezoneToMatches(matches, timezone);
@@ -68,6 +69,7 @@ export function LiveScores({
     try {
       const data = await fetchMatches({ date: "today", timeZone: timezone });
       setMatches(data);
+      setLastUpdated(new Date());
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load scores");
     } finally {
@@ -80,6 +82,7 @@ export function LiveScores({
       loadMatches(true);
     } else {
       loadMatches(false);
+      if (initialMatches.length > 0) setLastUpdated(new Date());
     }
   }, [initialMatches, loadMatches]);
 
@@ -126,6 +129,11 @@ export function LiveScores({
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <TimezoneBadge showIcon={false} />
+            {lastUpdated && (
+              <span className="text-[10px] text-zinc-400 tabular-nums hidden sm:inline">
+                Updated {lastUpdated.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+              </span>
+            )}
             <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">{labels.autoUpdates}</span>
           </div>
         </div>
