@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Flame, Trophy } from "lucide-react";
 import { getPuzzleStreakState, refreshPuzzleStreak, type PuzzleStreakState } from "@/lib/puzzle-streaks";
 import { useTodayKey } from "@/lib/hooks/useTodayKey";
@@ -71,6 +72,12 @@ export function PuzzleStreakCard() {
             />
           </div>
         )}
+
+        <div className="mt-4 pt-4 border-t border-zinc-100 text-center">
+          <Link href="/puzzles/stats" className="text-sm font-semibold text-violet-600 hover:underline">
+            Full Puzzle League stats →
+          </Link>
+        </div>
       </div>
     </div>
   );

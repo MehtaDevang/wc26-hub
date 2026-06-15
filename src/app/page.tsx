@@ -11,6 +11,7 @@ import { MyTeamsMatches } from "@/components/MyTeamsMatches";
 import { MyTeamsPicker } from "@/components/MyTeams";
 import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
+import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS, CORE_KEYWORDS } from "@/lib/seo-keywords";
 import { JsonLd } from "@/components/JsonLd";
@@ -101,6 +102,8 @@ export default async function Home() {
       <MyTeamsPicker />
 
       <TeamJourneyPromo />
+
+      <FeaturedPlayersStrip />
 
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">

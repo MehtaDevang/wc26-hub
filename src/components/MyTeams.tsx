@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import clsx from "clsx";
 import { getTeam } from "@/lib/data";
 import { getMyTeams, isMyTeam, MAX_MY_TEAMS, toggleMyTeam } from "@/lib/my-teams";
+import { MyTeamsAlerts } from "@/components/MyTeamsAlerts";
 
 interface StarTeamButtonProps {
   teamCode: string;
@@ -65,7 +66,11 @@ export function MyTeamsPicker({ className }: MyTeamsPickerProps) {
     setCodes(getMyTeams());
     const onStorage = () => setCodes(getMyTeams());
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    window.addEventListener("wc26-my-teams-changed", onStorage);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("wc26-my-teams-changed", onStorage);
+    };
   }, []);
 
   if (codes.length === 0) {
@@ -107,6 +112,7 @@ export function MyTeamsPicker({ className }: MyTeamsPickerProps) {
           );
         })}
       </div>
+      <MyTeamsAlerts />
     </div>
   );
 }

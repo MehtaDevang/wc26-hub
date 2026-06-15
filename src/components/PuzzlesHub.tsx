@@ -79,6 +79,12 @@ export function PuzzlesHub() {
 
       <PuzzleStreakCard />
 
+      <div className="text-center">
+        <Link href="/puzzles/stats" className="inline-flex items-center gap-1 text-sm font-semibold text-violet-600 hover:underline">
+          View your Puzzle League stats <ArrowRight size={14} />
+        </Link>
+      </div>
+
       <div className="card-surface rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <p className="font-semibold text-zinc-900">Challenge a friend</p>

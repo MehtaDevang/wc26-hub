@@ -25,6 +25,7 @@ import { useTimezone } from "@/components/TimezoneProvider";
 import { formatKickoffDateLabel } from "@/lib/timezone";
 import { MatchNarrative } from "./MatchNarrative";
 import { AddToCalendar } from "./AddToCalendar";
+import { TeamJourneyButton } from "./TeamJourneyProvider";
 import { resolveNetworkUrl } from "@/lib/watch-by-country";
 
 const BASE_TABS = [
@@ -292,15 +293,30 @@ function MatchDetailContent({
             {match.status === "live" && <LiveBadge />}
             {match.status === "finished" && <span className="text-xs font-bold text-zinc-400 uppercase">Full Time</span>}
             {match.status === "upcoming" && <span className="badge-upcoming">Upcoming</span>}
+            {match.status === "upcoming" && (
+              <Link href={`/match/${match.id}/preview`} className="text-xs font-semibold text-blue-600 hover:underline">
+                Read preview →
+              </Link>
+            )}
+            {match.status === "finished" && (
+              <Link href={`/match/${match.id}/recap`} className="text-xs font-semibold text-emerald-600 hover:underline">
+                Read recap →
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center justify-center gap-6 sm:gap-12">
             <div className="flex-1 text-center">
               {home.logo ? <img src={home.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{home.flag}</span>}
               {isKnownTeam(match.home) ? (
-                <Link href={`/teams/${match.home}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
-                  {home.name}
-                </Link>
+                <div className="space-y-1">
+                  <Link href={`/teams/${match.home}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                    {home.name}
+                  </Link>
+                  <div className="flex justify-center">
+                    <TeamJourneyButton teamCode={match.home} />
+                  </div>
+                </div>
               ) : (
                 <p className="text-lg sm:text-xl font-bold text-zinc-900">{home.name}</p>
               )}
@@ -327,9 +343,14 @@ function MatchDetailContent({
             <div className="flex-1 text-center">
               {away.logo ? <img src={away.logo} alt="" className="h-14 w-14 mx-auto mb-2 object-contain" /> : <span className="text-5xl block mb-2">{away.flag}</span>}
               {isKnownTeam(match.away) ? (
-                <Link href={`/teams/${match.away}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
-                  {away.name}
-                </Link>
+                <div className="space-y-1">
+                  <Link href={`/teams/${match.away}`} className="text-lg sm:text-xl font-bold text-zinc-900 hover:text-blue-600 transition-colors">
+                    {away.name}
+                  </Link>
+                  <div className="flex justify-center">
+                    <TeamJourneyButton teamCode={match.away} />
+                  </div>
+                </div>
               ) : (
                 <p className="text-lg sm:text-xl font-bold text-zinc-900">{away.name}</p>
               )}

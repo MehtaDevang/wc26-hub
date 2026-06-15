@@ -34,6 +34,7 @@ const STATIC_ROUTES: Array<{
   { path: "/puzzles/guess-player", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/scramble", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/quiz", changeFrequency: "daily", priority: 0.6 },
+  { path: "/puzzles/stats", changeFrequency: "daily", priority: 0.55 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -115,6 +116,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "always",
         priority: 0.9,
       });
+      const state = event.competitions?.[0]?.status?.type?.state;
+      if (state === "pre") {
+        entries.push({
+          url: `${siteUrl}/match/${event.id}/preview`,
+          lastModified: now,
+          changeFrequency: "daily",
+          priority: 0.85,
+        });
+      }
+      if (state === "post") {
+        entries.push({
+          url: `${siteUrl}/match/${event.id}/recap`,
+          lastModified: now,
+          changeFrequency: "weekly",
+          priority: 0.85,
+        });
+      }
     }
   } catch {
     // Sitemap still works with static routes if ESPN is unavailable.

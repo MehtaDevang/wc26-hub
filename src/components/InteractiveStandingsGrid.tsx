@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import type { GroupStandings, StandingsRow } from "@/lib/types";
 import { resolveTeamCode } from "@/lib/team-lookup";
 import { GroupStandingsTable, StandingsTeamCell } from "./GroupStandingsTable";
+import { TeamJourneyButton } from "./TeamJourneyProvider";
 
 function ClickableStandingsTable({
   rows,
@@ -27,7 +28,7 @@ function ClickableStandingsTable({
             <th className="text-center py-2 px-1 font-semibold w-8">L</th>
             <th className="text-center py-2 px-1 font-semibold w-10">GD</th>
             <th className="text-center py-2 px-1 font-semibold w-10">Pts</th>
-            <th className="w-7" aria-hidden />
+            <th className="w-16" aria-hidden />
           </tr>
         </thead>
         <tbody>
@@ -59,7 +60,10 @@ function ClickableStandingsTable({
                 <td className="py-3 text-center text-zinc-600 tabular-nums">{row.goalDiff}</td>
                 <td className="py-3 text-center font-bold text-[var(--wc-usa)] tabular-nums">{row.points}</td>
                 <td className="py-3 pr-1 text-right">
-                  <ChevronRight size={15} className="standings-row-arrow inline-block" strokeWidth={2.5} />
+                  <div className="flex items-center justify-end gap-0.5">
+                    {code && <TeamJourneyButton teamCode={code} compact />}
+                    <ChevronRight size={15} className="standings-row-arrow inline-block" strokeWidth={2.5} />
+                  </div>
                 </td>
               </tr>
             );
@@ -88,7 +92,7 @@ export function InteractiveStandingsGrid({ groups }: { groups: GroupStandings[] 
                 <Link href={`/groups/${letter}`} className="font-bold text-zinc-900 hover:text-blue-600 transition-colors">
                   {g.group}
                 </Link>
-                <p className="text-[10px] text-zinc-500 mt-0.5">Tap a team for their full World Cup hub</p>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Tap a team for their hub · route icon for quick journey</p>
               </div>
               <Link
                 href={`/groups/${letter}`}
