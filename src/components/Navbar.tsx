@@ -158,8 +158,7 @@ function NavDropdown({
 function BrandLogo() {
   return (
     <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0 group">
-      <MascotStackLogo size="sm" className="sm:hidden" />
-      <MascotStackLogo size="md" className="hidden sm:flex" />
+      <MascotStackLogo />
 
       <div className="min-w-0">
         <p className="font-bold text-zinc-900 text-sm sm:text-[15px] leading-tight truncate group-hover:text-[var(--wc-usa)] transition-colors">

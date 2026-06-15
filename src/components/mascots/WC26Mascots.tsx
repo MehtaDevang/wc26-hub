@@ -1,6 +1,3 @@
-"use client";
-
-import { useId } from "react";
 import type { MascotId } from "@/lib/wc26-brand";
 
 interface MascotSvgProps {
@@ -8,10 +5,8 @@ interface MascotSvgProps {
   className?: string;
 }
 
-/** Zayu — Mexico jaguar mascot */
+/** Zayu — Mexico jaguar mascot (solid fills only — no gradient IDs) */
 export function ZayuMascot({ size = 48, className }: MascotSvgProps) {
-  const gradId = useId();
-
   return (
     <svg
       width={size}
@@ -22,7 +17,7 @@ export function ZayuMascot({ size = 48, className }: MascotSvgProps) {
       aria-hidden
     >
       <circle cx="32" cy="34" r="22" fill="#F59E0B" />
-      <circle cx="32" cy="34" r="22" fill={`url(#${gradId})`} />
+      <circle cx="32" cy="30" r="17" fill="#FCD34D" opacity="0.55" />
       <ellipse cx="32" cy="38" rx="14" ry="12" fill="#D97706" />
       <circle cx="22" cy="28" r="3" fill="#1a1a1a" opacity="0.7" />
       <circle cx="30" cy="26" r="2.5" fill="#1a1a1a" opacity="0.6" />
@@ -39,12 +34,6 @@ export function ZayuMascot({ size = 48, className }: MascotSvgProps) {
       <path d="M18 22 L14 14 M46 22 L50 14" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
       <rect x="20" y="48" width="24" height="10" rx="3" fill="#006847" />
       <rect x="22" y="50" width="8" height="6" rx="1" fill="#fff" opacity="0.3" />
-      <defs>
-        <radialGradient id={gradId} cx="0.4" cy="0.3">
-          <stop offset="0%" stopColor="#FCD34D" />
-          <stop offset="100%" stopColor="#D97706" />
-        </radialGradient>
-      </defs>
     </svg>
   );
 }
