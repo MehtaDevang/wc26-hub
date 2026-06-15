@@ -13,12 +13,23 @@ import {
   Goal,
   Users,
   AlertTriangle,
+  BookOpen,
+  Globe,
+  List,
+  ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 import {
   WORLD_CUP_EDITIONS,
   WORLD_CUP_RECORDS,
   TITLE_WINNERS,
   HISTORY_SUMMARY,
+  HISTORY_INTRO,
+  WORLD_CUP_TIMELINE,
+  FORMAT_MILESTONES,
+  CANCELLED_EDITIONS,
+  HOST_NATIONS,
+  UPCOMING_EDITION,
   TROPHY_INFO,
   AWARDS,
   type WorldCupEdition,
@@ -36,8 +47,11 @@ import {
 import { GoalRecordsTab } from "@/components/history/GoalRecordsTab";
 
 const TABS = [
+  { id: "overview", label: "Overview", icon: BookOpen },
   { id: "winners", label: "Winners", icon: Crown },
+  { id: "finals", label: "All Finals", icon: List },
   { id: "editions", label: "All Cups", icon: Calendar },
+  { id: "hosts", label: "Host Nations", icon: Globe },
   { id: "goals", label: "Goal Records", icon: Goal },
   { id: "records", label: "Records", icon: BarChart3 },
   { id: "awards", label: "Awards & Prizes", icon: Gift },
@@ -45,6 +59,7 @@ const TABS = [
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
+const VALID_TAB_HASHES = new Set<string>(TABS.map((t) => t.id));
 
 function SummaryStrip() {
   const items = [
@@ -52,10 +67,11 @@ function SummaryStrip() {
     { label: "Total matches", value: HISTORY_SUMMARY.totalMatches.toLocaleString(), icon: Calendar },
     { label: "Total goals", value: HISTORY_SUMMARY.totalGoals.toLocaleString(), icon: Goal },
     { label: "Unique winners", value: HISTORY_SUMMARY.uniqueWinners, icon: Crown },
+    { label: "Host nations", value: HISTORY_SUMMARY.uniqueHosts, icon: Globe },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       {items.map((item) => (
         <div key={item.label} className="card-surface rounded-xl px-4 py-3 text-center">
           <item.icon size={16} className="mx-auto text-[var(--wc-gold)] mb-1.5" />
@@ -63,6 +79,211 @@ function SummaryStrip() {
           <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold mt-0.5">{item.label}</p>
         </div>
       ))}
+    </div>
+  );
+}
+
+function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
+  const quickLinks: Array<{ id: TabId; label: string; desc: string }> = [
+    { id: "winners", label: "Champions", desc: "All 8 nations to win the trophy" },
+    { id: "finals", label: "Every final", desc: "Scores and venues since 1930" },
+    { id: "goals", label: "Goal records", desc: "Klose, Fontaine, and famous hauls" },
+    { id: "controversies", label: "Controversies", desc: "Hand of God, VAR, and more" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="card-surface rounded-2xl p-5 sm:p-6">
+        <p className="text-base sm:text-lg text-zinc-700 leading-relaxed">{HISTORY_INTRO.lead}</p>
+        <p className="text-sm text-zinc-500 mt-3 leading-relaxed">{HISTORY_INTRO.body}</p>
+      </div>
+
+      <div className="card-surface rounded-2xl p-5 sm:p-6 border border-[var(--wc-usa)]/15 bg-gradient-to-br from-[var(--wc-usa-light)]/40 to-white">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--wc-usa)] mb-1">Up next</p>
+            <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+              {UPCOMING_EDITION.hostFlag} FIFA World Cup {UPCOMING_EDITION.year}
+            </h3>
+            <p className="text-sm text-zinc-600 mt-2 leading-relaxed">{UPCOMING_EDITION.note}</p>
+          </div>
+          <Link
+            href="/fixtures"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--wc-usa)] hover:underline shrink-0"
+          >
+            2026 fixtures <ArrowRight size={14} />
+          </Link>
+        </div>
+        <dl className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+          <div className="rounded-lg bg-white/80 px-3 py-2">
+            <dt className="text-[10px] text-zinc-400 uppercase font-semibold">Teams</dt>
+            <dd className="font-bold text-zinc-900">{UPCOMING_EDITION.teams}</dd>
+          </div>
+          <div className="rounded-lg bg-white/80 px-3 py-2">
+            <dt className="text-[10px] text-zinc-400 uppercase font-semibold">Matches</dt>
+            <dd className="font-bold text-zinc-900">{UPCOMING_EDITION.matches}</dd>
+          </div>
+          <div className="rounded-lg bg-white/80 px-3 py-2 col-span-2">
+            <dt className="text-[10px] text-zinc-400 uppercase font-semibold">Final</dt>
+            <dd className="font-semibold text-zinc-800 text-xs sm:text-sm">{UPCOMING_EDITION.final}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-zinc-900 mb-3">Key moments in World Cup history</h3>
+        <div className="space-y-2">
+          {WORLD_CUP_TIMELINE.map((event) => (
+            <div
+              key={event.year}
+              className="card-surface rounded-xl px-4 py-3 flex gap-4 items-start"
+            >
+              <span className="text-sm font-extrabold text-[var(--wc-usa)] w-12 shrink-0 tabular-nums">
+                {event.year}
+              </span>
+              {event.flag && <span className="text-lg shrink-0">{event.flag}</span>}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-zinc-900">{event.title}</p>
+                <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{event.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="card-surface rounded-2xl p-5">
+          <h3 className="font-bold text-zinc-900 mb-3">Tournament format evolution</h3>
+          <div className="space-y-2">
+            {FORMAT_MILESTONES.map((m) => (
+              <div
+                key={m.year}
+                className="flex items-start gap-3 rounded-lg bg-zinc-50 px-3 py-2.5"
+              >
+                <span className="text-sm font-extrabold text-[var(--wc-gold)] w-12 shrink-0">{m.year}</span>
+                <div>
+                  <p className="text-sm font-semibold text-zinc-900">{m.teams} teams</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{m.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card-surface rounded-2xl p-5">
+          <h3 className="font-bold text-zinc-900 mb-3">Cancelled editions</h3>
+          <p className="text-sm text-zinc-500 mb-3">
+            No World Cup was played in 1942 or 1946 because of World War II and its aftermath.
+          </p>
+          <div className="space-y-3">
+            {CANCELLED_EDITIONS.map((e) => (
+              <div key={e.year} className="rounded-xl border border-zinc-100 px-4 py-3">
+                <p className="text-sm font-bold text-zinc-900">
+                  {e.year} — <span className="text-zinc-500 font-medium">{e.reason}</span>
+                </p>
+                <p className="text-xs text-zinc-500 mt-1 leading-relaxed">{e.note}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-zinc-900 mb-3">Explore further</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {quickLinks.map((link) => (
+            <button
+              key={link.id}
+              type="button"
+              onClick={() => onNavigate(link.id)}
+              className="card-surface rounded-xl p-4 text-left hover:shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <p className="font-semibold text-zinc-900">{link.label}</p>
+              <p className="text-xs text-zinc-500 mt-1">{link.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FinalsTab() {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-zinc-500">
+        Every FIFA World Cup final since 1930 — winners, runners-up, scores, and venues.
+      </p>
+      <div className="card-surface rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-wider text-zinc-400 border-b border-zinc-100 bg-zinc-50/80">
+                <th className="text-left py-2.5 px-4 font-semibold">Year</th>
+                <th className="text-left py-2.5 font-semibold">Winner</th>
+                <th className="text-center py-2.5 px-2 font-semibold">Score</th>
+                <th className="text-left py-2.5 font-semibold">Runner-up</th>
+                <th className="text-left py-2.5 px-4 font-semibold hidden md:table-cell">Venue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {WORLD_CUP_EDITIONS.map((e) => (
+                <tr key={e.year} className="border-b border-zinc-50 hover:bg-zinc-50/60">
+                  <td className="py-2.5 px-4 font-bold text-[var(--wc-usa)] tabular-nums">{e.year}</td>
+                  <td className="py-2.5 font-semibold text-zinc-900">
+                    {e.winnerFlag} {e.winner}
+                  </td>
+                  <td className="py-2.5 px-2 text-center font-bold text-zinc-800 tabular-nums whitespace-nowrap">
+                    {e.finalScore}
+                  </td>
+                  <td className="py-2.5 text-zinc-600">
+                    {e.runnerUpFlag} {e.runnerUp}
+                  </td>
+                  <td className="py-2.5 px-4 text-zinc-500 text-xs hidden md:table-cell">{e.finalVenue}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HostsTab() {
+  const sorted = [...HOST_NATIONS].sort((a, b) => b.editions.length - a.editions.length || a.country.localeCompare(b.country));
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-zinc-500">
+        {HOST_NATIONS.length} nations have hosted the men&apos;s World Cup. Only six have won the trophy on home soil.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {sorted.map((host) => (
+          <div key={host.country} className="card-surface rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">{host.flag}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-bold text-zinc-900">{host.country}</p>
+                  {host.winsAsHost > 0 && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--wc-gold)] bg-[var(--wc-gold-light)] px-2 py-0.5 rounded-full shrink-0">
+                      Won at home
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Hosted: {host.editions.join(", ")}
+                  {host.editions.length > 1 && ` · ${host.editions.length}×`}
+                </p>
+                {host.notes && (
+                  <p className="text-xs text-zinc-600 mt-2 leading-relaxed">{host.notes}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -566,14 +787,19 @@ function ControversiesTab() {
 }
 
 export function WorldCupHistoryHub() {
-  const [tab, setTab] = useState<TabId>("winners");
+  const [tab, setTab] = useState<TabId>("overview");
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
-    if (hash === "goals" || hash === "records" || hash === "winners" || hash === "editions" || hash === "awards" || hash === "controversies") {
+    if (VALID_TAB_HASHES.has(hash)) {
       setTab(hash as TabId);
     }
   }, []);
+
+  function navigateTab(id: TabId) {
+    setTab(id);
+    window.history.replaceState(null, "", `#${id}`);
+  }
 
   return (
     <div className="space-y-6" id="history-hub">
@@ -584,10 +810,7 @@ export function WorldCupHistoryHub() {
           <button
             key={id}
             type="button"
-            onClick={() => {
-              setTab(id);
-              window.history.replaceState(null, "", `#${id}`);
-            }}
+            onClick={() => navigateTab(id)}
             className={`flex items-center gap-1.5 shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
               tab === id
                 ? "bg-[var(--wc-usa)] text-white shadow-sm"
@@ -600,8 +823,11 @@ export function WorldCupHistoryHub() {
         ))}
       </div>
 
+      {tab === "overview" && <OverviewTab onNavigate={navigateTab} />}
       {tab === "winners" && <WinnersTab />}
+      {tab === "finals" && <FinalsTab />}
       {tab === "editions" && <EditionsTab />}
+      {tab === "hosts" && <HostsTab />}
       {tab === "goals" && <GoalRecordsTab />}
       {tab === "records" && <RecordsTab />}
       {tab === "awards" && <AwardsTab />}

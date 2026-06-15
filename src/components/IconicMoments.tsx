@@ -96,7 +96,7 @@ function MomentDetailModal({
               onClick={onClose}
               className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline"
             >
-              Read more in World Cup history <ArrowRight size={14} />
+              Read more in FIFA World Cup history <ArrowRight size={14} />
             </Link>
           )}
         </div>
@@ -231,7 +231,7 @@ export function IconicMoments({
           href="/history"
           className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:underline cursor-pointer"
         >
-          Explore full World Cup history <ArrowRight size={14} />
+          Explore FIFA World Cup history <ArrowRight size={14} />
         </Link>
       )}
 

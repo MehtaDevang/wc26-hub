@@ -53,11 +53,154 @@ export const HISTORY_SUMMARY = {
   totalMatches: 964,
   totalGoals: 2720,
   uniqueWinners: 8,
+  uniqueHosts: 19,
   mostTitles: { team: "Brazil", flag: "🇧🇷", count: 5 },
   highestScoringFinal: { edition: "1958", score: "Brazil 5–2 Sweden" },
   biggestWin: { edition: "1982", match: "Hungary 10–1 El Salvador" },
   firstEdition: 1930,
   latestEdition: 2022,
+  nextEdition: 2026,
+};
+
+export const HISTORY_INTRO = {
+  title: "FIFA World Cup History",
+  lead:
+    "The FIFA World Cup is the most watched sporting event on Earth. Since Uruguay hosted the first edition in 1930, 22 tournaments have crowned eight different champions across five continents — from Pelé and Maradona to Messi and Mbappé.",
+  body:
+    "Explore every final, host nation, Golden Ball winner, all-time goal record, trophy evolution, and the controversies that shaped the modern game — from the Maracanazo in 1950 to the 48-team expansion in 2026.",
+};
+
+export interface HistoryTimelineEvent {
+  year: number;
+  title: string;
+  description: string;
+  flag?: string;
+}
+
+export const WORLD_CUP_TIMELINE: HistoryTimelineEvent[] = [
+  {
+    year: 1930,
+    title: "The first World Cup",
+    description: "Uruguay beat Argentina 4–2 in Montevideo to win the inaugural tournament with 13 teams.",
+    flag: "🇺🇾",
+  },
+  {
+    year: 1950,
+    title: "The Maracanazo",
+    description: "Uruguay stunned Brazil at the Maracanã — still the most traumatic defeat in Brazilian football.",
+    flag: "🇺🇾",
+  },
+  {
+    year: 1958,
+    title: "Pelé arrives",
+    description: "A 17-year-old Pelé scored twice in the final as Brazil won their first title in Sweden.",
+    flag: "🇧🇷",
+  },
+  {
+    year: 1970,
+    title: "Brazil keep the Jules Rimet Trophy",
+    description: "Pelé's third title meant Brazil kept the original trophy permanently. The FIFA World Cup Trophy debuted in 1974.",
+    flag: "🇧🇷",
+  },
+  {
+    year: 1982,
+    title: "24 teams, more drama",
+    description: "FIFA expanded to 24 nations. Italy's Paolo Rossi destroyed Brazil's dream team in Barcelona.",
+    flag: "🇮🇹",
+  },
+  {
+    year: 1994,
+    title: "USA breaks attendance records",
+    description: "The first World Cup with 32 teams averaged 69,000 fans per game — a record that still stands.",
+    flag: "🇺🇸",
+  },
+  {
+    year: 2002,
+    title: "First Asian World Cup",
+    description: "Co-hosted by South Korea and Japan, Ronaldo's redemption story crowned Brazil's fifth title.",
+    flag: "🇰🇷🇯🇵",
+  },
+  {
+    year: 2010,
+    title: "Africa's World Cup",
+    description: "South Africa hosted the first finals on the continent. Spain's tiki-taka conquered the world.",
+    flag: "🇿🇦",
+  },
+  {
+    year: 2022,
+    title: "Messi's crowning glory",
+    description: "Argentina won a penalty-shootout epic against France — widely called the greatest final ever.",
+    flag: "🇦🇷",
+  },
+  {
+    year: 2026,
+    title: "48 teams, three hosts",
+    description: "Mexico, USA, and Canada co-host the largest World Cup ever — 104 matches across 16 stadiums.",
+    flag: "🇲🇽🇺🇸🇨🇦",
+  },
+];
+
+export const FORMAT_MILESTONES = [
+  { year: 1930, teams: 13, note: "Invited nations; no qualifiers as we know them today" },
+  { year: 1954, teams: 16, note: "Standard 16-team format through 1978" },
+  { year: 1982, teams: 24, note: "Second group stage introduced" },
+  { year: 1998, teams: 32, note: "Eight groups of four — format used through 2022" },
+  { year: 2026, teams: 48, note: "12 groups of four; top two plus eight best thirds advance" },
+];
+
+export const CANCELLED_EDITIONS = [
+  {
+    year: 1942,
+    reason: "World War II",
+    note: "FIFA had awarded the tournament to Germany (1938 host) or Brazil, but global conflict forced cancellation.",
+  },
+  {
+    year: 1946,
+    reason: "Post-war recovery",
+    note: "No World Cup was held; the next edition returned in 1950 in Brazil after a 12-year gap.",
+  },
+];
+
+export interface HostNationRecord {
+  country: string;
+  flag: string;
+  editions: number[];
+  winsAsHost: number;
+  notes?: string;
+}
+
+export const HOST_NATIONS: HostNationRecord[] = [
+  { country: "Mexico", flag: "🇲🇽", editions: [1970, 1986, 2026], winsAsHost: 0, notes: "First nation to host three men's World Cups" },
+  { country: "Brazil", flag: "🇧🇷", editions: [1950, 2014], winsAsHost: 0, notes: "The 1950 Maracanazo and 2014's 7–1 semi-final" },
+  { country: "Germany", flag: "🇩🇪", editions: [1974, 2006], winsAsHost: 1, notes: "West Germany won at home in 1974" },
+  { country: "France", flag: "🇫🇷", editions: [1938, 1998], winsAsHost: 1, notes: "Les Bleus triumphed on home soil in 1998" },
+  { country: "Italy", flag: "🇮🇹", editions: [1934, 1990], winsAsHost: 1, notes: "Won the 1934 final in Rome" },
+  { country: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", editions: [1966], winsAsHost: 1, notes: "Only World Cup England have ever won" },
+  { country: "Argentina", flag: "🇦🇷", editions: [1978], winsAsHost: 1, notes: "Mario Kempes inspired the hosts" },
+  { country: "Spain", flag: "🇪🇸", editions: [1982], winsAsHost: 0 },
+  { country: "USA", flag: "🇺🇸", editions: [1994, 2026], winsAsHost: 0, notes: "Record attendance in 1994; co-host in 2026" },
+  { country: "South Korea", flag: "🇰🇷", editions: [2002], winsAsHost: 0, notes: "Co-hosted with Japan" },
+  { country: "Japan", flag: "🇯🇵", editions: [2002], winsAsHost: 0, notes: "Co-hosted with South Korea" },
+  { country: "South Africa", flag: "🇿🇦", editions: [2010], winsAsHost: 0, notes: "First World Cup in Africa" },
+  { country: "Russia", flag: "🇷🇺", editions: [2018], winsAsHost: 0 },
+  { country: "Qatar", flag: "🇶🇦", editions: [2022], winsAsHost: 0, notes: "First winter World Cup in the Northern Hemisphere" },
+  { country: "Uruguay", flag: "🇺🇾", editions: [1930], winsAsHost: 1, notes: "Inaugural champions on home soil" },
+  { country: "Switzerland", flag: "🇨🇭", editions: [1954], winsAsHost: 0 },
+  { country: "Sweden", flag: "🇸🇪", editions: [1958], winsAsHost: 0 },
+  { country: "Chile", flag: "🇨🇱", editions: [1962], winsAsHost: 0 },
+  { country: "Canada", flag: "🇨🇦", editions: [2026], winsAsHost: 0, notes: "First men's World Cup matches on Canadian soil" },
+];
+
+export const UPCOMING_EDITION = {
+  year: 2026,
+  host: "Mexico, USA & Canada",
+  hostFlag: "🇲🇽🇺🇸🇨🇦",
+  teams: 48,
+  matches: 104,
+  venues: 16,
+  openingMatch: "Mexico vs South Africa — Estadio Azteca",
+  final: "MetLife Stadium, New Jersey — Jul 19, 2026",
+  note: "The first 48-team World Cup spans three nations and introduces a new knockout format.",
 };
 
 export const TROPHY_INFO = {
@@ -350,6 +493,11 @@ export const WORLD_CUP_RECORDS: WorldCupRecord[] = [
   { category: "Fastest goal", holder: "Hakan Şükür", flag: "🇹🇷", value: "11 seconds", detail: "vs South Korea, 2002" },
   { category: "Most clean sheets (keeper)", holder: "Peter Shilton", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", value: "10", detail: "1982–1990" },
   { category: "Only back-to-back winners", holder: "Italy & Brazil", flag: "🇮🇹🇧🇷", value: "2 each", detail: "Italy 1934–38, Brazil 1958–62" },
+  { category: "Most assists (all-time)", holder: "Lionel Messi", flag: "🇦🇷", value: "8", detail: "2006–2022" },
+  { category: "Most tournaments played", holder: "Mexico", flag: "🇲🇽", value: "18", detail: "1930–2022 (every edition except 1934, 1970)" },
+  { category: "Longest gap between titles", holder: "Argentina", flag: "🇦🇷", value: "36 years", detail: "1986 to 2022" },
+  { category: "Only unbeaten champions", holder: "Brazil 1970", flag: "🇧🇷", value: "6–0–0", detail: "Won every match, scored 19 goals" },
+  { category: "Most penalties in a final", holder: "Argentina 2022", flag: "🇦🇷", value: "4–2", detail: "vs France after 3–3 draw" },
 ];
 
 export const TITLE_WINNERS = [

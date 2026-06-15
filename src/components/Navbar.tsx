@@ -42,7 +42,7 @@ const PRIMARY_LINKS = [
 
 const EXPLORE_LINKS = [
   { href: "/players", label: "Players", icon: Target },
-  { href: "/history", label: "History", icon: History },
+  { href: "/history", label: "FIFA World Cup History", icon: History },
   { href: "/hosts", label: "Host Nations", icon: Globe },
   { href: "/cities", label: "City Guides", icon: MapPin },
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
