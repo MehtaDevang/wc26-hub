@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { SiteTopAd, SiteFooterAd } from "@/components/SiteAds";
 import { LiveNowStickyBar } from "@/components/LiveNowStickyBar";
 import { WC26MascotStrip } from "@/components/WC26Brand";
@@ -69,8 +70,10 @@ export default async function RootLayout({
               <p className="text-center text-xs text-zinc-400">
                 {SITE_NAME} © 2026 — Not affiliated with FIFA. Live data via ESPN.
               </p>
-              <p className="mt-2 flex items-center justify-center gap-3 text-xs text-zinc-400">
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-zinc-400">
                 <span>Hosted across Mexico, USA & Canada</span>
+                <span>·</span>
+                <LocaleSwitcher />
                 <span>·</span>
                 <a
                   href={`mailto:${SITE_ADS_EMAIL}`}
@@ -85,7 +88,7 @@ export default async function RootLayout({
                 >
                   Contact
                 </a>
-              </p>
+              </div>
             </footer>
             <Analytics />
             <LiveNowStickyBar />

@@ -10,7 +10,7 @@ export function buildOrganizationJsonLd() {
     "@id": `${siteUrl}/#organization`,
     name: SITE_NAME,
     url: siteUrl,
-    logo: `${siteUrl}/favicon.svg`,
+    logo: `${siteUrl}/apple-touch-icon.svg`,
     email: "hello@thegoalposts.in",
     description: SITE_TAGLINE,
   };

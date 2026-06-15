@@ -22,11 +22,13 @@ import {
   BarChart3,
   Compass,
   Wrench,
+  Swords,
+  Code2,
 } from "lucide-react";
 import clsx from "clsx";
-import { SITE_NAME } from "@/lib/site";
-import { MascotFootballPlay } from "@/components/MascotFootballPlay";
-import { WC26MascotIcon } from "./mascots/WC26Mascots";
+import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
+import { MascotStackLogo } from "@/components/MascotStackLogo";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
 const PRIMARY_LINKS = [
   { href: "/", label: "Home", icon: Trophy },
@@ -42,6 +44,7 @@ const EXPLORE_LINKS = [
   { href: "/hosts", label: "Host Nations", icon: Globe },
   { href: "/cities", label: "City Guides", icon: MapPin },
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
+  { href: "/rivalries", label: "Rivalries", icon: Swords },
 ] as const;
 
 const TOOL_LINKS = [
@@ -50,6 +53,8 @@ const TOOL_LINKS = [
   { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
   { href: "/watch", label: "Where to Watch", icon: Tv },
   { href: "/leaders", label: "Stat Leaders", icon: BarChart3 },
+  { href: "/pool", label: "Office Pool", icon: Users },
+  { href: "/embed", label: "Embed Widget", icon: Code2 },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
@@ -61,11 +66,14 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/hosts" && pathname.startsWith("/hosts")) return true;
   if (href === "/cities" && pathname.startsWith("/cities")) return true;
   if (href === "/stadiums" && pathname.startsWith("/stadiums")) return true;
+  if (href === "/rivalries" && pathname.startsWith("/rivalries")) return true;
   if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
   if (href === "/bracket" && pathname.startsWith("/bracket")) return true;
   if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;
   if (href === "/watch" && pathname.startsWith("/watch")) return true;
   if (href === "/leaders" && pathname.startsWith("/leaders")) return true;
+  if (href === "/pool" && pathname.startsWith("/pool")) return true;
+  if (href === "/embed" && pathname.startsWith("/embed")) return true;
   return false;
 }
 
@@ -150,17 +158,13 @@ function NavDropdown({
 function BrandLogo() {
   return (
     <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0 group">
-      <div className="md:hidden flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--wc-usa-light)] border border-[var(--wc-usa)]/15 overflow-hidden">
-        <WC26MascotIcon id="clutch" size={28} />
-      </div>
-
-      <div className="hidden md:flex items-center shrink-0">
-        <MascotFootballPlay />
-      </div>
+      <MascotStackLogo size="sm" className="sm:hidden" />
+      <MascotStackLogo size="md" className="hidden sm:flex" />
 
       <div className="min-w-0">
         <p className="font-bold text-zinc-900 text-sm sm:text-[15px] leading-tight truncate group-hover:text-[var(--wc-usa)] transition-colors">
-          {SITE_NAME}
+          <span className="sm:hidden">{SITE_SHORT_NAME}</span>
+          <span className="hidden sm:inline">{SITE_NAME}</span>
         </p>
         <p className="hidden lg:block text-[10px] text-zinc-400 leading-none mt-0.5 tracking-wide uppercase">
           Scores · Stats · Puzzles
@@ -207,6 +211,7 @@ export function Navbar() {
           })}
           <NavDropdown label="Explore" icon={Compass} links={EXPLORE_LINKS} pathname={pathname} />
           <NavDropdown label="Fan Tools" icon={Wrench} links={TOOL_LINKS} pathname={pathname} />
+          <LocaleSwitcher className="ml-1 pl-2 border-l border-zinc-100" />
         </nav>
 
         <div className="hidden md:flex lg:hidden items-center gap-1">
@@ -305,6 +310,11 @@ export function Navbar() {
                   </Link>
                 );
               })}
+            </div>
+
+            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2 mt-2">Language</p>
+            <div className="px-1 mb-4">
+              <LocaleSwitcher />
             </div>
           </nav>
         </>

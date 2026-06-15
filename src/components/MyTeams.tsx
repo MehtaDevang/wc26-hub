@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { getTeam } from "@/lib/data";
 import { getMyTeams, isMyTeam, MAX_MY_TEAMS, toggleMyTeam } from "@/lib/my-teams";
 import { MyTeamsAlerts } from "@/components/MyTeamsAlerts";
+import { MyTeamsPushPrompt } from "@/components/MyTeamsPushPrompt";
 
 interface StarTeamButtonProps {
   teamCode: string;
@@ -113,6 +114,9 @@ export function MyTeamsPicker({ className }: MyTeamsPickerProps) {
         })}
       </div>
       <MyTeamsAlerts />
+      <div className="mt-3">
+        <MyTeamsPushPrompt />
+      </div>
     </div>
   );
 }

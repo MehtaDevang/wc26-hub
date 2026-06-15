@@ -16,11 +16,40 @@ import {
 } from "@/lib/timezone";
 import type { Match } from "@/lib/types";
 
-interface LiveScoresProps {
-  initialMatches?: Match[];
+export interface LiveScoresLabels {
+  title: string;
+  allFixtures: string;
+  live: string;
+  upcoming: string;
+  fullTime: string;
+  noMatchesToday: string;
+  loadingScores: string;
+  autoUpdates: string;
 }
 
-export function LiveScores({ initialMatches }: LiveScoresProps) {
+const DEFAULT_LABELS: LiveScoresLabels = {
+  title: "Live Scores",
+  allFixtures: "All fixtures",
+  live: "Live",
+  upcoming: "Upcoming",
+  fullTime: "Full Time",
+  noMatchesToday: "No matches today",
+  loadingScores: "Loading scores...",
+  autoUpdates: "Auto-updates",
+};
+
+interface LiveScoresProps {
+  initialMatches?: Match[];
+  fixturesHref?: string;
+  labels?: Partial<LiveScoresLabels>;
+}
+
+export function LiveScores({
+  initialMatches,
+  fixturesHref = "/fixtures",
+  labels: labelOverrides,
+}: LiveScoresProps) {
+  const labels = { ...DEFAULT_LABELS, ...labelOverrides };
   const timezone = useTimezone();
   const mounted = useMounted();
   const [matches, setMatches] = useState<Match[]>(initialMatches ?? []);
@@ -81,10 +110,10 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="section-title flex items-center gap-2">
           <Radio size={20} className="text-red-500" />
-          Live Scores
+          {labels.title}
         </h2>
-        <Link href="/fixtures" className="text-[13px] text-blue-600 hover:text-blue-700 font-medium flex items-center gap-0.5">
-          All fixtures <ChevronRight size={14} />
+        <Link href={fixturesHref} className="text-[13px] text-blue-600 hover:text-blue-700 font-medium flex items-center gap-0.5">
+          {labels.allFixtures} <ChevronRight size={14} />
         </Link>
       </div>
 
@@ -97,14 +126,14 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <TimezoneBadge showIcon={false} />
-            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Auto-updates</span>
+            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">{labels.autoUpdates}</span>
           </div>
         </div>
 
         {showSpinner && (
           <div className="flex items-center justify-center gap-2 py-14 text-zinc-400 text-sm">
             <Loader2 size={18} className="animate-spin" />
-            Loading scores...
+            {labels.loadingScores}
           </div>
         )}
 
@@ -130,7 +159,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
             {liveMatches.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-red-500 font-bold">
-                  Live
+                  {labels.live}
                 </p>
                 {liveMatches.map((m) => (
                   <MatchClashRow key={m.id} match={m} liveMinute={liveMinute} />
@@ -140,7 +169,7 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
             {upcomingToday.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                  Upcoming
+                  {labels.upcoming}
                 </p>
                 {upcomingToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
@@ -148,13 +177,13 @@ export function LiveScores({ initialMatches }: LiveScoresProps) {
             {finishedToday.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
-                  Full Time
+                  {labels.fullTime}
                 </p>
                 {finishedToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
             )}
             {localizedMatches.length === 0 && !error && (
-              <p className="px-4 py-10 text-center text-zinc-400 text-sm">No matches today</p>
+              <p className="px-4 py-10 text-center text-zinc-400 text-sm">{labels.noMatchesToday}</p>
             )}
           </div>
         )}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="The Goal Posts">
+  <rect width="512" height="512" fill="#002868"/>
+  <rect y="0" width="512" height="40" fill="#006847"/>
+  <rect y="40" width="512" height="40" fill="#ffffff"/>
+  <rect y="80" width="512" height="40" fill="#D80621"/>
+  <!-- Zayu -->
+  <circle cx="140" cy="300" r="72" fill="#F59E0B"/>
+  <ellipse cx="112" cy="276" rx="22" ry="26" fill="#FBBF24"/>
+  <ellipse cx="168" cy="276" rx="22" ry="26" fill="#FBBF24"/>
+  <circle cx="112" cy="276" r="8" fill="#1e3a1a"/>
+  <circle cx="168" cy="276" r="8" fill="#1e3a1a"/>
+  <!-- Clutch -->
+  <circle cx="256" cy="288" r="88" fill="#ffffff"/>
+  <circle cx="256" cy="264" r="64" fill="#f8fafc"/>
+  <circle cx="232" cy="256" r="14" fill="#1e293b"/>
+  <circle cx="280" cy="256" r="14" fill="#1e293b"/>
+  <path d="M236 280 L256 304 L276 280" stroke="#f59e0b" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Maple -->
+  <circle cx="372" cy="300" r="72" fill="#A0522D"/>
+  <circle cx="352" cy="284" r="10" fill="#3d2817"/>
+  <circle cx="392" cy="284" r="10" fill="#3d2817"/>
+  <path d="M372 216 L378 240 L404 240 L384 256 L390 280 L372 268 L354 280 L360 256 L340 240 L366 240 Z" fill="#D80621"/>
+</svg>

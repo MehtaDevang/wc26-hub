@@ -27,23 +27,30 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   },
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https: http:",
-      "font-src 'self' data:",
-      "connect-src 'self' https://site.api.espn.com https://api.open-meteo.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com",
-      "media-src 'self' https:",
-      "frame-src 'self' https: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
-      "frame-ancestors 'self'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join("; "),
-  },
 ];
+
+const cspBase = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https: http:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://site.api.espn.com https://api.open-meteo.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com",
+  "media-src 'self' https:",
+  "frame-src 'self' https: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
+  "base-uri 'self'",
+  "form-action 'self'",
+];
+
+const siteCsp = [
+  ...cspBase,
+  "frame-ancestors 'self'",
+].join("; ");
+
+const embedCsp = [
+  ...cspBase,
+  "frame-ancestors *",
+].join("; ");
 
 const nextConfig: NextConfig = {
   // Allow phone/tablet testing on LAN (e.g. http://192.168.x.x:3000)
@@ -52,8 +59,18 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/embed/:path*",
+        headers: [
+          ...securityHeaders.filter((h) => h.key !== "X-Frame-Options"),
+          { key: "Content-Security-Policy", value: embedCsp },
+        ],
+      },
+      {
         source: "/(.*)",
-        headers: securityHeaders,
+        headers: [
+          ...securityHeaders,
+          { key: "Content-Security-Policy", value: siteCsp },
+        ],
       },
     ];
   },

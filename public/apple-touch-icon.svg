@@ -1,4 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="The Goal Posts">
-  <rect width="180" height="180" rx="36" fill="#1d4ed8"/>
-  <text x="90" y="118" text-anchor="middle" font-size="72" font-family="system-ui,sans-serif" font-weight="800" fill="#ffffff">26</text>
+  <rect width="180" height="180" rx="36" fill="#ffffff"/>
+  <rect y="0" width="180" height="14" fill="#006847"/>
+  <rect y="14" width="180" height="14" fill="#ffffff"/>
+  <rect y="28" width="180" height="14" fill="#D80621"/>
+  <!-- Zayu -->
+  <circle cx="48" cy="108" r="28" fill="#F59E0B"/>
+  <ellipse cx="40" cy="100" rx="8" ry="10" fill="#FBBF24"/>
+  <ellipse cx="56" cy="100" rx="8" ry="10" fill="#FBBF24"/>
+  <circle cx="40" cy="100" r="3" fill="#1e3a1a"/>
+  <circle cx="56" cy="100" r="3" fill="#1e3a1a"/>
+  <!-- Clutch -->
+  <circle cx="90" cy="102" r="34" fill="#002868"/>
+  <circle cx="90" cy="92" r="24" fill="#ffffff"/>
+  <circle cx="82" cy="90" r="5" fill="#1e293b"/>
+  <circle cx="98" cy="90" r="5" fill="#1e293b"/>
+  <path d="M84 98 L90 104 L96 98" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Maple -->
+  <circle cx="132" cy="108" r="28" fill="#A0522D"/>
+  <circle cx="124" cy="102" r="4" fill="#3d2817"/>
+  <circle cx="140" cy="102" r="4" fill="#3d2817"/>
+  <path d="M132 78 L134 86 L142 86 L136 91 L138 99 L132 94 L126 99 L128 91 L122 86 L130 86 Z" fill="#D80621"/>
 </svg>

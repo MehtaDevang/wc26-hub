@@ -1279,3 +1279,55 @@ input:focus, select:focus {
 .share-buttons-icon:active {
   transform: scale(0.96);
 }
+
+/* Embed mode — strip site chrome when loaded in /embed routes */
+body.embed-mode header,
+body.embed-mode footer,
+body.embed-mode .site-main > *:not(.embed-live-scores),
+body.embed-mode [class*="LiveNow"],
+body.embed-mode .fixed.bottom-20 {
+  display: none !important;
+}
+
+body.embed-mode .site-main {
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+body.embed-mode main {
+  padding: 0 !important;
+}
+
+/* Office pool print styles */
+@media print {
+  header,
+  footer,
+  [class*="AdBanner"],
+  [class*="SiteAd"],
+  .fixed {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .site-main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .print-bracket-sheet {
+    break-inside: avoid;
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+
+  .print-bracket-sheet h2,
+  .print-bracket-sheet p,
+  .print-bracket-sheet li {
+    color: #000 !important;
+  }
+}

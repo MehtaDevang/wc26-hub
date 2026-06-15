@@ -129,8 +129,11 @@ export function rootMetadata(): Metadata {
     },
     verification: buildVerification(),
     icons: {
-      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-      apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml" }],
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/icon-maskable.svg", type: "image/svg+xml", sizes: "512x512" },
+      ],
+      apple: [{ url: "/apple-touch-icon.svg", type: "image/svg+xml", sizes: "180x180" }],
     },
   };
 }

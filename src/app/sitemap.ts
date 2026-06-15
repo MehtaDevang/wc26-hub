@@ -7,6 +7,8 @@ import { getSiteUrl } from "@/lib/site";
 import { getAllVenues, getVenueSlug } from "@/lib/venues";
 import { getAllCityGuides } from "@/lib/city-guides";
 import { getAllWatchCountryIds } from "@/lib/watch-by-country";
+import { getAllRivalryPages } from "@/lib/rivalry-pages";
+import { localePath } from "@/lib/i18n";
 
 export const revalidate = 1800;
 
@@ -35,6 +37,13 @@ const STATIC_ROUTES: Array<{
   { path: "/puzzles/scramble", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/quiz", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/stats", changeFrequency: "daily", priority: 0.55 },
+  { path: "/rivalries", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/pool", changeFrequency: "weekly", priority: 0.75 },
+  { path: "/embed", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/es", changeFrequency: "always", priority: 0.9 },
+  { path: "/es/fixtures", changeFrequency: "always", priority: 0.9 },
+  { path: "/fr", changeFrequency: "always", priority: 0.9 },
+  { path: "/fr/fixtures", changeFrequency: "always", priority: 0.9 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -83,6 +92,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     });
   }
+
+  for (const rivalry of getAllRivalryPages()) {
+    entries.push({
+      url: `${siteUrl}/rivalries/${rivalry.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.75,
+    });
+  }
+
+  entries.push({
+    url: `${siteUrl}${localePath("es")}`,
+    lastModified: now,
+    changeFrequency: "always",
+    priority: 0.9,
+  });
+  entries.push({
+    url: `${siteUrl}${localePath("es", "/fixtures")}`,
+    lastModified: now,
+    changeFrequency: "always",
+    priority: 0.9,
+  });
+  entries.push({
+    url: `${siteUrl}${localePath("fr")}`,
+    lastModified: now,
+    changeFrequency: "always",
+    priority: 0.9,
+  });
+  entries.push({
+    url: `${siteUrl}${localePath("fr", "/fixtures")}`,
+    lastModified: now,
+    changeFrequency: "always",
+    priority: 0.9,
+  });
 
   for (const letter of getAllGroupLetters()) {
     entries.push({
