@@ -75,7 +75,7 @@ export function MatchNarrativePageView({
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <AddToCalendar match={match} />
+            {match.status !== "finished" && <AddToCalendar match={match} />}
             <Link
               href={`/match/${match.id}`}
               className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors"

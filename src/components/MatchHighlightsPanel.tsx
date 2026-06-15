@@ -1,6 +1,7 @@
 import { Play, ImageIcon } from "lucide-react";
 import { HighlightCard } from "./HighlightCard";
 import { MatchMedia } from "./MatchMedia";
+import { findWatchLinksForHighlight } from "@/lib/espn/highlight-images";
 import type { Highlight, Match, MatchPhoto, MatchVideo } from "@/lib/types";
 
 interface MatchHighlightsPanelProps {
@@ -10,18 +11,13 @@ interface MatchHighlightsPanelProps {
   photos?: MatchPhoto[];
 }
 
-/** Attach ESPN watch links when a highlight card is missing them */
+/** Attach ESPN watch links only when a clip clearly matches the highlight. */
 function withWatchLinks(highlights: Highlight[], videos: MatchVideo[]): Highlight[] {
-  const fallbackWeb = videos.find((v) => v.webUrl)?.webUrl;
-  const fallbackVideo = videos.find((v) => v.videoUrl)?.videoUrl;
-
   return highlights.map((h) => {
     if (h.webUrl || h.videoUrl) return h;
-    return {
-      ...h,
-      webUrl: fallbackWeb,
-      videoUrl: fallbackVideo,
-    };
+    const links = findWatchLinksForHighlight(h, videos);
+    if (!links.webUrl && !links.videoUrl) return h;
+    return { ...h, ...links };
   });
 }
 

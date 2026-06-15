@@ -24,6 +24,8 @@ export function AddToCalendar({ match, className = "", compact = false }: AddToC
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
+  if (match.status === "finished") return null;
+
   const googleUrl = buildGoogleCalendarUrl(match);
   const ics = buildMatchICS(match);
 

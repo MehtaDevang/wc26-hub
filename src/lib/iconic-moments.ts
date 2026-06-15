@@ -19,7 +19,7 @@ export interface IconicMoment {
   era: "wc26" | "classic";
 }
 
-/** Curated iconic World Cup moments — ESPN CDN images verified from live API responses. */
+/** Curated iconic World Cup moments — images matched to each event (ESPN CDN for WC26, Wikimedia for classics). */
 export const ICONIC_MOMENTS: IconicMoment[] = [
   {
     id: "wc26-mexico-opener",
@@ -61,8 +61,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Born in Burundi and raised in Australia, Irankunda became one of the youngest scorers of the tournament. His pace and composure against Türkiye drew comparisons to the Socceroos' golden generation and marked Australia as a team to watch.",
     category: "player",
     teams: "AUS 2-0 TUR",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672812_1296x729_16-9.jpg",
-    imageAlt: "Nestory Irankunda celebrates for Australia at World Cup 2026",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672839_1296x729_16-9.jpg",
+    imageAlt: "Nestory Irankunda celebrates with Mohamed Toure after scoring for Australia",
     era: "wc26",
   },
   {
@@ -75,22 +75,22 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Playing in front of a raucous home crowd, the United States sent an early message to Group D rivals. A confident performance against Paraguay fuelled belief that 2026 could be the Americans' deepest World Cup run yet.",
     category: "triumph",
     teams: "USA vs Paraguay",
-    imageUrl: "https://a.espncdn.com/photo/2026/0613/r1672570_1296x729_16-9.jpg",
-    imageAlt: "USA celebrate at FIFA World Cup 2026",
+    imageUrl: "https://a.espncdn.com/photo/2026/0613/r1672211_1024x576_16-9.jpg",
+    imageAlt: "USMNT players celebrate a goal against Paraguay at the LA Coliseum",
     era: "wc26",
   },
   {
-    id: "wc26-brazil-spain-thriller",
+    id: "wc26-vini-morocco",
     year: 2026,
-    title: "Brazil and Spain serve up a group-stage epic",
+    title: "Vinícius Jr rescues a point for Brazil",
     description:
-      "Two football superpowers collided in a heavyweight group-stage clash that felt like a knockout tie months early.",
+      "Brazil came from behind to draw with Morocco as Vinícius Jr fired home a late equaliser in a Group C thriller.",
     details:
-      "When Brazil and Spain meet at a World Cup, the world stops to watch. Their 2026 encounter lived up to the billing — end-to-end football, world-class goals, and a result that rippled through the entire tournament bracket.",
+      "The Seleção were pushed hard by a fearless Morocco side before Vinícius Jr levelled the scores. Fans on Copacabana Beach erupted as Brazil avoided an opening stumble in the tournament.",
     category: "goal",
-    teams: "BRA vs ESP",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672876_1296x729_16-9.jpg",
-    imageAlt: "World Cup 2026 drama between global giants",
+    teams: "BRA 1-1 MAR",
+    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672661_1296x729_16-9.jpg",
+    imageAlt: "Vinícius Jr celebrates for Brazil against Morocco at World Cup 2026",
     era: "wc26",
   },
   {
@@ -103,22 +103,22 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Vancouver, Toronto, and the whole country rallied behind Les Rouges. A co-hosted World Cup gave Canadian football its biggest stage ever — and the team responded with the kind of fearless football fans had waited generations to see.",
     category: "triumph",
     teams: "CAN at WC26",
-    imageUrl: "https://a.espncdn.com/photo/2025/1204/r1584809_2_1296x729_16-9.jpg",
-    imageAlt: "World Cup 2026 co-host atmosphere in Canada",
+    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1672075_1024x576_16-9.jpg",
+    imageAlt: "Cyle Larin celebrates after scoring for Canada in their World Cup 2026 opener",
     era: "wc26",
   },
   {
-    id: "wc26-underdog-upset",
+    id: "wc26-korea-upset",
     year: 2026,
-    title: "A 48-team World Cup delivers its first giant-killing",
+    title: "South Korea stun Czech Republic in Group A",
     description:
-      "The expanded format promised more shocks — and the tournament delivered when a rank outsider toppled a seeded favourite.",
+      "Oh Hyeon-gyu scored twice as Korea Republic beat a favoured Czech side to announce themselves in the tournament.",
     details:
-      "World Cups are remembered for the nights when the script is torn up. In 2026, one fearless underdog ran harder, pressed higher, and sent a traditional powerhouse home early — the kind of result that defines an entire tournament.",
+      "The Taeguk Warriors produced one of the early surprises of World Cup 2026. A clinical performance capped by Oh Hyeon-gyu's brace sent Korea top of Group A and left the Czechs searching for answers.",
     category: "shock",
-    teams: "WC26 upset",
-    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671909_1296x729_16-9.jpg",
-    imageAlt: "World Cup 2026 shock result",
+    teams: "KOR 2-1 CZE",
+    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671748_608x342_16-9.jpg",
+    imageAlt: "Oh Hyeon-gyu celebrates after scoring for South Korea against Czech Republic",
     era: "wc26",
   },
   {
@@ -159,8 +159,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Germany led 5-0 inside 29 minutes in Belo Horizonte — a result that traumatised Brazilian football. Miroslav Klose became the tournament's all-time top scorer and the Seleção's humiliation on home soil remains the benchmark for World Cup shocks.",
     category: "shock",
     teams: "GER 7-1 BRA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671909_1296x729_16-9.jpg",
-    imageAlt: "World Cup stars Yamal and Mbappé — modern giants built on iconic shocks",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Brazil_vs_Germany%2C_in_Belo_Horizonte_12.jpg/1280px-Brazil_vs_Germany%2C_in_Belo_Horizonte_12.jpg",
+    imageAlt: "Germany celebrate during their 7-1 semi-final win over Brazil in Belo Horizonte, 2014",
     era: "classic",
   },
   {
@@ -173,8 +174,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "A tense, physical final against the Netherlands looked destined for penalties until Iniesta controlled a pass from Cesc Fàbregas and fired past Maarten Stekelenburg. Spain's tiki-taka generation finally conquered the world in Soccer City.",
     category: "goal",
     teams: "ESP 1-0 NED",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672876_1296x729_16-9.jpg",
-    imageAlt: "World Cup drama — a late winner decides everything",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/FIFA_World_Cup_2010_Spain_with_cup.jpg/1280px-FIFA_World_Cup_2010_Spain_with_cup.jpg",
+    imageAlt: "Spain lift the trophy after Andrés Iniesta's extra-time winner in the 2010 final",
     era: "classic",
   },
   {
@@ -187,8 +189,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Zidane had put France ahead from the penalty spot before Materazzi equalised. In extra time, Zidane headbutted Materazzi and was shown a red card — his final act as a player. Italy held their nerve in the shootout to win their fourth star.",
     category: "controversy",
     teams: "ITA 1-1 (5-3) FRA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672773_1296x729_16-9.jpg",
-    imageAlt: "World Cup final drama under the global spotlight",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Zinedine_zidane_wcf_2006.jpg/1280px-Zinedine_zidane_wcf_2006.jpg",
+    imageAlt: "Zinedine Zidane during the 2006 FIFA World Cup final in Berlin",
     era: "classic",
   },
   {
@@ -201,8 +204,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Four minutes apart in the 1986 quarter-final, Maradona punched the ball past Peter Shilton — the 'Hand of God' — then slalomed from halfway, beating five England players for the 'Goal of the Century'. Argentina won 2-1 and went on to lift the trophy.",
     category: "goal",
     teams: "ARG 2-1 ENG",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672862_1296x729_16-9.jpg",
-    imageAlt: "Argentina's World Cup legacy — from Maradona to Messi",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Maradona_scoring_england_1986.jpg/1280px-Maradona_scoring_england_1986.jpg",
+    imageAlt: "Diego Maradona scores the Goal of the Century against England in 1986",
     era: "classic",
   },
   {
@@ -215,8 +219,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Pelé, Jairzinho, Carlos Alberto and company produced the most celebrated team performance in World Cup history. Carlos Alberto's fourth goal — a flowing move involving every outfield player — is still taught in coaching manuals worldwide.",
     category: "triumph",
     teams: "BRA 4-1 ITA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0611/r1671535_1296x729_16-9.jpg",
-    imageAlt: "Estadio Azteca — stage of World Cup legends since 1970",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Pele_celebrating_1970.jpg/1280px-Pele_celebrating_1970.jpg",
+    imageAlt: "Pelé celebrates during Brazil's 1970 World Cup final win over Italy",
     era: "classic",
   },
   {
@@ -229,8 +234,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Hurst scored three at Wembley as England beat West Germany 4-2 after extra time — still the nation's only World Cup triumph. His second goal, which bounced off the crossbar, sparked decades of debate over whether it crossed the line.",
     category: "goal",
     teams: "ENG 4-2 FRG",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672874_594x334_16-9.jpg",
-    imageAlt: "England at the World Cup — Wembley dreams and dramatic finales",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Geoff_Hurst_%282%29.jpg/1280px-Geoff_Hurst_%282%29.jpg",
+    imageAlt: "Geoff Hurst — scorer of the only World Cup final hat-trick in 1966",
     era: "classic",
   },
   {
@@ -243,8 +249,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Argentina led 3-0 before Mbappé dragged France back with two goals in 97 seconds, then completed his hat-trick in the shootout decider. Lionel Messi still lifted the trophy, but Mbappé's performance was the stuff of legend.",
     category: "goal",
     teams: "ARG 3-3 (4-2) FRA",
-    imageUrl: "https://a.espncdn.com/photo/2022/1218/r1108357_1296x729_16-9.jpg",
-    imageAlt: "The 2022 World Cup final — Messi and Mbappé define an era",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/6b/2022_wc_final_05.jpg",
+    imageAlt: "Kylian Mbappé during the 2022 World Cup final against Argentina",
     era: "classic",
   },
   {
@@ -257,8 +263,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "After 120 exhausting minutes in Rio, André Schürrle's cross found Götze's chest and the Bayern forward steered home the only goal. Germany won their fourth star and became the first European team to triumph in the Americas.",
     category: "goal",
     teams: "GER 1-0 ARG",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672773_1296x729_16-9.jpg",
-    imageAlt: "World Cup final drama under the global spotlight",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Mario_G%C3%B6tze_GOL_-_The_2014_FIFA_World_Cup_Final_-_140713-9112-jikatu_%2814463413827%29.jpg/1280px-Mario_G%C3%B6tze_GOL_-_The_2014_FIFA_World_Cup_Final_-_140713-9112-jikatu_%2814463413827%29.jpg",
+    imageAlt: "Mario Götze scores the winning goal in the 2014 World Cup final",
     era: "classic",
   },
   {
@@ -271,8 +278,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "With seconds left in normal time, Bergkamp controlled a 50-yard pass on his right foot, shifted inside, and lashed into the roof of the net. Argentina were out, and Dutch football had a moment for the ages.",
     category: "goal",
     teams: "NED 2-1 ARG",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672862_1296x729_16-9.jpg",
-    imageAlt: "Iconic World Cup knockout drama",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Bergkampscore3.jpg",
+    imageAlt: "Dennis Bergkamp scores his iconic last-minute goal against Argentina in 1998",
     era: "classic",
   },
   {
@@ -285,8 +292,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "After carrying Italy through the knockout stage almost single-handedly, Baggio skied the decisive spot-kick in Pasadena. Brazil celebrated a fourth crown; Baggio stood alone, ponytail drooping, in one of football's most famous photographs.",
     category: "controversy",
     teams: "BRA 0-0 (3-2) ITA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672874_594x334_16-9.jpg",
-    imageAlt: "World Cup penalty shootout heartbreak",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/4/4e/%D8%B1%D9%88%D8%A8%D8%B1%D8%AA%D9%88_%D8%A8%D8%A7%D8%AC%D9%88_%28cropped%29.jpg",
+    imageAlt: "Roberto Baggio at the 1994 FIFA World Cup in the United States",
     era: "classic",
   },
   {
@@ -299,8 +307,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Ronaldo had missed the 1998 final through a convulsion hours before kick-off. Four years later in Japan, he tore Germany apart with two clinical finishes — eight goals in the tournament and a story of resilience for the ages.",
     category: "player",
     teams: "BRA 2-0 GER",
-    imageUrl: "https://a.espncdn.com/photo/2026/0612/r1671909_1296x729_16-9.jpg",
-    imageAlt: "Brazil's World Cup legacy of stars and redemption",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Ronaldo_2002_cropped.jpg",
+    imageAlt: "Ronaldo celebrates after scoring in the 2002 World Cup final",
     era: "classic",
   },
   {
@@ -313,8 +321,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "In the last seconds of extra time in Johannesburg, Dominic Adiyah's header was heading in until Suárez parried it on the line and was sent off. Gyan hit the bar from the penalty; Uruguay won the shootout and reached the semi-finals.",
     category: "controversy",
     teams: "URU 1-1 (4-2) GHA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672812_1296x729_16-9.jpg",
-    imageAlt: "World Cup controversy under African skies",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/FIFA_World_Cup_2010_Uruguay_France.jpg/1280px-FIFA_World_Cup_2010_Uruguay_France.jpg",
+    imageAlt: "Uruguay at the 2010 FIFA World Cup — the tournament of Suárez's infamous handball",
     era: "classic",
   },
   {
@@ -327,8 +336,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Luka Modrić, Mandžukić, and a squad forged in hardship captivated Russia 2018. Croatia beat Denmark, Russia, and England in knockout football that went the distance before France ended the fairytale in the final.",
     category: "triumph",
     teams: "CRO reaches 2018 Final",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672570_1296x729_16-9.jpg",
-    imageAlt: "Croatia's World Cup journey — heart and endurance",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Modri%C4%87_World_Cup_2018.jpg",
+    imageAlt: "Luka Modrić leads Croatia's run to the 2018 World Cup final",
     era: "classic",
   },
   {
@@ -341,8 +350,8 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "Nearly 200,000 Brazilians expected to crown a champion at the Maracanã. Instead Ghiggia scored with 11 minutes left, Uruguay lifted the trophy, and Brazil's white shirts were retired in national mourning — still the country's deepest football trauma.",
     category: "shock",
     teams: "URU 2-1 BRA",
-    imageUrl: "https://a.espncdn.com/photo/2026/0611/r1671535_1296x729_16-9.jpg",
-    imageAlt: "The Maracanã — cathedral of World Cup history",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/de/Gol_ghiggia_vs_brasil.jpg",
+    imageAlt: "Alcides Ghiggia scores the winning goal in the 1950 Maracanazo",
     era: "classic",
   },
   {
@@ -355,8 +364,9 @@ export const ICONIC_MOMENTS: IconicMoment[] = [
       "The buzz of vuvuzelas, Siphiwe Tshabalala's opening goal for South Africa, and a nation still healing through sport — the 2010 World Cup was as much about Mandela's dream as it was about Iniesta's late winner for Spain.",
     category: "stadium",
     teams: "RSA 2010",
-    imageUrl: "https://a.espncdn.com/photo/2026/0614/r1672876_1296x729_16-9.jpg",
-    imageAlt: "World Cup atmosphere and global unity",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/First_game_of_the_2010_FIFA_World_Cup%2C_South_Africa_vs_Mexico.jpg/1280px-First_game_of_the_2010_FIFA_World_Cup%2C_South_Africa_vs_Mexico.jpg",
+    imageAlt: "Soccer City hosts the opening match of the 2010 FIFA World Cup in South Africa",
     era: "classic",
   },
 ];

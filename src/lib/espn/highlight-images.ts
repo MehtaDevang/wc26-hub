@@ -10,6 +10,43 @@ function normalizeName(name: string): string {
     .replace(/[^a-z0-9]/g, "");
 }
 
+/** True when headline/caption text plausibly refers to the same scorer. */
+export function textMatchesScorer(text: string, scorer: string | undefined): boolean {
+  if (!scorer?.trim() || !text.trim()) return false;
+
+  const haystack = normalizeName(text);
+  const full = normalizeName(scorer);
+  if (full.length >= 6 && haystack.includes(full)) return true;
+
+  const parts = scorer
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(/\s+/)
+    .map((p) => p.replace(/[^a-z0-9]/g, ""))
+    .filter((p) => p.length >= 4);
+
+  if (parts.length === 0) return false;
+
+  const lastName = parts[parts.length - 1];
+  if (haystack.includes(lastName)) return true;
+
+  const matched = parts.filter((p) => haystack.includes(p)).length;
+  return parts.length >= 2 && matched >= 2;
+}
+
+function findGoalVideoForScorer(
+  goalVideos: ReturnType<typeof getGoalVideos>,
+  scorer: string | undefined,
+  usedUrls: Set<string>
+) {
+  for (const video of goalVideos) {
+    if (!video.thumbnail || usedUrls.has(video.thumbnail)) continue;
+    if (textMatchesScorer(video.headline ?? "", scorer)) return video;
+  }
+  return undefined;
+}
+
 export function extractScorerName(event: EspnKeyEvent): string | undefined {
   if (event.athlete?.displayName) return event.athlete.displayName;
 
@@ -130,7 +167,7 @@ function getStadiumImage(match: Match, summary: EspnSummary): string | undefined
 
 function resolveGoalImage(
   goal: EspnKeyEvent,
-  goalIndex: number,
+  _goalIndex: number,
   match: Match,
   summary: EspnSummary,
   headshots: Map<string, string>,
@@ -152,13 +189,10 @@ function resolveGoalImage(
     webUrl: video.links?.web?.href,
   });
 
+  const pairedVideo = findGoalVideoForScorer(goalVideos, scorer, usedUrls);
+
   if (headshot && !usedUrls.has(headshot)) {
     usedUrls.add(headshot);
-    const pairedVideo = goalVideos.find((v) => {
-      const headline = (v.headline ?? "").toLowerCase();
-      const token = scorer?.split(" ").pop()?.toLowerCase();
-      return token && headline.includes(token);
-    });
     return {
       imageUrl: headshot,
       imageAlt: scorer ?? "Goal scorer",
@@ -168,46 +202,26 @@ function resolveGoalImage(
     };
   }
 
-  const scorerToken = scorer?.split(" ").pop()?.toLowerCase();
-  for (const video of goalVideos) {
-    if (!video.thumbnail || usedUrls.has(video.thumbnail)) continue;
-    const headline = (video.headline ?? "").toLowerCase();
-    const matchesScorer = scorerToken && headline.includes(scorerToken);
-    if (matchesScorer) {
-      usedUrls.add(video.thumbnail);
-      return {
-        imageUrl: video.thumbnail,
-        imageAlt: video.headline ?? scorer ?? "Goal highlight",
-        imageType: "moment",
-        playerName: scorer,
-        ...videoLinks(video),
-      };
-    }
-  }
-
-  const indexedVideo = goalVideos[goalIndex];
-  if (indexedVideo?.thumbnail && !usedUrls.has(indexedVideo.thumbnail)) {
-    usedUrls.add(indexedVideo.thumbnail);
+  if (pairedVideo?.thumbnail) {
+    usedUrls.add(pairedVideo.thumbnail);
     return {
-      imageUrl: indexedVideo.thumbnail,
-      imageAlt: indexedVideo.headline ?? scorer ?? "Goal highlight",
+      imageUrl: pairedVideo.thumbnail,
+      imageAlt: pairedVideo.headline ?? scorer ?? "Goal highlight",
       imageType: "moment",
       playerName: scorer,
-      ...videoLinks(indexedVideo),
+      ...videoLinks(pairedVideo),
     };
   }
 
   for (const photo of matchPhotos) {
     if (usedUrls.has(photo.url)) continue;
-    const caption = (photo.caption ?? "").toLowerCase();
-    const matchesScorer = scorerToken && caption.includes(scorerToken);
-    const isAction = /goal|celebrate|score|action|stadium|fans/i.test(caption);
-    if (matchesScorer || isAction) {
+    const caption = photo.caption ?? "";
+    if (textMatchesScorer(caption, scorer)) {
       usedUrls.add(photo.url);
       return {
         imageUrl: photo.url,
-        imageAlt: photo.caption ?? scorer ?? "Match moment",
-        imageType: caption.includes("stadium") ? "stadium" : "moment",
+        imageAlt: caption || scorer || "Match moment",
+        imageType: /stadium|venue/i.test(caption) ? "stadium" : "moment",
         playerName: scorer,
       };
     }
@@ -235,18 +249,29 @@ function resolveGoalImage(
     };
   }
 
-  const fallbackPhoto = matchPhotos.find((p) => !usedUrls.has(p.url));
-  if (fallbackPhoto) {
-    usedUrls.add(fallbackPhoto.url);
-    return {
-      imageUrl: fallbackPhoto.url,
-      imageAlt: fallbackPhoto.caption ?? match.venue,
-      imageType: "moment",
-      playerName: scorer,
-    };
+  return { playerName: scorer };
+}
+
+/** Pair a highlight card with an ESPN clip only when the headline matches the scorer/event. */
+export function findWatchLinksForHighlight(
+  highlight: Highlight,
+  videos: Array<{ title: string; description?: string; videoUrl?: string; webUrl?: string }>
+): Pick<Highlight, "videoUrl" | "webUrl"> {
+  const scorer =
+    highlight.playerName ??
+    highlight.title.replace(/\s+goal\s*$/i, "").trim();
+
+  for (const video of videos) {
+    const text = `${video.title} ${video.description ?? ""}`;
+    if (textMatchesScorer(text, scorer) || textMatchesScorer(text, highlight.title)) {
+      return {
+        videoUrl: video.videoUrl,
+        webUrl: video.webUrl,
+      };
+    }
   }
 
-  return { playerName: scorer };
+  return {};
 }
 
 export function extractMomentHighlights(
@@ -361,19 +386,6 @@ export function buildGoalHighlights(
       usedUrls
     );
 
-    const fallbackVideo = goalVideos[index] ?? goalVideos[0];
-    const links =
-      image.webUrl || image.videoUrl
-        ? {}
-        : fallbackVideo
-          ? {
-              videoUrl:
-                fallbackVideo.links?.source?.href ??
-                fallbackVideo.links?.mobile?.source?.href,
-              webUrl: fallbackVideo.links?.web?.href,
-            }
-          : {};
-
     return {
       id: `h-${match.id}-${goal.id}`,
       matchId: match.id,
@@ -384,7 +396,6 @@ export function buildGoalHighlights(
       teams: `${match.homeName} ${match.homeScore ?? 0}-${match.awayScore ?? 0} ${match.awayName}`,
       emoji: "⚽",
       ...image,
-      ...links,
     };
   });
 }

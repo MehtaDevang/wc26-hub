@@ -62,7 +62,13 @@ function HighlightImage({ highlight, compact, hasLink }: { highlight: Highlight;
   );
 }
 
-function HighlightBody({ highlight, hasLink }: { highlight: Highlight; hasLink: boolean }) {
+function HighlightBody({
+  highlight,
+  hasExternalWatch,
+}: {
+  highlight: Highlight;
+  hasExternalWatch: boolean;
+}) {
   return (
     <div className="p-4">
       {!highlight.imageUrl && (
@@ -80,7 +86,7 @@ function HighlightBody({ highlight, hasLink }: { highlight: Highlight; hasLink: 
         <p className="mt-1 truncate text-[10px] text-zinc-400">{highlight.teams}</p>
       )}
       <p className="mt-1 line-clamp-2 text-xs text-zinc-500">{highlight.description}</p>
-      {hasLink && (
+      {hasExternalWatch && (
         <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600">
           Watch on ESPN
           <ExternalLink size={12} />
@@ -97,11 +103,12 @@ export function HighlightCard({ highlight, href, compact }: HighlightCardProps) 
   const externalHref = highlight.webUrl ?? highlight.videoUrl;
   const linkHref = href ?? externalHref;
   const hasLink = Boolean(linkHref);
+  const hasExternalWatch = Boolean(externalHref);
 
   const content = (
     <>
-      <HighlightImage highlight={highlight} compact={compact} hasLink={hasLink} />
-      <HighlightBody highlight={highlight} hasLink={hasLink} />
+      <HighlightImage highlight={highlight} compact={compact} hasLink={hasExternalWatch} />
+      <HighlightBody highlight={highlight} hasExternalWatch={hasExternalWatch} />
     </>
   );
 

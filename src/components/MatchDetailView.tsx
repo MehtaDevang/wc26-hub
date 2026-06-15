@@ -360,9 +360,11 @@ function MatchDetailContent({
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-            <AddToCalendar match={match} />
-          </div>
+          {match.status !== "finished" && (
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+              <AddToCalendar match={match} />
+            </div>
+          )}
 
           <ShareButtons
             url={share.url}
