@@ -3,9 +3,8 @@ import type {
   EspnNewsDetailHeadline,
   EspnNewsDetailResponse,
   EspnNewsResponse,
-  EspnNewsVideo,
 } from "./client";
-import { sanitizeNewsHtml } from "../news-html";
+import { buildNewsSummary } from "../news-summary";
 import type { NewsArticle, NewsArticleDetail } from "../types";
 
 function pickImage(article: Pick<EspnNewsArticle, "images" | "headline">): {
@@ -30,30 +29,32 @@ function mapArticleType(type?: string): NewsArticle["type"] {
   return "other";
 }
 
-function pickVideoUrl(video?: EspnNewsVideo): string | undefined {
-  if (!video?.links) return undefined;
-  return (
-    video.links.source?.HD?.href ??
-    video.links.source?.full?.href ??
-    video.links.source?.href ??
-    video.links.mobile?.source?.href
-  );
-}
-
-export function transformNewsArticle(article: EspnNewsArticle): NewsArticle | null {
+function buildArticleFields(article: EspnNewsArticle): Omit<NewsArticle, "id"> | null {
   const headline = article.headline?.trim();
   if (!headline || article.id == null) return null;
 
+  const type = mapArticleType(article.type);
   const image = pickImage(article);
+  const description = article.description?.trim();
 
   return {
-    id: String(article.id),
     headline,
-    description: article.description?.trim() || undefined,
+    summary: buildNewsSummary(headline, description, type),
     imageUrl: image.url,
     imageAlt: image.alt,
     publishedAt: article.published ?? article.lastModified ?? new Date().toISOString(),
-    type: mapArticleType(article.type),
+    type,
+    sourceUrl: article.links?.web?.href,
+  };
+}
+
+export function transformNewsArticle(article: EspnNewsArticle): NewsArticle | null {
+  const fields = buildArticleFields(article);
+  if (!fields) return null;
+
+  return {
+    id: String(article.id),
+    ...fields,
   };
 }
 
@@ -64,16 +65,12 @@ export function transformNewsDetail(response: EspnNewsDetailResponse): NewsArtic
   const base = transformNewsArticle(raw);
   if (!base) return null;
 
-  const story = raw.story?.trim();
-  const video = raw.video?.[0];
-  const videoUrl = pickVideoUrl(video);
+  const videoThumb = raw.video?.[0]?.thumbnail;
 
   return {
     ...base,
     byline: raw.byline?.trim() || undefined,
-    bodyHtml: story ? sanitizeNewsHtml(story) : undefined,
-    videoUrl,
-    imageUrl: base.imageUrl ?? video?.thumbnail,
+    imageUrl: base.imageUrl ?? videoThumb,
   };
 }
 

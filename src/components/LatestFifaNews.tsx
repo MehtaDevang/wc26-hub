@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, Newspaper, Play, RefreshCw } from "lucide-react";
 import { fetchNews } from "@/lib/matches";
+import { buildNewsCardBlurb } from "@/lib/news-summary";
 import { NewsArticleModal } from "@/components/NewsArticleModal";
 import type { NewsArticle } from "@/lib/types";
 
@@ -32,6 +33,8 @@ function NewsCard({
   article: NewsArticle;
   onOpen: (article: NewsArticle) => void;
 }) {
+  const blurb = buildNewsCardBlurb(article.summary);
+
   return (
     <button
       type="button"
@@ -69,14 +72,11 @@ function NewsCard({
         <h3 className="font-bold text-sm sm:text-base text-zinc-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
           {article.headline}
         </h3>
-        {article.description && (
+        {blurb && (
           <p className="mt-1.5 text-xs sm:text-sm text-zinc-500 leading-relaxed line-clamp-2">
-            {article.description}
+            {blurb}
           </p>
         )}
-        <span className="mt-2 inline-block text-[11px] font-semibold text-blue-600">
-          Read more →
-        </span>
       </div>
     </button>
   );
@@ -128,12 +128,10 @@ export function LatestFifaNews({ initialArticles, limit = 8 }: LatestFifaNewsPro
   return (
     <section>
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="section-title flex items-center gap-2">
-            <Newspaper size={20} className="text-blue-600" />
-            Latest FIFA News
-          </h2>
-        </div>
+        <h2 className="section-title flex items-center gap-2">
+          <Newspaper size={20} className="text-blue-600" />
+          Latest FIFA News
+        </h2>
         {lastUpdated && (
           <span className="text-xs text-zinc-400">
             Updated {formatRelativeTime(lastUpdated.toISOString())}

@@ -74,7 +74,7 @@ export function NewsArticleModal({
       <div className="relative z-10 w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-zinc-100 bg-white/95 backdrop-blur px-4 py-3 sm:px-6">
           <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-            World Cup News
+            News brief
           </p>
           <button
             type="button"
@@ -97,8 +97,8 @@ export function NewsArticleModal({
                   <h2 id="news-article-title" className="text-xl font-bold text-zinc-900">
                     {preview.headline}
                   </h2>
-                  {preview.description && (
-                    <p className="mt-3 text-sm text-zinc-600">{preview.description}</p>
+                  {preview.summary && (
+                    <p className="mt-3 text-sm text-zinc-600">{preview.summary}</p>
                   )}
                 </div>
               )}

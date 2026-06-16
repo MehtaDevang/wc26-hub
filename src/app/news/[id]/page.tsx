@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return createPageMetadata({
     title: article.headline,
-    description: article.description ?? article.headline,
+    description: article.summary,
     path: `/news/${id}`,
   });
 }

@@ -82,11 +82,11 @@ export function buildPuzzlesSharePayload(): SharePayload {
 }
 
 export function buildNewsSharePayload(
-  article: Pick<NewsArticle, "id" | "headline" | "description" | "type">
+  article: Pick<NewsArticle, "id" | "headline" | "summary" | "type">
 ): SharePayload {
   const url = absoluteUrl(`/news/${article.id}`);
   const emoji = article.type === "video" ? "🎬" : "📰";
-  const snippet = article.description?.trim();
+  const snippet = article.summary?.trim();
   const text = snippet
     ? `${emoji} ${article.headline} — ${snippet} · World Cup 2026 on ${SITE_NAME}`
     : `${emoji} ${article.headline} — World Cup 2026 on ${SITE_NAME}`;

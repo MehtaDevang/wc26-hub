@@ -34,16 +34,16 @@ export interface Match {
 export interface NewsArticle {
   id: string;
   headline: string;
-  description?: string;
+  /** Short editorial summary — not the full source article */
+  summary: string;
   imageUrl?: string;
   imageAlt?: string;
   publishedAt: string;
   type: "story" | "video" | "other";
+  sourceUrl?: string;
 }
 
 export interface NewsArticleDetail extends NewsArticle {
-  bodyHtml?: string;
-  videoUrl?: string;
   byline?: string;
 }
 

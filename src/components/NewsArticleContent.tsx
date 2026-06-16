@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import { MediaShareButton } from "@/components/MediaShareButton";
 import { buildNewsSharePayload } from "@/lib/share";
 import type { NewsArticleDetail } from "@/lib/types";
@@ -32,7 +32,7 @@ export function NewsArticleContent({
 
   return (
     <article className={compact ? "space-y-4" : "space-y-5"}>
-      {article.imageUrl && !article.videoUrl && (
+      {article.imageUrl && (
         <div className={`overflow-hidden rounded-xl bg-zinc-100 ${compact ? "" : "sm:rounded-2xl"}`}>
           <img
             src={article.imageUrl}
@@ -70,34 +70,28 @@ export function NewsArticleContent({
         {article.headline}
       </h1>
 
-      {article.description && (
-        <p className="text-base text-zinc-600 leading-relaxed font-medium">{article.description}</p>
-      )}
+      <div className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-4">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700 mb-2">
+          In brief
+        </p>
+        <p className="text-base text-zinc-700 leading-relaxed">{article.summary}</p>
+      </div>
 
-      {article.videoUrl && (
-        <div className="overflow-hidden rounded-xl bg-black">
-          <video
-            controls
-            playsInline
-            preload="metadata"
-            poster={article.imageUrl}
-            className="w-full max-h-[min(70vh,480px)]"
-            src={article.videoUrl}
+      {article.sourceUrl && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
+          <a
+            href={article.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm"
           >
-            Your browser does not support video playback.
-          </video>
+            {article.type === "video" ? "Watch on ESPN" : "Read full story on ESPN"}
+            <ExternalLink size={15} />
+          </a>
+          <p className="text-xs text-zinc-400">
+            Full {article.type === "video" ? "clip" : "report"} published by ESPN — not republished here.
+          </p>
         </div>
-      )}
-
-      {article.bodyHtml && (
-        <div
-          className="news-article-body max-w-none text-sm sm:text-base leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: article.bodyHtml }}
-        />
-      )}
-
-      {!article.bodyHtml && !article.videoUrl && article.description && (
-        <p className="text-sm text-zinc-500 italic">Full story text is not available for this item.</p>
       )}
     </article>
   );
@@ -107,7 +101,7 @@ export function NewsArticleLoading() {
   return (
     <div className="flex items-center justify-center gap-2 py-16 text-sm text-zinc-400">
       <Loader2 size={20} className="animate-spin" />
-      Loading story…
+      Loading…
     </div>
   );
 }
