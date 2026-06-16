@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Sparkles, Newspaper } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import type { Match, MatchDetail } from "@/lib/types";
 import { getTeam } from "@/lib/data";
 import { MatchNarrative } from "./MatchNarrative";
+import { MatchRecapView } from "./MatchRecapView";
 import { AddToCalendar } from "./AddToCalendar";
 import { MatchKickoffTime } from "./MatchKickoffTime";
 import { formatKickoffDateLabel } from "@/lib/timezone";
@@ -19,13 +20,16 @@ export function MatchNarrativePageView({
   mode: "preview" | "recap";
   timeZone: string;
 }) {
+  if (mode === "recap") {
+    return <MatchRecapView match={match} detail={detail} timeZone={timeZone} />;
+  }
+
   const home = getTeam(match.home, match.homeName, match.homeLogo);
   const away = getTeam(match.away, match.awayName, match.awayLogo);
   const kickoffLabel = match.kickoffAt
     ? formatKickoffDateLabel(match.kickoffAt, timeZone)
     : match.date;
-  const isPreview = mode === "preview";
-  const Icon = isPreview ? Sparkles : Newspaper;
+  const Icon = Sparkles;
 
   return (
     <div className="space-y-8">
@@ -41,8 +45,8 @@ export function MatchNarrativePageView({
         <div className="host-stripe" />
         <div className="p-6 sm:p-8">
           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
-            <Icon size={14} className={isPreview ? "text-blue-500" : "text-emerald-600"} />
-            {isPreview ? "Match Preview" : "Match Recap"}
+            <Icon size={14} className="text-blue-500" />
+            Match Preview
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6 text-xs text-zinc-500 uppercase tracking-wider">

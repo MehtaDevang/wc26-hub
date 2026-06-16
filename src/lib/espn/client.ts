@@ -366,4 +366,7 @@ export interface EspnKeyEvent {
     jersey?: string;
     position?: { abbreviation?: string; displayName?: string };
   };
+  participants?: Array<{
+    athlete?: { id?: string; displayName?: string };
+  }>;
 }

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { getTeam, isKnownTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
-import type { Match, MatchDetail, MatchEvent, PlayerProfile, Highlight } from "@/lib/types";
+import type { Match, MatchDetail, Highlight } from "@/lib/types";
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
@@ -29,6 +29,7 @@ import { TeamJourneyButton } from "./TeamJourneyProvider";
 import { resolveNetworkUrl } from "@/lib/watch-by-country";
 import { FifaRankBadge, FifaRankMatchup } from "@/components/FifaRankBadge";
 import { MatchWinPredictor } from "@/components/MatchWinPredictor";
+import { MatchTimeline } from "@/components/MatchTimeline";
 import { predictMatchOutcome } from "@/lib/win-predictor";
 
 const BASE_TABS = [
@@ -59,69 +60,6 @@ function parseTab(value: string | null, match: Match, hasHighlights: boolean): T
   return "overview";
 }
 
-function parseScorerName(raw: string): string {
-  return raw
-    .replace(/\s+Goal\b.*$/i, "")
-    .replace(/\s+Penalty\b.*$/i, "")
-    .trim() || raw;
-}
-
-function formatEventMinute(event: MatchEvent): string {
-  if (event.extraTime) return `${event.minute}+${event.extraTime}'`;
-  if (event.minute === 0) return "—";
-  return `${event.minute}'`;
-}
-
-function resolveGoalScorer(
-  event: MatchEvent,
-  players: Record<string, PlayerProfile>,
-  homeFlag: string,
-  awayFlag: string,
-  homeCode: string,
-  awayCode: string
-): PlayerProfile {
-  if (event.playerId && players[event.playerId]) {
-    return players[event.playerId];
-  }
-
-  const name = parseScorerName(event.playerName);
-  const flag =
-    event.team === "home" ? homeFlag : event.team === "away" ? awayFlag : "⚽";
-  const team = event.team === "home" ? homeCode : event.team === "away" ? awayCode : "";
-
-  return {
-    id: event.playerId ?? `goal-${event.id}`,
-    name,
-    team,
-    number: 0,
-    position: "Player",
-    age: 0,
-    club: "",
-    nationality: "",
-    flag,
-    worldCupGoals: 0,
-    caps: 0,
-    bio: `${name} scored in this match.`,
-    espnId: event.playerId,
-  };
-}
-
-const EVENT_ICONS: Record<MatchEvent["type"], string> = {
-  goal: "⚽", yellow: "🟨", red: "🟥", sub: "🔄", chance: "💨",
-  whistle: "📣", save: "🧤", penalty: "🎯",
-};
-
-const EVENT_COLORS: Record<MatchEvent["type"], string> = {
-  goal: "border-emerald-200 bg-emerald-50",
-  yellow: "border-yellow-200 bg-yellow-50",
-  red: "border-red-200 bg-red-50",
-  sub: "border-zinc-200 bg-zinc-50",
-  chance: "border-blue-200 bg-blue-50",
-  whistle: "border-zinc-200 bg-zinc-50",
-  save: "border-blue-200 bg-blue-50",
-  penalty: "border-yellow-200 bg-yellow-50",
-};
-
 function LiveBadge() {
   return (
     <span className="badge-live">
@@ -133,46 +71,6 @@ function LiveBadge() {
     </span>
   );
 }
-
-function PlayerCard({ player, minuteLabel, assist }: {
-  player: PlayerProfile; minuteLabel?: string; assist?: string;
-}) {
-  const playerHref = player.espnId ? `/players/${player.espnId}` : null;
-
-  const inner = (
-    <>
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-lg shrink-0">
-        {player.flag}
-      </div>
-      <div className="flex-1 min-w-0 text-left">
-        <p className={`font-semibold text-zinc-900 ${playerHref ? "group-hover:text-blue-600 transition-colors" : ""}`}>
-          {player.name}
-        </p>
-        <p className="text-xs text-zinc-500">
-          {player.number > 0 ? `#${player.number} · ` : ""}{player.position}
-        </p>
-        {assist && <p className="text-xs text-zinc-400 mt-0.5">Assist: {assist}</p>}
-      </div>
-      {minuteLabel && (
-        <span className="text-sm font-bold text-blue-600 shrink-0">{minuteLabel}</span>
-      )}
-    </>
-  );
-
-  const className =
-    "w-full flex items-center gap-3 rounded-xl card-surface p-3 text-left hover:border-blue-200 hover:shadow-sm transition-all group";
-
-  if (playerHref) {
-    return (
-      <Link href={playerHref} className={className}>
-        {inner}
-      </Link>
-    );
-  }
-
-  return <div className={className}>{inner}</div>;
-}
-
 
 export function MatchDetailView(props: {
   match: Match;
@@ -239,21 +137,6 @@ function MatchDetailContent({
     }, 8000);
     return () => clearInterval(interval);
   }, [match.status]);
-
-  const goalEvents = detail.events.filter(
-    (e) => e.type === "goal" || e.type === "penalty"
-  );
-  const goalScorers = goalEvents.map((event) => ({
-    event,
-    player: resolveGoalScorer(
-      event,
-      detail.players,
-      home.flag,
-      away.flag,
-      match.home,
-      match.away
-    ),
-  }));
 
   const share = buildMatchSharePayload(match, liveMinute);
   const winPrediction =
@@ -618,63 +501,7 @@ function MatchDetailContent({
       )}
 
       {tab === "timeline" && (
-        <>
-      {goalScorers.length > 0 && (
-        <section>
-          <h2 className="section-title mb-4 text-base">
-            ⚽ Goal Scorers <span className="text-xs text-zinc-400 font-normal">— tap for profile</span>
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {goalScorers.map(({ event, player }) => (
-              <PlayerCard
-                key={`${event.id}-${event.minute}-${event.extraTime ?? 0}`}
-                player={player}
-                minuteLabel={formatEventMinute(event)}
-                assist={event.assist}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {detail.events.length > 0 ? (
-        <section>
-          <h2 className="section-title mb-4 flex items-center gap-2 text-base">
-            <Clock size={18} className="text-blue-600" />
-            Minute-by-Minute
-          </h2>
-          <div className="card-surface rounded-2xl overflow-hidden divide-y divide-zinc-50">
-            {[...detail.events].reverse().map((event) => (
-              <div key={event.id} className="flex gap-4 px-4 py-3.5">
-                <div className="w-10 shrink-0 text-center">
-                  <span className="text-xs font-bold text-zinc-400">
-                    {formatEventMinute(event)}
-                  </span>
-                </div>
-                <div className={`flex-1 rounded-lg border px-3 py-2.5 ${EVENT_COLORS[event.type]}`}>
-                  <div className="flex items-start gap-2">
-                    <span className="text-base shrink-0">{EVENT_ICONS[event.type]}</span>
-                    <div className="min-w-0">
-                      {event.playerId && detail.players[event.playerId]?.espnId ? (
-                        <Link href={`/players/${detail.players[event.playerId!].espnId}`} className="font-semibold text-zinc-900 hover:text-blue-600 transition-colors text-sm">
-                          {parseScorerName(event.playerName)}
-                        </Link>
-                      ) : (
-                        <p className="font-semibold text-zinc-900 text-sm">{parseScorerName(event.playerName)}</p>
-                      )}
-                      <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{event.description}</p>
-                      {event.assist && <p className="text-xs text-zinc-400 mt-1">Assist: {event.assist}</p>}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <p className="text-sm text-zinc-400 text-center py-8">No events yet.</p>
-      )}
-        </>
+        <MatchTimeline match={match} events={detail.events} players={detail.players} />
       )}
 
       {tab === "table" && !detail.groupStandings && (

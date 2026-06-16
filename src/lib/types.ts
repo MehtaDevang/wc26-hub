@@ -68,12 +68,17 @@ export interface MatchEvent {
   id: string;
   minute: number;
   extraTime?: number;
+  period?: number;
   type: "goal" | "yellow" | "red" | "sub" | "chance" | "whistle" | "save" | "penalty";
   team: "home" | "away" | "neutral";
   playerId?: string;
   playerName: string;
   description: string;
   assist?: string;
+  subIn?: string;
+  subOut?: string;
+  isOwnGoal?: boolean;
+  milestone?: "kickoff" | "halftime" | "second-half" | "fulltime";
 }
 
 export interface MatchStats {

@@ -14,6 +14,7 @@ import type {
 import { buildGoalHighlights, extractMomentHighlights, extractScorerName } from "./highlight-images";
 import { buildHeadToHead } from "./head-to-head";
 import { getRivalryInfo } from "../rivalries";
+import { parseSubstitution } from "../match-timeline";
 
 const DEFAULT_TRANSFORM_TZ = "UTC";
 
@@ -180,20 +181,55 @@ function transformKeyEvents(
   awayName: string
 ): { events: MatchEvent[]; players: Record<string, import("../types").PlayerProfile> } {
   const players: Record<string, import("../types").PlayerProfile> = {};
-  const important = ["goal", "yellow-card", "red-card", "substitution", "kickoff", "penalty-goal", "own-goal"];
+  const skipTypes = new Set(["start-delay", "end-delay", "end-delay", "start-delay"]);
+  const timelineTypes = new Set([
+    "goal",
+    "own-goal",
+    "penalty-goal",
+    "yellow-card",
+    "red-card",
+    "substitution",
+    "kickoff",
+    "halftime",
+    "start-period",
+    "end-regular-time",
+  ]);
 
   const events: MatchEvent[] = keyEvents
-    .filter((e) => important.includes(e.type.type) || e.scoringPlay)
+    .filter((e) => !skipTypes.has(e.type.type))
+    .filter((e) => timelineTypes.has(e.type.type) || e.scoringPlay)
     .map((e) => {
       const side = getTeamSide(e.team?.displayName, homeCode, awayCode, homeName, awayName);
       const teamCode = side === "home" ? homeCode : side === "away" ? awayCode : homeCode;
+      const isOwnGoal =
+        e.type.type === "own-goal" || /own goal/i.test(e.text ?? e.shortText ?? "");
+
+      let milestone: MatchEvent["milestone"];
+      if (e.type.type === "kickoff") milestone = "kickoff";
+      else if (e.type.type === "halftime") milestone = "halftime";
+      else if (e.type.type === "start-period" && e.period?.number === 2) milestone = "second-half";
+      else if (e.type.type === "end-regular-time") milestone = "fulltime";
+
+      let subIn: string | undefined;
+      let subOut: string | undefined;
+      if (e.type.type === "substitution") {
+        const parsed = parseSubstitution(e.text);
+        subIn = parsed.subIn ?? e.participants?.[0]?.athlete?.displayName;
+        subOut = parsed.subOut ?? e.participants?.[1]?.athlete?.displayName;
+      }
 
       let playerId: string | undefined;
       let playerName =
         extractScorerName(e) ??
-        e.shortText?.replace(/\s+Goal$/i, "").trim() ??
+        subIn ??
+        e.participants?.[0]?.athlete?.displayName ??
+        e.shortText?.replace(/\s+(Goal|Yellow Card|Red Card)$/i, "").trim() ??
         e.shortText ??
         e.type.text;
+
+      if (milestone) {
+        playerName = e.type.text;
+      }
 
       if (e.scoringPlay || /goal|penalty/i.test(e.type.type)) {
         const player = buildPlayerFromGoal(e, teamCode);
@@ -210,12 +246,17 @@ function transformKeyEvents(
         id: e.id,
         minute: clock.minute,
         extraTime: clock.extraTime,
+        period: e.period?.number,
         type: eventType(e.type.type, e.scoringPlay),
-        team: side,
+        team: milestone ? "neutral" : side,
         playerId,
         playerName,
         description: e.text ?? e.shortText ?? e.type.text,
         assist: parseAssist(e.text),
+        subIn,
+        subOut,
+        isOwnGoal,
+        milestone,
       } as MatchEvent;
     });
 
