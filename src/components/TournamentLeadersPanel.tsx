@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { getPlayerPath } from "@/lib/espn/player-profile";
 import { getTeam } from "@/lib/data";
+import { FeaturedPlayerBadge } from "@/components/FeaturedPlayerBadge";
+import { isFeaturedPlayer } from "@/lib/player-editorial";
 import type { TournamentLeaderEntry, TournamentLeaders } from "@/lib/espn/tournament-stats";
 
 type Tab = "goals" | "assists" | "appearances" | "cards";
@@ -94,12 +96,14 @@ function PlayerNameWithFlag({
   flagClassName?: string;
 }) {
   const team = getTeam(player.teamCode, player.teamName, player.teamLogo);
+  const featured = isFeaturedPlayer(player);
   return (
-    <span className={`inline-flex items-center gap-1.5 min-w-0 ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 min-w-0 flex-wrap ${className}`}>
       <span className={`shrink-0 leading-none ${flagClassName}`} aria-hidden>
         {team.flag}
       </span>
       <span className="truncate">{player.name}</span>
+      {featured && <FeaturedPlayerBadge />}
     </span>
   );
 }

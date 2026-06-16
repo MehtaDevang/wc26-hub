@@ -20,6 +20,7 @@ import type {
   PlayerAppearance,
 } from "../types";
 import { buildPlayerRichProfile } from "../player-insights";
+import { isFeaturedPlayer } from "../player-editorial";
 
 const TOURNAMENT_DATES = "20260611-20260719";
 const ROSTER_CONCURRENCY = 10;
@@ -319,6 +320,11 @@ function toListItem(entry: PlayerAccumulator): PlayerListItem {
     position: entry.position,
     number: entry.number,
     headshot: entry.headshot,
+    isFeatured: isFeaturedPlayer({
+      teamCode: entry.teamCode,
+      slug: entry.slug,
+      name: entry.name,
+    }),
   };
 }
 
@@ -517,6 +523,11 @@ export async function getTopScorers(limit = 48): Promise<PlayerListItem[]> {
     position: p.position,
     number: p.number,
     headshot: p.headshot,
+    isFeatured: isFeaturedPlayer({
+      teamCode: p.teamCode,
+      slug: p.slug,
+      name: p.name,
+    }),
   }));
 }
 
@@ -591,6 +602,11 @@ export async function fetchTeamSquadPlayers(teamCode: string): Promise<PlayerLis
         "Player",
       number: parseInt(a.jersey ?? "0", 10) || 0,
       headshot: a.headshot?.href,
+      isFeatured: isFeaturedPlayer({
+        teamCode: code,
+        slug: slugifyPlayerName(a.displayName!),
+        name: a.displayName!,
+      }),
     }))
     .sort(sortPlayers);
 }

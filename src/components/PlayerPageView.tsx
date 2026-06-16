@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Target, Shield, ChevronRight, User, Activity, Sparkles, BookOpen, Trophy } from "lucide-react";
+import { Target, Shield, ChevronRight, User, Activity, BookOpen, Trophy } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { getPlayerPath } from "@/lib/espn/player-profile";
+import { FeaturedPlayerBadge } from "@/components/FeaturedPlayerBadge";
 import type { PlayerCountrySection, PlayerListItem, PlayerWorldCupProfile } from "@/lib/types";
 
 export function PlayerPageView({ player }: { player: PlayerWorldCupProfile }) {
@@ -52,11 +53,7 @@ export function PlayerPageView({ player }: { player: PlayerWorldCupProfile }) {
               <p className="text-sm text-zinc-600 mt-3 leading-relaxed">
                 {rich?.overview[0] ?? player.bio}
               </p>
-              {rich?.hasEditorial && (
-                <span className="inline-flex items-center gap-1 mt-2 rounded-full bg-violet-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">
-                  <Sparkles size={11} /> Featured profile
-                </span>
-              )}
+              {rich?.hasEditorial && <FeaturedPlayerBadge size="md" className="mt-2" />}
               {player.espnId && (
                 <a
                   href={`https://www.espn.com/soccer/player/_/id/${player.espnId}`}
@@ -307,8 +304,9 @@ export function PlayerSquadCard({ player }: { player: PlayerListItem }) {
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-sm text-zinc-900 group-hover:text-blue-600 transition-colors truncate">
-          {player.name}
+        <p className="font-semibold text-sm text-zinc-900 group-hover:text-blue-600 transition-colors truncate flex items-center gap-1.5">
+          <span className="truncate">{player.name}</span>
+          {player.isFeatured && <FeaturedPlayerBadge />}
         </p>
         <p className="text-xs text-zinc-500 mt-0.5 truncate">
           {player.position}
@@ -365,9 +363,10 @@ export function PlayerListCard({ player }: { player: PlayerListItem }) {
           <div className="min-w-0">
             <Link
               href={getPlayerPath(player)}
-              className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors truncate block"
+              className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors truncate block flex items-center gap-1.5"
             >
-              {player.name}
+              <span className="truncate">{player.name}</span>
+              {player.isFeatured && <FeaturedPlayerBadge />}
             </Link>
             <p className="text-xs text-zinc-500 mt-0.5">
               {player.flag}{" "}

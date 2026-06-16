@@ -624,4 +624,13 @@ export function hasPlayerEditorial(teamCode: string, slug: string): boolean {
   return Boolean(EDITORIAL[editorialKey(teamCode, slug)]);
 }
 
+/** True when this player has a curated featured profile. */
+export function isFeaturedPlayer(player: {
+  teamCode: string;
+  slug: string;
+  name?: string;
+}): boolean {
+  return Boolean(getPlayerEditorial(player.teamCode, player.slug, player.name));
+}
+
 export const EDITORIAL_PLAYER_COUNT = Object.keys(EDITORIAL).length;

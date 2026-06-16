@@ -386,6 +386,8 @@ export interface PlayerListItem {
   position: string;
   number: number;
   headshot?: string;
+  /** Curated featured profile (career, play style, records). */
+  isFeatured?: boolean;
 }
 
 export interface PlayerCountrySection {

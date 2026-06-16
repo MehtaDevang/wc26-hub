@@ -2,9 +2,20 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, X, ChevronLeft, Users } from "lucide-react";
+import { Search, X, ChevronLeft, Users, Sparkles } from "lucide-react";
 import { PlayerSquadCard } from "@/components/PlayerPageView";
+import { EDITORIAL_PLAYER_COUNT } from "@/lib/player-editorial";
 import type { PlayerCountrySection } from "@/lib/types";
+
+function sortPlayersFeaturedFirst<T extends { isFeatured?: boolean; name: string }>(
+  players: T[]
+): T[] {
+  return [...players].sort((a, b) => {
+    const featured = Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
+    if (featured !== 0) return featured;
+    return a.name.localeCompare(b.name);
+  });
+}
 
 function normalize(text: string): string {
   return text
@@ -24,6 +35,7 @@ interface PlayersExplorerProps {
 export function PlayersExplorer({ sections }: PlayersExplorerProps) {
   const [query, setQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [featuredOnly, setFeaturedOnly] = useState(false);
 
   const trimmedQuery = query.trim();
 
@@ -50,30 +62,38 @@ export function PlayersExplorer({ sections }: PlayersExplorerProps) {
           (matchesQuery(section.teamName, trimmedQuery) ||
             matchesQuery(section.teamCode, trimmedQuery));
 
-        if (!trimmedQuery || countryMatches) return section;
+        let players = !trimmedQuery || countryMatches
+          ? section.players
+          : section.players.filter(
+              (player) =>
+                matchesQuery(player.name, trimmedQuery) ||
+                matchesQuery(player.position, trimmedQuery)
+            );
+
+        if (featuredOnly) {
+          players = players.filter((player) => player.isFeatured);
+        }
 
         return {
           ...section,
-          players: section.players.filter(
-            (player) =>
-              matchesQuery(player.name, trimmedQuery) ||
-              matchesQuery(player.position, trimmedQuery)
-          ),
+          players: sortPlayersFeaturedFirst(players),
         };
-      });
-  }, [sections, selectedCountry, trimmedQuery]);
+      })
+      .filter((section) => section.players.length > 0);
+  }, [sections, selectedCountry, trimmedQuery, featuredOnly]);
 
   const resultCount = filteredSections.reduce((sum, s) => sum + s.players.length, 0);
   const selectedSection = selectedCountry
     ? sections.find((s) => s.teamCode === selectedCountry)
     : undefined;
 
-  const isBrowsing = !trimmedQuery && !selectedCountry;
-  const hasFilters = !!trimmedQuery || !!selectedCountry;
+  const isBrowsing = !trimmedQuery && !selectedCountry && !featuredOnly;
+  const hasFilters = !!trimmedQuery || !!selectedCountry || featuredOnly;
 
   function clearFilters() {
     setQuery("");
     setSelectedCountry(null);
+    setFeaturedOnly(false);
   }
 
   function selectCountry(code: string) {
@@ -113,6 +133,21 @@ export function PlayersExplorer({ sections }: PlayersExplorerProps) {
         </div>
 
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => {
+              setFeaturedOnly((v) => !v);
+              if (!featuredOnly) setSelectedCountry(null);
+            }}
+            className={`shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              featuredOnly
+                ? "bg-violet-600 text-white"
+                : "bg-violet-50 text-violet-700 hover:bg-violet-100 ring-1 ring-violet-100"
+            }`}
+          >
+            <Sparkles size={12} />
+            Featured ({EDITORIAL_PLAYER_COUNT})
+          </button>
           <button
             type="button"
             onClick={() => setSelectedCountry(null)}
@@ -162,6 +197,12 @@ export function PlayersExplorer({ sections }: PlayersExplorerProps) {
                 matching <span className="font-semibold text-zinc-700">&ldquo;{trimmedQuery}&rdquo;</span>
               </>
             )}
+            {featuredOnly && !trimmedQuery && (
+              <>
+                {" "}
+                with <span className="font-semibold text-violet-700">featured profiles</span>
+              </>
+            )}
           </p>
           {selectedCountry && (
             <button
@@ -197,6 +238,12 @@ export function PlayersExplorer({ sections }: PlayersExplorerProps) {
                   </p>
                   <p className="text-xs text-zinc-400 mt-0.5">
                     {section.players.length} players · {section.teamCode}
+                    {section.players.some((p) => p.isFeatured) && (
+                      <span className="text-violet-600 font-medium">
+                        {" "}
+                        · {section.players.filter((p) => p.isFeatured).length} featured
+                      </span>
+                    )}
                   </p>
                 </div>
               </button>
