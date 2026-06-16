@@ -319,6 +319,30 @@ export interface PlayerSeasonStat {
   displayValue: string;
 }
 
+/** Computed factual badge shown on player pages (derived from real data). */
+export interface PlayerFactBadge {
+  label: string;
+  highlight?: boolean;
+}
+
+/** Rich player content: auto-generated facts plus optional curated editorial. */
+export interface PlayerRichProfile {
+  /** Short factual overview paragraphs (no invented claims). */
+  overview: string[];
+  /** Data-derived badges, e.g. youngest in squad. */
+  badges: PlayerFactBadge[];
+  /** Curated play-style summary (marquee players only). */
+  playStyle?: string;
+  /** Curated career journey bullets (marquee players only). */
+  journey?: string[];
+  /** Curated stable facts (marquee players only). */
+  highlights?: string[];
+  /** Notable records or honours (marquee players only). */
+  records?: string[];
+  /** True when hand-written editorial is attached. */
+  hasEditorial?: boolean;
+}
+
 export interface PlayerWorldCupProfile {
   id: string;
   espnId?: string;
@@ -348,6 +372,7 @@ export interface PlayerWorldCupProfile {
   appearances: PlayerAppearance[];
   recentMatches: PlayerRecentMatch[];
   seasonStats: PlayerSeasonStat[];
+  richProfile?: PlayerRichProfile;
 }
 
 export interface PlayerListItem {

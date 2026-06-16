@@ -37,9 +37,14 @@ export async function generateMetadata({ params }: PageProps) {
       });
     }
 
+    const richSnippet = player.richProfile?.overview[0] ?? player.bio;
+    const editorialNote = player.richProfile?.hasEditorial
+      ? " Career background, play style, and records."
+      : "";
+
     return createPageMetadata({
       title: `${player.name} - ${player.teamName} World Cup 2026 Player Stats`,
-      description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 - ${player.worldCupGoals} goals, ${player.matchesPlayed} matches, position, cards, and match-by-match football stats.`,
+      description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 - ${player.worldCupGoals} goals, ${player.matchesPlayed} matches. ${richSnippet}${editorialNote}`,
       path: `/players/${player.espnId ?? player.id}`,
       keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS, [
         player.name,

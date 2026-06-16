@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Target, Shield, ChevronRight, User, Activity } from "lucide-react";
+import { Target, Shield, ChevronRight, User, Activity, Sparkles, BookOpen, Trophy } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { getPlayerPath } from "@/lib/espn/player-profile";
 import type { PlayerCountrySection, PlayerListItem, PlayerWorldCupProfile } from "@/lib/types";
 
 export function PlayerPageView({ player }: { player: PlayerWorldCupProfile }) {
   const team = getTeam(player.teamCode, player.teamName);
+  const rich = player.richProfile;
 
   const personalInfo = [
     { label: "Age", value: player.age > 0 ? String(player.age) : undefined },
@@ -48,7 +49,14 @@ export function PlayerPageView({ player }: { player: PlayerWorldCupProfile }) {
                   {player.club}
                 </p>
               )}
-              <p className="text-sm text-zinc-600 mt-3 leading-relaxed">{player.bio}</p>
+              <p className="text-sm text-zinc-600 mt-3 leading-relaxed">
+                {rich?.overview[0] ?? player.bio}
+              </p>
+              {rich?.hasEditorial && (
+                <span className="inline-flex items-center gap-1 mt-2 rounded-full bg-violet-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-violet-700">
+                  <Sparkles size={11} /> Featured profile
+                </span>
+              )}
               {player.espnId && (
                 <a
                   href={`https://www.espn.com/soccer/player/_/id/${player.espnId}`}
@@ -63,6 +71,78 @@ export function PlayerPageView({ player }: { player: PlayerWorldCupProfile }) {
           </div>
         </div>
       </div>
+
+      {rich && rich.badges.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {rich.badges.map((badge) => (
+            <span
+              key={badge.label}
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                badge.highlight
+                  ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
+                  : "bg-zinc-100 text-zinc-700"
+              }`}
+            >
+              {badge.label}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {rich && rich.overview.length > 1 && (
+        <section>
+          <h2 className="section-title mb-4 text-base flex items-center gap-2">
+            <BookOpen size={18} className="text-[var(--wc-usa)]" />
+            Profile
+          </h2>
+          <div className="card-surface rounded-2xl p-5 space-y-3">
+            {rich.overview.map((paragraph) => (
+              <p key={paragraph} className="text-sm text-zinc-600 leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {rich?.playStyle && (
+        <section>
+          <h2 className="section-title mb-4 text-base">How they play</h2>
+          <div className="card-surface rounded-2xl p-5">
+            <p className="text-sm text-zinc-600 leading-relaxed">{rich.playStyle}</p>
+          </div>
+        </section>
+      )}
+
+      {rich?.journey && rich.journey.length > 0 && (
+        <section>
+          <h2 className="section-title mb-4 text-base">Career journey</h2>
+          <div className="card-surface rounded-2xl p-5 space-y-3">
+            {rich.journey.map((step) => (
+              <p key={step} className="text-sm text-zinc-600 leading-relaxed pl-3 border-l-2 border-blue-200">
+                {step}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(rich?.highlights?.length || rich?.records?.length) && (
+        <section>
+          <h2 className="section-title mb-4 text-base flex items-center gap-2">
+            <Trophy size={18} className="text-amber-500" />
+            Notable facts
+          </h2>
+          <div className="card-surface rounded-2xl p-5 space-y-2">
+            {[...(rich.highlights ?? []), ...(rich.records ?? [])].map((fact) => (
+              <p key={fact} className="text-sm text-zinc-600 leading-relaxed flex gap-2">
+                <span className="text-amber-500 shrink-0">•</span>
+                <span>{fact}</span>
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {personalInfo.length > 0 && (
         <section>

@@ -81,6 +81,27 @@ const articles = [
       "Haaland has been warned. The desert is ready to roar.",
     ],
   },
+  {
+    id: "900000003",
+    headline:
+      "France vs Senegal by the numbers: the only time they've met, the champions fell",
+    summary:
+      "France and Senegal have met just once in history, and it is the stat that should worry Les Bleus. France arrive 3rd in the world to Senegal's 15th, but the head-to-head reads: played 1, Senegal 1, France 0.",
+    imageUrl: "/news/france-senegal-preview.png",
+    imageAlt:
+      "France and Senegal head-to-head stats ahead of their World Cup 2026 Group I opener",
+    publishedAt: "2026-06-16T16:30:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "France walk into MetLife Stadium as one of the tournament favourites, but the numbers carry a warning: the only time they have ever met Senegal, they lost.",
+      "The two nations have crossed paths just once, and it came on the biggest stage of all. On 31 May 2002, Senegal beat defending champions France 1-0 in the opening game of the World Cup, with Papa Bouba Diop scoring the goal that stunned the holders. That single result is the entire head-to-head record: played 1, won by Senegal, France yet to score against them.",
+      "On paper, France are clear favourites. Les Bleus sit 3rd in the FIFA world rankings, while Senegal are 15th - a gap of 12 places. But a ranking gap meant nothing in 2002, when France were reigning world champions and Senegal were tournament debutants.",
+      "Tonight's meeting opens Group I for both sides at MetLife Stadium in East Rutherford, New Jersey. With Iraq and Norway completing the group, three points on matchday one would be a major step towards the knockout rounds for either nation.",
+      "The storyline almost writes itself. Twenty-four years on from the most famous result in Senegalese football history, the Lions of Teranga get another shot at France on the grandest stage. France, for their part, will be desperate to make sure history does not repeat itself.",
+    ],
+  },
 ];
 
 async function main() {

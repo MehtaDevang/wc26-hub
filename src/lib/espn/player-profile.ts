@@ -19,6 +19,7 @@ import type {
   PlayerWorldCupProfile,
   PlayerAppearance,
 } from "../types";
+import { buildPlayerRichProfile } from "../player-insights";
 
 const TOURNAMENT_DATES = "20260611-20260719";
 const ROSTER_CONCURRENCY = 10;
@@ -34,14 +35,9 @@ const POSITION_ORDER: Record<string, number> = {
   Forward: 3,
 };
 
-export function slugifyPlayerName(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
+import { slugifyPlayerName } from "../slug";
+
+export { slugifyPlayerName };
 
 async function mapWithConcurrency<T, R>(
   items: T[],
@@ -490,7 +486,21 @@ export async function getPlayerWorldCupProfile(
   const index = await getPlayerIndex();
   const entry = findPlayer(index, playerKey);
   if (!entry) return null;
-  return enrichPlayerProfile(entry);
+  const profile = await enrichPlayerProfile(entry);
+
+  const squadPeers = [...index.values()]
+    .filter((p) => p.teamCode === entry.teamCode)
+    .map((p) => ({
+      age: p.age,
+      worldCupGoals: p.goals.length,
+      matchesPlayed: p.appearances.size,
+      number: p.number,
+    }));
+
+  return {
+    ...profile,
+    richProfile: buildPlayerRichProfile(profile, squadPeers),
+  };
 }
 
 export async function getTopScorers(limit = 48): Promise<PlayerListItem[]> {
