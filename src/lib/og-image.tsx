@@ -321,6 +321,86 @@ export function OgTeamPersonalityLayout({
   );
 }
 
+export function OgWhichTeamLayout() {
+  const flags = ["🇧🇷", "🇦🇷", "🇫🇷", "🇪🇸", "🇵🇹", "🇳🇱", "🇯🇵", "🇲🇦"];
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "60px 64px",
+        background: "linear-gradient(135deg, #6d28d9 0%, #c026d3 52%, #2563eb 100%)",
+        color: "#ffffff",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: -80,
+          right: -40,
+          fontSize: 420,
+          opacity: 0.12,
+        }}
+      >
+        ⚽
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 26, fontWeight: 700 }}>
+        <span>⚽</span>
+        <span>{SITE_NAME}</span>
+        <span style={{ opacity: 0.6 }}>·</span>
+        <span style={{ opacity: 0.85, fontWeight: 600 }}>World Cup 2026 Quiz</span>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            fontSize: 90,
+            fontWeight: 800,
+            lineHeight: 1.05,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          <span>Which team</span>
+          <span>are you?</span>
+        </div>
+        <div style={{ marginTop: 22, fontSize: 32, fontWeight: 500, opacity: 0.92, maxWidth: 860 }}>
+          Answer 8 quick questions and find your World Cup 2026 team.
+        </div>
+        <div style={{ marginTop: 26, display: "flex", gap: 14, fontSize: 64 }}>
+          {flags.map((flag) => (
+            <span key={flag}>{flag}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "14px 30px",
+            borderRadius: 999,
+            background: "#ffffff",
+            color: "#7c3aed",
+            fontSize: 28,
+            fontWeight: 800,
+          }}
+        >
+          Take the quiz →
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 600, opacity: 0.85 }}>thegoalposts.in</div>
+      </div>
+    </div>
+  );
+}
+
 export function OgPuzzlesLayout() {
   return (
     <OgShell

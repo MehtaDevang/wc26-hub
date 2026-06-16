@@ -8,6 +8,7 @@ export const metadata = createPageMetadata({
   description:
     "Take our fun personality quiz and find out which FIFA World Cup 2026 team matches your style. Answer 8 quick questions and share your result.",
   path: "/which-team",
+  ogImagePath: "/which-team/opengraph-image",
   keywords: [
     "which world cup team are you",
     "world cup 2026 quiz",
