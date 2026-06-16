@@ -1,5 +1,5 @@
 import type { Match } from "./types";
-import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "./site";
+import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_TWITTER_URL } from "./site";
 import { lookupVenue } from "./venues";
 
 const FIFA_ORGANIZER_URL = "https://www.fifa.com/";
@@ -147,6 +147,7 @@ export function buildOrganizationJsonLd() {
     logo: `${siteUrl}/apple-touch-icon.svg`,
     email: "hello@thegoalposts.in",
     description: SITE_TAGLINE,
+    sameAs: [SITE_TWITTER_URL],
   };
 }
 

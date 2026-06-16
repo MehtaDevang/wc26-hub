@@ -30,6 +30,7 @@ import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
 import { HomeJumpNav } from "@/components/HomeJumpNav";
+import { FollowOnX } from "@/components/FollowOnX";
 import { JsonLd } from "@/components/JsonLd";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
 import {
@@ -142,6 +143,8 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
       <section id="news">
         <LatestFifaNews initialArticles={initialNews} />
       </section>
+
+      <FollowOnX />
 
       <IconicMoments limit={9} />
 

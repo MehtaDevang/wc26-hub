@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getSiteUrl, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME } from "./site";
+import { getSiteUrl, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TWITTER_HANDLE } from "./site";
 
 const OG_IMAGE = {
   url: "/opengraph-image",
@@ -61,6 +61,8 @@ export function createPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
+      site: `@${SITE_TWITTER_HANDLE}`,
+      creator: `@${SITE_TWITTER_HANDLE}`,
       title: pageTitle,
       description,
       images: [ogImage.url],
@@ -112,6 +114,8 @@ export function rootMetadata(): Metadata {
     },
     twitter: {
       card: "summary_large_image",
+      site: `@${SITE_TWITTER_HANDLE}`,
+      creator: `@${SITE_TWITTER_HANDLE}`,
       title: `World Cup 2026 Live Scores — ${SITE_NAME}`,
       description: SITE_DESCRIPTION,
       images: [OG_IMAGE.url],

@@ -17,7 +17,10 @@ import {
   SITE_ADS_EMAIL,
   SITE_CONTACT_EMAIL,
   SITE_NAME,
+  SITE_TWITTER_HANDLE,
+  SITE_TWITTER_URL,
 } from "@/lib/site";
+import { FollowOnX } from "@/components/FollowOnX";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -70,7 +73,10 @@ export default async function RootLayout({
               <p className="text-center text-xs text-zinc-400">
                 {SITE_NAME} © 2026 — Not affiliated with FIFA. Live data via ESPN.
               </p>
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-zinc-400">
+              <div className="mt-4 flex justify-center">
+                <FollowOnX variant="footer" />
+              </div>
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-zinc-400">
                 <span>Hosted across Mexico, USA & Canada</span>
                 <span>·</span>
                 <LocaleSwitcher />
@@ -87,6 +93,15 @@ export default async function RootLayout({
                   className="hover:text-[var(--wc-usa)] transition-colors"
                 >
                   Contact
+                </a>
+                <span>·</span>
+                <a
+                  href={SITE_TWITTER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[var(--wc-usa)] transition-colors"
+                >
+                  @{SITE_TWITTER_HANDLE}
                 </a>
               </div>
             </footer>

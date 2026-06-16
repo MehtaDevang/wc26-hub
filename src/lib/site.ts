@@ -34,6 +34,10 @@ export const SITE_KEYWORDS = [
 export const SITE_CONTACT_EMAIL = "hello@thegoalposts.in";
 export const SITE_ADS_EMAIL = "ads@thegoalposts.in";
 
+export const SITE_TWITTER_HANDLE = "thegoalposts_in";
+export const SITE_TWITTER_URL = "https://x.com/thegoalposts_in";
+export const SITE_TWITTER_FOLLOW_URL = `https://x.com/intent/follow?screen_name=${SITE_TWITTER_HANDLE}`;
+
 /** Canonical production URL including www. Override with NEXT_PUBLIC_SITE_URL on deploy. */
 export function getSiteUrl(): string {
   const url = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.thegoalposts.in";
