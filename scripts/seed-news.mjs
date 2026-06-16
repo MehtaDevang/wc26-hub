@@ -58,6 +58,29 @@ const articles = [
       "The champions have been warned. The Lions are circling.",
     ],
   },
+  {
+    id: "900000002",
+    headline:
+      "Desert storm brewing: Iraq ready to silence Haaland as Norway eye a statement win",
+    summary:
+      "Norway have the firepower and a striker who turns half-chances into goals. But Iraq are stubborn, street-smart and lethal on the break. Frustrate Haaland, and the Lions of Mesopotamia could turn this into the night nobody saw coming.",
+    imageUrl: "/news/iraq-norway-preview.png",
+    imageAlt:
+      "Iraq and Norway face off under the lights at World Cup 2026",
+    publishedAt: "2026-06-16T15:00:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "Norway think they know how tonight ends. Iraq are about to remind them football doesn't read the script.",
+      "On one side, a Norwegian machine built around the most lethal striker on the planet — Erling Haaland, a man who turns half-chances into goals and defenders into spectators.",
+      "On the other, the Lions of Mesopotamia: stubborn, street-smart, and carrying the hopes of a nation that lives and breathes this game. Underdogs? Absolutely. Pushovers? Never.",
+      "Iraq's plan is simple and brutal — suffocate the space, starve Haaland of service, and turn every Norwegian mistake into a counter-attack that stings.",
+      "If Norway get sloppy, if they assume the three points are already in the bag, this is exactly the kind of night that ends in heartbreak for the favourites.",
+      "Pride against power. Heart against hype. And under the lights, Iraq believe they can write a story the whole tournament will be talking about.",
+      "Haaland has been warned. The desert is ready to roar.",
+    ],
+  },
 ];
 
 async function main() {
