@@ -176,21 +176,23 @@ export async function getKnockoutBracket(
 }
 
 export async function getWorldCupNews(limit = 8): Promise<NewsArticle[]> {
-  const own = getOwnNews();
-
-  let espn: NewsArticle[] = [];
-  try {
-    const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));
-    espn = transformNewsResponse(data, limit);
-  } catch {
-    espn = [];
-  }
+  const [own, espn] = await Promise.all([
+    getOwnNews(),
+    (async () => {
+      try {
+        const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));
+        return transformNewsResponse(data, limit);
+      } catch {
+        return [] as NewsArticle[];
+      }
+    })(),
+  ]);
 
   return [...own, ...espn].slice(0, Math.max(limit, own.length));
 }
 
 export async function getWorldCupNewsArticle(id: string): Promise<NewsArticleDetail | null> {
-  const own = getOwnNewsArticle(id);
+  const own = await getOwnNewsArticle(id);
   if (own) return own;
 
   const data = await withTimeout(fetchEspnNewsArticle(id));
