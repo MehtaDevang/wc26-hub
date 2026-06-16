@@ -264,6 +264,63 @@ export function OgGroupLayout({
   );
 }
 
+export function OgTeamPersonalityLayout({
+  flag,
+  teamName,
+  tagline,
+  code,
+}: {
+  flag: string;
+  teamName: string;
+  tagline: string;
+  code: string;
+}) {
+  const colors = getTeamColors(code);
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "56px 64px",
+        background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
+        color: "#ffffff",
+        position: "relative",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 24, fontWeight: 700 }}>
+        <span>⚽</span>
+        <span>{SITE_NAME}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1, justifyContent: "center" }}>
+        <div style={{ fontSize: 30, fontWeight: 700, opacity: 0.85, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          Your World Cup team is
+        </div>
+        <div style={{ fontSize: 150, lineHeight: 1, marginTop: 12 }}>{flag}</div>
+        <div style={{ fontSize: 76, fontWeight: 800, marginTop: 8 }}>{teamName}</div>
+        <div style={{ fontSize: 30, fontWeight: 500, marginTop: 14, opacity: 0.9, maxWidth: 900, textAlign: "center" }}>
+          {tagline}
+        </div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 24, fontWeight: 600 }}>
+        <span style={{ opacity: 0.85 }}>Which team are you?</span>
+        <span
+          style={{
+            padding: "10px 22px",
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.18)",
+            fontWeight: 800,
+          }}
+        >
+          thegoalposts.in
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function OgPuzzlesLayout() {
   return (
     <OgShell

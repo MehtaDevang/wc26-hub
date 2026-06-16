@@ -61,6 +61,20 @@ export function buildTeamSharePayload(teamCode: string, teamName: string): Share
   };
 }
 
+export function buildTeamPersonalitySharePayload(
+  teamCode: string,
+  teamName: string,
+  flag: string
+): SharePayload {
+  const url = absoluteUrl(`/which-team/${teamCode}`);
+  return {
+    url,
+    title: `I'm ${teamName} at World Cup 2026`,
+    text: `${flag} I got ${teamName}! Which World Cup 2026 team are you? Take the quiz on ${SITE_NAME}`,
+    label: "Share result",
+  };
+}
+
 export function buildGroupSharePayload(group: string, label: string): SharePayload {
   const url = absoluteUrl(`/groups/${group}`);
   return {

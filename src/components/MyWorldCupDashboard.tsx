@@ -12,12 +12,14 @@ import {
   Trophy,
   ArrowRight,
   BarChart3,
+  Sparkles,
 } from "lucide-react";
 import clsx from "clsx";
 import { MatchClashRow } from "@/components/MatchBattleGraphic";
 import { MyTeamsPushPrompt } from "@/components/MyTeamsPushPrompt";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { getTeam, TEAMS } from "@/lib/data";
+import { getSavedTeamResult, type SavedTeamResult } from "@/lib/quiz/team-personality-storage";
 import { getMyTeams, setMyTeams, toggleMyTeam, MAX_MY_TEAMS } from "@/lib/my-teams";
 import { getBracketPicks } from "@/lib/bracket-picks";
 import { fetchMatches } from "@/lib/matches";
@@ -38,19 +40,24 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
   const [codes, setCodes] = useState<string[]>([]);
   const [allMatches, setAllMatches] = useState<Match[]>(initialTodayMatches);
   const [bracketPickCount, setBracketPickCount] = useState(0);
+  const [teamResult, setTeamResult] = useState<SavedTeamResult | null>(null);
 
   useEffect(() => {
     setCodes(getMyTeams());
     const picks = getBracketPicks();
     setBracketPickCount(Object.keys(picks).length);
+    setTeamResult(getSavedTeamResult());
     const refresh = () => {
       setCodes(getMyTeams());
       setBracketPickCount(Object.keys(getBracketPicks()).length);
+      setTeamResult(getSavedTeamResult());
     };
     window.addEventListener("wc26-my-teams-changed", refresh);
+    window.addEventListener("wc26-team-personality-changed", refresh);
     window.addEventListener("storage", refresh);
     return () => {
       window.removeEventListener("wc26-my-teams-changed", refresh);
+      window.removeEventListener("wc26-team-personality-changed", refresh);
       window.removeEventListener("storage", refresh);
     };
   }, []);
@@ -234,6 +241,34 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
             <p className="text-xs text-zinc-500">{bracketPickCount} picks saved on this device</p>
           </div>
           <ArrowRight size={16} className="text-zinc-300 group-hover:text-blue-500" />
+        </Link>
+      )}
+
+      {teamResult ? (
+        <Link
+          href={`/which-team/${teamResult.code.toLowerCase()}`}
+          className="card-surface rounded-xl p-4 flex items-center gap-3 hover:border-fuchsia-200 transition-colors group"
+        >
+          <span className="text-2xl">{getTeam(teamResult.code).flag}</span>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-zinc-900">Your World Cup team</p>
+            <p className="text-xs text-zinc-500">
+              You matched with {getTeam(teamResult.code).name}
+            </p>
+          </div>
+          <ArrowRight size={16} className="text-zinc-300 group-hover:text-fuchsia-500" />
+        </Link>
+      ) : (
+        <Link
+          href="/which-team"
+          className="card-surface rounded-xl p-4 flex items-center gap-3 hover:border-fuchsia-200 transition-colors group"
+        >
+          <Sparkles size={20} className="text-fuchsia-600" />
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-zinc-900">Which team are you?</p>
+            <p className="text-xs text-zinc-500">Take the quick personality quiz</p>
+          </div>
+          <ArrowRight size={16} className="text-zinc-300 group-hover:text-fuchsia-500" />
         </Link>
       )}
 

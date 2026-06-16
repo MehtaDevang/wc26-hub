@@ -15,6 +15,7 @@ import {
   Swords,
   Users,
   Code2,
+  Sparkles,
 } from "lucide-react";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
@@ -242,6 +243,15 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
               {copy.officePool}
             </h3>
             <p className="text-sm text-zinc-500 mt-1">{copy.officePoolDesc}</p>
+          </Link>
+          <Link href="/which-team" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <Sparkles size={20} className="text-fuchsia-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
+              Which team are you?
+            </h3>
+            <p className="text-sm text-zinc-500 mt-1">
+              Take the quiz and find your World Cup 2026 team.
+            </p>
           </Link>
         </div>
       </section>

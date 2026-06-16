@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, X, ArrowRight } from "lucide-react";
+import { Check, X, ArrowRight, Sparkles } from "lucide-react";
 import { PUZZLE_CATALOG } from "@/lib/puzzles/catalog";
 import {
   getPuzzleStatus,
@@ -100,6 +100,26 @@ export function PuzzlesHub() {
           className="shrink-0"
         />
       </div>
+
+      <Link
+        href="/which-team"
+        className="group card-surface rounded-2xl p-5 flex items-center justify-between gap-4 hover:shadow-md transition-all hover:border-fuchsia-200"
+      >
+        <div className="flex items-center gap-4">
+          <div className="rounded-xl p-2.5 bg-fuchsia-50 text-fuchsia-600">
+            <Sparkles size={22} />
+          </div>
+          <div>
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
+              Which World Cup team are you?
+            </h3>
+            <p className="text-sm text-zinc-500 mt-0.5">
+              A quick personality quiz - answer 8 questions and share your team.
+            </p>
+          </div>
+        </div>
+        <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600 shrink-0" />
+      </Link>
 
       <AdBanner placement="puzzles" />
 
