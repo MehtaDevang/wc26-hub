@@ -32,6 +32,7 @@ import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
 import { HomeJumpNav } from "@/components/HomeJumpNav";
 import { FollowOnX } from "@/components/FollowOnX";
+import { WhichTeamPromo } from "@/components/WhichTeamPromo";
 import { JsonLd } from "@/components/JsonLd";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
 import {
@@ -139,6 +140,10 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
 
       <section id="highlights">
       <MatchHighlights initialHighlights={initialHighlights} />
+      </section>
+
+      <section id="quiz">
+        <WhichTeamPromo />
       </section>
 
       <section id="news">

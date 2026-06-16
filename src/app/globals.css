@@ -1346,3 +1346,56 @@ body.embed-mode main {
     color: #000 !important;
   }
 }
+
+/* "Which team are you?" quiz */
+.wt-fade-up {
+  animation: wt-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes wt-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wt-pop {
+  animation: wt-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes wt-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.wt-ball-bob {
+  animation: wt-ball-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes wt-ball-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-fade-up,
+  .wt-pop,
+  .wt-ball-bob {
+    animation: none;
+  }
+}

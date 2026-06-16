@@ -25,6 +25,7 @@ import {
   History,
   Puzzle,
   Target,
+  Sparkles,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
@@ -48,6 +49,7 @@ const EXPLORE_LINKS = [
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
   { href: "/rivalries", label: "Rivalries", icon: Swords },
   { href: "/puzzles", label: "Puzzles", icon: Puzzle },
+  { href: "/which-team", label: "Which Team Are You?", icon: Sparkles },
 ] as const;
 
 const TOOL_LINKS = [
@@ -71,6 +73,7 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/cities" && pathname.startsWith("/cities")) return true;
   if (href === "/stadiums" && pathname.startsWith("/stadiums")) return true;
   if (href === "/rivalries" && pathname.startsWith("/rivalries")) return true;
+  if (href === "/which-team" && pathname.startsWith("/which-team")) return true;
   if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
   if (href === "/bracket" && pathname.startsWith("/bracket")) return true;
   if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;
