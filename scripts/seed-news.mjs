@@ -102,6 +102,28 @@ const articles = [
       "The storyline almost writes itself. Twenty-four years on from the most famous result in Senegalese football history, the Lions of Teranga get another shot at France on the grandest stage. France, for their part, will be desperate to make sure history does not repeat itself.",
     ],
   },
+  {
+    id: "900000004",
+    headline:
+      "Champions on the march: Argentina ready to kick off their World Cup defence against Algeria",
+    summary:
+      "Argentina open Group J tonight as world No. 1 and defending champions. Algeria arrive ranked 28th with nothing to lose at Arrowhead Stadium - but the Albiceleste have a 4-3 friendly win in the only meeting between these two nations.",
+    imageUrl: "/news/argentina-algeria-preview.png",
+    imageAlt:
+      "Argentina and Algeria face off at World Cup 2026 in Kansas City",
+    publishedAt: "2026-06-16T18:00:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "The holders are here. Argentina walk into Arrowhead Stadium tonight not as hopefuls, but as the team everyone else is trying to catch.",
+      "This is Group J, matchday one, and the world champions open their World Cup 2026 campaign against Algeria in Kansas City. On paper it looks one-sided: Argentina sit top of the FIFA rankings, Algeria are 28th. But openers have a habit of biting back when the pressure is highest.",
+      "These two nations have met just once before - a 4-3 Argentina win in a friendly back in 2007. That was a seven-goal thriller with no World Cup stakes attached. Tonight the stakes could not be higher: three points, group momentum, and the first statement from the team that lifted the trophy in Qatar.",
+      "Argentina carry the weight of expectation and the talent to match it. Lionel Messi remains the figurehead of a squad built around experience, creativity, and a winning mentality forged over the last decade. Algeria, meanwhile, arrive as underdogs with a proud record in African football and a reputation for making life uncomfortable when the spotlight is brightest.",
+      "At GEHA Field at Arrowhead Stadium, under the lights in Missouri, the defending champions begin the long road towards retaining their crown. Algeria will not roll over. Argentina will not expect them to.",
+      "The World Cup is back. And the champions mean business.",
+    ],
+  },
 ];
 
 async function main() {
