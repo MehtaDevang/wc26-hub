@@ -7,7 +7,6 @@ import {
 import { transformEvents, transformEvent, goalsToHighlights } from "./transform";
 import { extractMomentHighlights } from "./highlight-images";
 import {
-  todayEspnDateInTimezone,
   todayDateKey,
   shiftDateKey,
   dateKeyToEspn,
@@ -15,6 +14,7 @@ import {
   formatEspnDateInTimezone,
   DEFAULT_TIMEZONE,
 } from "../timezone";
+import { pickNextUpcomingMatches } from "../upcoming-matches";
 import type { Match, Highlight, NewsArticle, NewsArticleDetail } from "../types";
 import { buildKnockoutBracket } from "./bracket";
 import { fetchAllGroupStandings } from "./standings";
@@ -51,24 +51,21 @@ export async function getNextUpcomingMatches(
   limit = 2,
   timeZone: string = DEFAULT_TIMEZONE
 ): Promise<Match[]> {
-  const today = todayEspnDateInTimezone(timeZone);
+  // ESPN buckets fixtures by US calendar date, not the user's TZ. Early-morning
+  // kickoffs on the user's "today" (e.g. 3:30 AM IST) often sit on yesterday's
+  // ESPN date, so start the fetch window one local day earlier.
+  const localToday = todayDateKey(timeZone);
+  const yesterday = shiftDateKey(localToday, -1);
   const data = await withTimeout(
-    fetchEspnScoreboard({ dates: `${today}-20260719` })
+    fetchEspnScoreboard({
+      dates: `${dateKeyToEspn(yesterday)}-20260719`,
+    })
   );
-  const now = Date.now();
 
-  return transformEvents(data.events ?? [], timeZone)
-    .filter(
-      (match) =>
-        match.status === "upcoming" &&
-        match.kickoffAt &&
-        new Date(match.kickoffAt).getTime() > now
-    )
-    .sort(
-      (a, b) =>
-        new Date(a.kickoffAt).getTime() - new Date(b.kickoffAt).getTime()
-    )
-    .slice(0, limit);
+  return pickNextUpcomingMatches(
+    transformEvents(data.events ?? [], timeZone),
+    limit
+  );
 }
 
 export async function getMatchesByParams(params: {

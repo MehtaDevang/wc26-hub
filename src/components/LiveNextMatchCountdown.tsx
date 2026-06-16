@@ -4,23 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import { NextMatchCountdown } from "@/components/NextMatchCountdown";
 import { useTimezone } from "@/components/TimezoneProvider";
 import { fetchMatches } from "@/lib/matches";
+import {
+  mergeMatchesById,
+  pickNextUpcomingMatches,
+} from "@/lib/upcoming-matches";
 import type { Match } from "@/lib/types";
 
 interface LiveNextMatchCountdownProps {
   initialMatches: Match[];
-}
-
-function pickNextMatches(matches: Match[], limit = 2): Match[] {
-  const now = Date.now();
-  return matches
-    .filter(
-      (match) =>
-        match.status === "upcoming" &&
-        match.kickoffAt &&
-        new Date(match.kickoffAt).getTime() > now
-    )
-    .sort((a, b) => new Date(a.kickoffAt).getTime() - new Date(b.kickoffAt).getTime())
-    .slice(0, limit);
 }
 
 export function LiveNextMatchCountdown({ initialMatches }: LiveNextMatchCountdownProps) {
@@ -29,8 +20,11 @@ export function LiveNextMatchCountdown({ initialMatches }: LiveNextMatchCountdow
 
   const refresh = useCallback(async () => {
     try {
-      const all = await fetchMatches({ range: "full", timeZone: timezone });
-      const next = pickNextMatches(all);
+      const [today, all] = await Promise.all([
+        fetchMatches({ date: "today", timeZone: timezone }),
+        fetchMatches({ range: "full", timeZone: timezone }),
+      ]);
+      const next = pickNextUpcomingMatches(mergeMatchesById(today, all));
       if (next.length > 0) setMatches(next);
     } catch {
       // keep last good data
@@ -40,6 +34,10 @@ export function LiveNextMatchCountdown({ initialMatches }: LiveNextMatchCountdow
   useEffect(() => {
     setMatches(initialMatches);
   }, [initialMatches]);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
 
   useEffect(() => {
     const interval = setInterval(refresh, 120_000);

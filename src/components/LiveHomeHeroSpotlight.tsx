@@ -14,20 +14,11 @@ import {
   filterMatchesForScoreboardToday,
   todayDateKey,
 } from "@/lib/timezone";
+import {
+  mergeMatchesById,
+  pickNextUpcomingMatches,
+} from "@/lib/upcoming-matches";
 import type { Match } from "@/lib/types";
-
-function pickUpcoming(matches: Match[], limit = 2): Match[] {
-  const now = Date.now();
-  return matches
-    .filter(
-      (m) =>
-        m.status === "upcoming" &&
-        m.kickoffAt &&
-        new Date(m.kickoffAt).getTime() > now
-    )
-    .sort((a, b) => new Date(a.kickoffAt).getTime() - new Date(b.kickoffAt).getTime())
-    .slice(0, limit);
-}
 
 function LiveBadge() {
   return (
@@ -156,9 +147,10 @@ export function LiveHomeHeroSpotlight({
   }, [todayMatches, timezone]);
 
   const liveMatches = localizedToday.filter((m) => m.status === "live");
-  const upcomingToday = pickUpcoming(localizedToday, 2);
-  const displayUpcoming =
-    upcomingToday.length > 0 ? upcomingToday : pickUpcoming(upcomingMatches, 2);
+  const displayUpcoming = pickNextUpcomingMatches(
+    mergeMatchesById(localizedToday, upcomingMatches),
+    2
+  );
 
   const refreshToday = useCallback(async () => {
     try {
@@ -172,7 +164,7 @@ export function LiveHomeHeroSpotlight({
   const refreshUpcoming = useCallback(async () => {
     try {
       const all = await fetchMatches({ range: "full", timeZone: timezone });
-      const next = pickUpcoming(all, 2);
+      const next = pickNextUpcomingMatches(all, 2);
       if (next.length > 0) setUpcomingMatches(next);
     } catch {
       // keep last good data
