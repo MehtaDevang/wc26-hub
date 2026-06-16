@@ -11,7 +11,7 @@ export const maxDuration = 15;
  * is resolved.
  */
 export async function GET() {
-  const uri = process.env.MONGODB_URI ?? "";
+  const uri = process.env.MONGODB_URI ?? process.env.STORAGE_MONGODB_URI ?? "";
   const configuredDb = process.env.MONGODB_DB ?? null;
 
   // Parse the default database name embedded in the connection string (if any)
@@ -23,11 +23,13 @@ export async function GET() {
     uriDefaultDb = null;
   }
 
+  const dbNameUsed = configuredDb ?? uriDefaultDb ?? "thegoalposts";
+
   const report: Record<string, unknown> = {
     hasUri: Boolean(uri),
     configuredDbEnv: configuredDb,
     uriDefaultDb,
-    dbNameUsed: configuredDb ?? "thegoalposts",
+    dbNameUsed,
   };
 
   if (!uri) {
@@ -39,7 +41,7 @@ export async function GET() {
     const client = await getMongoClient();
 
     // What the app actually queries
-    const appDb = client.db(configuredDb ?? "thegoalposts");
+    const appDb = client.db(dbNameUsed);
     report.appDbCollections = (await appDb.listCollections().toArray()).map((c) => c.name);
     report.appDbNewsCount = await appDb.collection("news").countDocuments();
     report.appDbNewsIds = await appDb

@@ -12,8 +12,28 @@ import { attachDatabasePool } from "@vercel/functions";
  * reloads don't open a new pool on every change.
  */
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB ?? "thegoalposts";
+// Vercel's MongoDB storage integration injects the connection string as
+// STORAGE_MONGODB_URI; local dev / other setups may use MONGODB_URI.
+const uri = process.env.MONGODB_URI ?? process.env.STORAGE_MONGODB_URI;
+
+/** Database name from the connection string path, e.g. ...mongodb.net/<db>?... */
+function dbFromUri(connectionString: string | undefined): string | undefined {
+  if (!connectionString) return undefined;
+  try {
+    const path = new URL(
+      connectionString
+        .replace(/^mongodb\+srv:\/\//, "https://")
+        .replace(/^mongodb:\/\//, "http://")
+    ).pathname;
+    return path.replace(/^\//, "").split("?")[0] || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+// Prefer an explicit override, then the db embedded in the URI, then a default.
+const dbName =
+  process.env.MONGODB_DB ?? dbFromUri(uri) ?? "thegoalposts";
 
 const options = {};
 

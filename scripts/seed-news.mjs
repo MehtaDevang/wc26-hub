@@ -8,13 +8,32 @@
 
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB ?? "thegoalposts";
+const uri = process.env.MONGODB_URI ?? process.env.STORAGE_MONGODB_URI;
+
+function dbFromUri(connectionString) {
+  if (!connectionString) return undefined;
+  try {
+    const path = new URL(
+      connectionString
+        .replace(/^mongodb\+srv:\/\//, "https://")
+        .replace(/^mongodb:\/\//, "http://")
+    ).pathname;
+    return path.replace(/^\//, "").split("?")[0] || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const dbName = process.env.MONGODB_DB ?? dbFromUri(uri) ?? "thegoalposts";
 
 if (!uri) {
-  console.error("MONGODB_URI is not set. Pass it via --env-file or the environment.");
+  console.error(
+    "MONGODB_URI / STORAGE_MONGODB_URI is not set. Pass it via --env-file or the environment."
+  );
   process.exit(1);
 }
+
+console.log(`Seeding database "${dbName}"...`);
 
 const articles = [
   {
