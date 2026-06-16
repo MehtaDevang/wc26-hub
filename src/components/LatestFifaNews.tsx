@@ -64,9 +64,15 @@ function NewsCard({
 
       <div className="min-w-0 flex-1">
         <div className="mb-1.5 flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-zinc-500">
-            {typeLabel(article.type)}
-          </span>
+          {article.isOriginal ? (
+            <span className="rounded-full bg-[var(--wc-usa)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+              Exclusive
+            </span>
+          ) : (
+            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-zinc-500">
+              {typeLabel(article.type)}
+            </span>
+          )}
           <span className="text-[11px] text-zinc-400">{formatRelativeTime(article.publishedAt)}</span>
         </div>
         <h3 className="font-bold text-sm sm:text-base text-zinc-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">

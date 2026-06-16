@@ -43,9 +43,15 @@ export function NewsArticleContent({
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-zinc-500">
-          {typeLabel(article.type)}
-        </span>
+        {article.isOriginal ? (
+          <span className="rounded-full bg-[var(--wc-usa)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+            Exclusive
+          </span>
+        ) : (
+          <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-zinc-500">
+            {typeLabel(article.type)}
+          </span>
+        )}
         <span className="text-xs text-zinc-400">{formatPublished(article.publishedAt)}</span>
         {article.byline && (
           <span className="text-xs text-zinc-500">· {article.byline}</span>
@@ -70,12 +76,20 @@ export function NewsArticleContent({
         {article.headline}
       </h1>
 
-      <div className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700 mb-2">
-          In brief
-        </p>
-        <p className="text-base text-zinc-700 leading-relaxed">{article.summary}</p>
-      </div>
+      {article.body?.length ? (
+        <div className="news-article-body max-w-none text-sm sm:text-base leading-relaxed">
+          {article.body.map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-4">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700 mb-2">
+            In brief
+          </p>
+          <p className="text-base text-zinc-700 leading-relaxed">{article.summary}</p>
+        </div>
+      )}
 
       {article.sourceUrl && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">

@@ -1299,6 +1299,21 @@ body.embed-mode main {
 }
 
 /* Office pool print styles */
+.news-article-body p {
+  margin: 0 0 1rem;
+  color: #3f3f46;
+}
+
+.news-article-body p:last-child {
+  margin-bottom: 0;
+}
+
+.news-article-body strong,
+.news-article-body b {
+  font-weight: 700;
+  color: #18181b;
+}
+
 @media print {
   header,
   footer,

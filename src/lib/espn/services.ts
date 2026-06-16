@@ -19,6 +19,7 @@ import type { Match, Highlight, NewsArticle, NewsArticleDetail } from "../types"
 import { buildKnockoutBracket } from "./bracket";
 import { fetchAllGroupStandings } from "./standings";
 import { transformNewsResponse, transformNewsDetail } from "./news";
+import { getOwnNews, getOwnNewsArticle } from "../own-news";
 
 const ESPN_TIMEOUT_MS = 8_000;
 
@@ -175,11 +176,23 @@ export async function getKnockoutBracket(
 }
 
 export async function getWorldCupNews(limit = 8): Promise<NewsArticle[]> {
-  const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));
-  return transformNewsResponse(data, limit);
+  const own = getOwnNews();
+
+  let espn: NewsArticle[] = [];
+  try {
+    const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));
+    espn = transformNewsResponse(data, limit);
+  } catch {
+    espn = [];
+  }
+
+  return [...own, ...espn].slice(0, Math.max(limit, own.length));
 }
 
 export async function getWorldCupNewsArticle(id: string): Promise<NewsArticleDetail | null> {
+  const own = getOwnNewsArticle(id);
+  if (own) return own;
+
   const data = await withTimeout(fetchEspnNewsArticle(id));
   return transformNewsDetail(data);
 }

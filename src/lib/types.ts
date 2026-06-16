@@ -41,10 +41,14 @@ export interface NewsArticle {
   publishedAt: string;
   type: "story" | "video" | "other";
   sourceUrl?: string;
+  /** True for original Goal Posts editorial (not aggregated) */
+  isOriginal?: boolean;
 }
 
 export interface NewsArticleDetail extends NewsArticle {
   byline?: string;
+  /** Full original story paragraphs — present only for our own articles */
+  body?: string[];
 }
 
 export interface Highlight {
