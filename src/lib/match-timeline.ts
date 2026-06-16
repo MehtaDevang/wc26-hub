@@ -59,6 +59,21 @@ export function getEventTitle(event: MatchEvent): string {
       return "Substitution";
     case "save":
       return "Save";
+    case "chance":
+      if (/corner,/i.test(event.description)) return "Corner";
+      if (/hits the|post|bar|woodwork/i.test(event.description)) return "Hits the post";
+      if (/blocked/i.test(event.description)) return "Shot blocked";
+      if (/missed|too high|too wide|off target/i.test(event.description)) {
+        return "Shot missed";
+      }
+      return "Chance";
+    case "whistle":
+      if (/injury/i.test(event.description)) return "Injury break";
+      if (/drinks break/i.test(event.description)) return "Drinks break";
+      if (/added time|stoppage time/i.test(event.description)) return "Added time";
+      if (/var|video assistant/i.test(event.description)) return "VAR review";
+      if (/handball/i.test(event.description)) return "Handball";
+      return "Stoppage";
     default:
       return "Key moment";
   }
@@ -91,6 +106,18 @@ export function getEventSummary(event: MatchEvent): string {
       return detail ? `${detail} · Assist: ${event.assist}` : `Assist: ${event.assist}`;
     }
     return detail || (event.isOwnGoal ? "Into their own net" : "Finds the net");
+  }
+
+  if (event.type === "save" || event.type === "chance") {
+    const attempt = event.description.match(
+      /(?:Attempt[^.]+\.|[^.]+\bshot[^.]+\.|Corner,[^.]+\.)/i
+    );
+    if (attempt) return attempt[0]!.replace(/\.$/, "");
+    return event.description.replace(/\.$/, "");
+  }
+
+  if (event.type === "whistle") {
+    return event.description.replace(/\.$/, "");
   }
 
   return event.description;

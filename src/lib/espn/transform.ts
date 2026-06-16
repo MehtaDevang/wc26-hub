@@ -15,6 +15,10 @@ import { buildGoalHighlights, extractMomentHighlights, extractScorerName } from 
 import { buildHeadToHead } from "./head-to-head";
 import { getRivalryInfo } from "../rivalries";
 import { parseSubstitution } from "../match-timeline";
+import {
+  mergeTimelineEvents,
+  parseCommentaryToEvents,
+} from "../commentary-timeline";
 
 const DEFAULT_TRANSFORM_TZ = "UTC";
 
@@ -181,7 +185,7 @@ function transformKeyEvents(
   awayName: string
 ): { events: MatchEvent[]; players: Record<string, import("../types").PlayerProfile> } {
   const players: Record<string, import("../types").PlayerProfile> = {};
-  const skipTypes = new Set(["start-delay", "end-delay", "end-delay", "start-delay"]);
+  const skipTypes = new Set(["start-delay", "end-delay"]);
   const timelineTypes = new Set([
     "goal",
     "own-goal",
@@ -196,8 +200,21 @@ function transformKeyEvents(
   ]);
 
   const events: MatchEvent[] = keyEvents
-    .filter((e) => !skipTypes.has(e.type.type))
-    .filter((e) => timelineTypes.has(e.type.type) || e.scoringPlay)
+    .filter((e) => {
+      if (e.type.type === "start-delay") {
+        const text = (e.text ?? e.shortText ?? "").trim();
+        return text.length > 0 && /injury|drinks break|var/i.test(text);
+      }
+      if (skipTypes.has(e.type.type)) return false;
+      return true;
+    })
+    .filter(
+      (e) =>
+        timelineTypes.has(e.type.type) ||
+        e.scoringPlay ||
+        (e.type.type === "start-delay" &&
+          /injury|drinks break|var/i.test(e.text ?? e.shortText ?? ""))
+    )
     .map((e) => {
       const side = getTeamSide(e.team?.displayName, homeCode, awayCode, homeName, awayName);
       const teamCode = side === "home" ? homeCode : side === "away" ? awayCode : homeCode;
@@ -209,6 +226,8 @@ function transformKeyEvents(
       else if (e.type.type === "halftime") milestone = "halftime";
       else if (e.type.type === "start-period" && e.period?.number === 2) milestone = "second-half";
       else if (e.type.type === "end-regular-time") milestone = "fulltime";
+
+      const isInjuryDelay = e.type.type === "start-delay";
 
       let subIn: string | undefined;
       let subOut: string | undefined;
@@ -231,6 +250,18 @@ function transformKeyEvents(
         playerName = e.type.text;
       }
 
+      if (isInjuryDelay) {
+        const delayText = e.text ?? e.shortText ?? "";
+        const injury = delayText.match(/injury\s+(.+?)\./i);
+        if (injury) {
+          playerName = injury[1]!.trim();
+        } else if (/drinks break/i.test(delayText)) {
+          playerName = "Drinks break";
+        } else {
+          playerName = "Stoppage";
+        }
+      }
+
       if (e.scoringPlay || /goal|penalty/i.test(e.type.type)) {
         const player = buildPlayerFromGoal(e, teamCode);
         if (player) {
@@ -247,7 +278,7 @@ function transformKeyEvents(
         minute: clock.minute,
         extraTime: clock.extraTime,
         period: e.period?.number,
-        type: eventType(e.type.type, e.scoringPlay),
+        type: isInjuryDelay ? "whistle" : eventType(e.type.type, e.scoringPlay),
         team: milestone ? "neutral" : side,
         playerId,
         playerName,
@@ -441,13 +472,28 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
   const homeCode = match.home;
   const awayCode = match.away;
 
-  const { events, players } = transformKeyEvents(
+  const { events: keyEventsTransformed, players } = transformKeyEvents(
     summary.keyEvents ?? [],
     homeCode,
     awayCode,
     match.homeName,
     match.awayName
   );
+
+  const commentaryLines = (summary.commentary ?? []).filter((line) => line.text?.trim());
+  const commentaryEvents = parseCommentaryToEvents(
+    commentaryLines.map((line, index) => ({
+      minute: line.time?.displayValue,
+      text: line.text,
+      sequence: line.sequence ?? index,
+    })),
+    homeCode,
+    awayCode,
+    match.homeName,
+    match.awayName
+  );
+
+  const events = mergeTimelineEvents(keyEventsTransformed, commentaryEvents);
 
   const referee = summary.gameInfo?.officials?.[0]?.displayName;
   const rosters = summary.rosters ?? [];
@@ -484,7 +530,7 @@ export function transformSummary(summary: EspnSummary, match: Match): MatchDetai
     rivalryName: rivalry?.name,
     rivalryFunFact: rivalry?.funFact,
     broadcasts: transformBroadcasts(summary),
-    commentary: (summary.commentary ?? [])
+    commentary: commentaryLines
       .filter((c) => c.text && c.time?.displayValue)
       .slice(-20)
       .map((c) => ({

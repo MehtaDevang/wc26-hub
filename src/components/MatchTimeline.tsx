@@ -195,6 +195,8 @@ function TimelineEventCard({
 function TimelineLegend() {
   const items = [
     { icon: "⚽", label: "Goal" },
+    { icon: "🧤", label: "Save" },
+    { icon: "💨", label: "Chance" },
     { icon: "🟨", label: "Yellow" },
     { icon: "🟥", label: "Red" },
     { icon: "🔄", label: "Sub" },
@@ -238,9 +240,28 @@ export function MatchTimeline({
     );
   }
 
+  const actionableEvents = events.filter(
+    (event) =>
+      !event.milestone ||
+      event.milestone === "kickoff" ||
+      event.milestone === "second-half"
+  );
+
+  if (actionableEvents.length === 0) {
+    return (
+      <div className="card-surface rounded-2xl p-10 text-center">
+        <Clock size={32} className="mx-auto text-zinc-300 mb-3" />
+        <p className="text-sm text-zinc-500">No key moments yet. Check back as the match progresses.</p>
+      </div>
+    );
+  }
+
   const goalCount = events.filter((e) => e.type === "goal" || e.type === "penalty").length;
   const cardCount = events.filter((e) => e.type === "yellow" || e.type === "red").length;
   const subCount = events.filter((e) => e.type === "sub").length;
+  const chanceCount = events.filter(
+    (e) => e.type === "chance" || e.type === "save"
+  ).length;
 
   return (
     <div className="space-y-5">
@@ -269,6 +290,10 @@ export function MatchTimeline({
               <div>
                 <p className="font-extrabold text-zinc-900 tabular-nums">{subCount}</p>
                 <p className="text-zinc-400">Subs</p>
+              </div>
+              <div>
+                <p className="font-extrabold text-zinc-900 tabular-nums">{chanceCount}</p>
+                <p className="text-zinc-400">Chances</p>
               </div>
             </div>
           </div>
