@@ -1,4 +1,5 @@
 const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world";
+const ESPN_CONTENT_BASE = "https://content.core.api.espn.com/v1/sports/news";
 const ESPN_ATHLETE_BASE = "https://site.api.espn.com/apis/common/v3/sports/soccer/athletes";
 
 export async function fetchEspnScoreboard(options?: {
@@ -13,6 +14,26 @@ export async function fetchEspnScoreboard(options?: {
     signal: AbortSignal.timeout(8_000),
   });
   if (!res.ok) throw new Error(`ESPN scoreboard failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEspnNews(limit = 12): Promise<EspnNewsResponse> {
+  const url = `${ESPN_BASE}/news?limit=${limit}`;
+  const res = await fetch(url, {
+    next: { revalidate: 300 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!res.ok) throw new Error(`ESPN news failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEspnNewsArticle(id: string): Promise<EspnNewsDetailResponse> {
+  const url = `${ESPN_CONTENT_BASE}/${id}`;
+  const res = await fetch(url, {
+    next: { revalidate: 300 },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`ESPN news article failed: ${res.status}`);
   return res.json();
 }
 
@@ -369,4 +390,58 @@ export interface EspnKeyEvent {
   participants?: Array<{
     athlete?: { id?: string; displayName?: string };
   }>;
+}
+
+export interface EspnNewsArticle {
+  id: number | string;
+  type?: string;
+  headline?: string;
+  description?: string;
+  published?: string;
+  lastModified?: string;
+  images?: Array<{
+    type?: string;
+    url?: string;
+    name?: string;
+    caption?: string;
+    credit?: string;
+  }>;
+  links?: {
+    web?: { href?: string };
+  };
+}
+
+export interface EspnNewsResponse {
+  header?: string;
+  link?: { href?: string; text?: string };
+  articles?: EspnNewsArticle[];
+}
+
+export interface EspnNewsVideo {
+  id?: number | string;
+  headline?: string;
+  description?: string;
+  caption?: string;
+  duration?: number;
+  thumbnail?: string;
+  links?: {
+    source?: {
+      href?: string;
+      HD?: { href?: string };
+      full?: { href?: string };
+    };
+    mobile?: {
+      source?: { href?: string };
+    };
+  };
+}
+
+export interface EspnNewsDetailHeadline extends EspnNewsArticle {
+  story?: string;
+  byline?: string;
+  video?: EspnNewsVideo[];
+}
+
+export interface EspnNewsDetailResponse {
+  headlines?: EspnNewsDetailHeadline[];
 }

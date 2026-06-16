@@ -1,5 +1,5 @@
 import { getSiteUrl, SITE_NAME } from "./site";
-import type { Highlight, Match, MatchPhoto, MatchVideo } from "./types";
+import type { Highlight, Match, MatchPhoto, MatchVideo, NewsArticle } from "./types";
 
 export function absoluteUrl(path: string): string {
   return `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
@@ -78,6 +78,24 @@ export function buildPuzzlesSharePayload(): SharePayload {
     title: `Daily World Cup Puzzles — ${SITE_NAME}`,
     text: `🧩 Daily World Cup puzzles on ${SITE_NAME} — guess the player, name scramble & trivia quiz. Can you solve today's set?`,
     label: "Share puzzles",
+  };
+}
+
+export function buildNewsSharePayload(
+  article: Pick<NewsArticle, "id" | "headline" | "description" | "type">
+): SharePayload {
+  const url = absoluteUrl(`/news/${article.id}`);
+  const emoji = article.type === "video" ? "🎬" : "📰";
+  const snippet = article.description?.trim();
+  const text = snippet
+    ? `${emoji} ${article.headline} — ${snippet} · World Cup 2026 on ${SITE_NAME}`
+    : `${emoji} ${article.headline} — World Cup 2026 on ${SITE_NAME}`;
+
+  return {
+    url,
+    title: article.headline,
+    text,
+    label: "Share story",
   };
 }
 

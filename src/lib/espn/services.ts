@@ -1,6 +1,8 @@
 import {
   fetchEspnScoreboard,
   fetchEspnSummary,
+  fetchEspnNews,
+  fetchEspnNewsArticle,
 } from "./client";
 import { transformEvents, transformEvent, goalsToHighlights } from "./transform";
 import { extractMomentHighlights } from "./highlight-images";
@@ -13,9 +15,10 @@ import {
   formatEspnDateInTimezone,
   DEFAULT_TIMEZONE,
 } from "../timezone";
-import type { Match, Highlight } from "../types";
+import type { Match, Highlight, NewsArticle, NewsArticleDetail } from "../types";
 import { buildKnockoutBracket } from "./bracket";
 import { fetchAllGroupStandings } from "./standings";
+import { transformNewsResponse, transformNewsDetail } from "./news";
 
 const ESPN_TIMEOUT_MS = 8_000;
 
@@ -169,4 +172,14 @@ export async function getKnockoutBracket(
   ]);
   const matches = transformEvents(data.events ?? [], timeZone);
   return buildKnockoutBracket(matches, standings);
+}
+
+export async function getWorldCupNews(limit = 8): Promise<NewsArticle[]> {
+  const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));
+  return transformNewsResponse(data, limit);
+}
+
+export async function getWorldCupNewsArticle(id: string): Promise<NewsArticleDetail | null> {
+  const data = await withTimeout(fetchEspnNewsArticle(id));
+  return transformNewsDetail(data);
 }

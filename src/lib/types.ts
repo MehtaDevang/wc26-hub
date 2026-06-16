@@ -31,6 +31,22 @@ export interface Match {
   stageLabel?: string;
 }
 
+export interface NewsArticle {
+  id: string;
+  headline: string;
+  description?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  publishedAt: string;
+  type: "story" | "video" | "other";
+}
+
+export interface NewsArticleDetail extends NewsArticle {
+  bodyHtml?: string;
+  videoUrl?: string;
+  byline?: string;
+}
+
 export interface Highlight {
   id: string;
   matchId: string;

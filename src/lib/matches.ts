@@ -1,4 +1,4 @@
-import type { Match, MatchDetail, Highlight } from "./types";
+import type { Match, MatchDetail, Highlight, NewsArticle, NewsArticleDetail } from "./types";
 import { fetchJson } from "./fetch-json";
 import { detectBrowserTimezone } from "./timezone";
 
@@ -29,4 +29,19 @@ export async function fetchHighlights(): Promise<Highlight[]> {
     timeoutMs: 20_000,
   });
   return data.highlights ?? [];
+}
+
+export async function fetchNews(limit = 8): Promise<NewsArticle[]> {
+  const data = await fetchJson<{ articles: NewsArticle[] }>(`/api/news?limit=${limit}`, {
+    timeoutMs: 15_000,
+  });
+  return data.articles ?? [];
+}
+
+export async function fetchNewsArticle(id: string): Promise<NewsArticleDetail> {
+  const data = await fetchJson<{ article: NewsArticleDetail }>(`/api/news/${id}`, {
+    timeoutMs: 15_000,
+  });
+  if (!data.article) throw new Error("Article not found");
+  return data.article;
 }

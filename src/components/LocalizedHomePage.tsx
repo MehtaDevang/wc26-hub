@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { LiveScores } from "@/components/LiveScores";
 import { MatchHighlights } from "@/components/MatchHighlights";
+import { LatestFifaNews } from "@/components/LatestFifaNews";
 import { IconicMoments } from "@/components/IconicMoments";
 import { HomeHero } from "@/components/HomeHero";
 import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
@@ -36,6 +37,7 @@ import {
   getNextUpcomingMatches,
   getTodayMatches,
   getRecentHighlights,
+  getWorldCupNews,
 } from "@/lib/espn/services";
 import { buildHeroSlides } from "@/lib/hero-background";
 import { getServerTimezone } from "@/lib/timezone";
@@ -51,12 +53,13 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
   const copy = getHomeCopy(locale);
   const fixturesHref = localePath(locale, "/fixtures");
 
-  const [matchesResult, highlightsResult, nextMatchesResult, bracketResult] =
+  const [matchesResult, highlightsResult, nextMatchesResult, bracketResult, newsResult] =
     await Promise.allSettled([
       getTodayMatches(timeZone),
       getRecentHighlights(12, timeZone),
       getNextUpcomingMatches(2, timeZone),
       getKnockoutBracket(timeZone),
+      getWorldCupNews(8),
     ]);
 
   const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];
@@ -65,6 +68,7 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
   const heroSlides = buildHeroSlides(allHighlights);
   const nextMatches = nextMatchesResult.status === "fulfilled" ? nextMatchesResult.value : [];
   const bracket = bracketResult.status === "fulfilled" ? bracketResult.value : null;
+  const initialNews = newsResult.status === "fulfilled" ? newsResult.value : [];
 
   const jsonTitle =
     locale === "es"
@@ -133,6 +137,10 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
 
       <section id="highlights">
       <MatchHighlights initialHighlights={initialHighlights} />
+      </section>
+
+      <section id="news">
+        <LatestFifaNews initialArticles={initialNews} />
       </section>
 
       <IconicMoments limit={9} />

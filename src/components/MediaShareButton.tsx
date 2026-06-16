@@ -53,6 +53,7 @@ export function MediaShareButton({
   text,
   label = "Share",
   variant = "inline",
+  menuAlign = "end",
   className = "",
 }: {
   url: string;
@@ -60,6 +61,8 @@ export function MediaShareButton({
   text: string;
   label?: string;
   variant?: "inline" | "overlay";
+  /** "end" = align menu to button's right edge; "start" = align to left edge */
+  menuAlign?: "start" | "end";
   className?: string;
 }) {
   const [copied, setCopied] = useState(false);
@@ -130,6 +133,9 @@ export function MediaShareButton({
       ? "inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-sm border border-zinc-200 hover:bg-white"
       : "inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2 py-1 text-[11px] font-semibold text-zinc-600 hover:bg-zinc-50";
 
+  const menuPositionClass =
+    menuAlign === "start" ? "left-0" : "right-0";
+
   return (
     <div className={`relative ${className}`.trim()} onClick={stop}>
       <button type="button" onClick={toggle} className={buttonClass} aria-expanded={open}>
@@ -148,7 +154,9 @@ export function MediaShareButton({
               setOpen(false);
             }}
           />
-          <div className="absolute right-0 top-full z-50 mt-2 min-w-[10rem] rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg">
+          <div
+            className={`absolute ${menuPositionClass} top-full z-50 mt-2 w-44 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg`}
+          >
             <button
               type="button"
               onClick={nativeShare}

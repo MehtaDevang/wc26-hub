@@ -28,6 +28,10 @@ export function isValidMatchId(id: string): boolean {
   return MATCH_ID_PATTERN.test(id);
 }
 
+export function isValidNewsId(id: string): boolean {
+  return MATCH_ID_PATTERN.test(id);
+}
+
 export function isValidTeamCode(code: string): boolean {
   const trimmed = code.trim();
   if (!trimmed || trimmed.length > 32) return false;

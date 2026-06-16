@@ -37,7 +37,7 @@ const cspBase = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https: http:",
   "font-src 'self' data:",
-  "connect-src 'self' https://site.api.espn.com https://api.open-meteo.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com",
+  "connect-src 'self' https://site.api.espn.com https://content.core.api.espn.com https://api.open-meteo.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com",
   "media-src 'self' https:",
   "frame-src 'self' https: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
   "base-uri 'self'",
