@@ -63,7 +63,7 @@ export function MyTeamsOnboarding() {
               </p>
               <h2 className="text-lg font-bold text-zinc-900">Pick your teams</h2>
               <p className="text-sm text-zinc-500 mt-1">
-                Follow up to {MAX_MY_TEAMS} nations — we&apos;ll surface their matches first across the site.
+                Follow up to {MAX_MY_TEAMS} nations - we&apos;ll surface their matches first across the site.
               </p>
             </div>
             <button

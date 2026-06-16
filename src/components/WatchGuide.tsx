@@ -181,7 +181,7 @@ export function WatchGuide({ entries, initialCountry = "usa" }: WatchGuideProps)
       <p className="text-xs text-zinc-400 flex items-start gap-2">
         <Tv size={14} className="shrink-0 mt-0.5" />
         Official rights holders for {country?.name}. US match rows may show live ESPN channel data.
-        Links go to broadcaster sites — confirm your package and kickoff times locally.
+        Links go to broadcaster sites - confirm your package and kickoff times locally.
       </p>
 
       {byDate.length === 0 ? (

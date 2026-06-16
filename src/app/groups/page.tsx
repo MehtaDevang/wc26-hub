@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Groups A–L — Standings, Teams & Fixtures",
+  title: "World Cup 2026 Groups A–L - Standings, Teams & Fixtures",
   description:
     "All 12 FIFA World Cup 2026 groups with live standings, points tables, fixtures, results, and links to every country in groups A through L.",
   path: "/groups",

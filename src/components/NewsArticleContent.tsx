@@ -103,7 +103,7 @@ export function NewsArticleContent({
             <ExternalLink size={15} />
           </a>
           <p className="text-xs text-zinc-400">
-            Full {article.type === "video" ? "clip" : "report"} published by ESPN — not republished here.
+            Full {article.type === "video" ? "clip" : "report"} published by ESPN - not republished here.
           </p>
         </div>
       )}

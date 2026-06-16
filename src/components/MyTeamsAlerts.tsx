@@ -31,7 +31,7 @@ export function MyTeamsAlerts() {
   const digestMailto = `mailto:${SITE_CONTACT_EMAIL}?subject=${encodeURIComponent(
     "World Cup 2026 match digest"
   )}&body=${encodeURIComponent(
-    `Hi — I'd like a daily match digest for my teams: ${teamNames}.\n\nEmail: `
+    `Hi - I'd like a daily match digest for my teams: ${teamNames}.\n\nEmail: `
   )}`;
 
   async function handleCalendar() {

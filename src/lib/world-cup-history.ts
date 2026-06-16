@@ -65,9 +65,9 @@ export const HISTORY_SUMMARY = {
 export const HISTORY_INTRO = {
   title: "FIFA World Cup History",
   lead:
-    "The FIFA World Cup is the most watched sporting event on Earth. Since Uruguay hosted the first edition in 1930, 22 tournaments have crowned eight different champions across five continents — from Pelé and Maradona to Messi and Mbappé.",
+    "The FIFA World Cup is the most watched sporting event on Earth. Since Uruguay hosted the first edition in 1930, 22 tournaments have crowned eight different champions across five continents - from Pelé and Maradona to Messi and Mbappé.",
   body:
-    "Explore every final, host nation, Golden Ball winner, all-time goal record, trophy evolution, and the controversies that shaped the modern game — from the Maracanazo in 1950 to the 48-team expansion in 2026.",
+    "Explore every final, host nation, Golden Ball winner, all-time goal record, trophy evolution, and the controversies that shaped the modern game - from the Maracanazo in 1950 to the 48-team expansion in 2026.",
 };
 
 export interface HistoryTimelineEvent {
@@ -87,7 +87,7 @@ export const WORLD_CUP_TIMELINE: HistoryTimelineEvent[] = [
   {
     year: 1950,
     title: "The Maracanazo",
-    description: "Uruguay stunned Brazil at the Maracanã — still the most traumatic defeat in Brazilian football.",
+    description: "Uruguay stunned Brazil at the Maracanã - still the most traumatic defeat in Brazilian football.",
     flag: "🇺🇾",
   },
   {
@@ -111,7 +111,7 @@ export const WORLD_CUP_TIMELINE: HistoryTimelineEvent[] = [
   {
     year: 1994,
     title: "USA breaks attendance records",
-    description: "The first World Cup with 32 teams averaged 69,000 fans per game — a record that still stands.",
+    description: "The first World Cup with 32 teams averaged 69,000 fans per game - a record that still stands.",
     flag: "🇺🇸",
   },
   {
@@ -129,13 +129,13 @@ export const WORLD_CUP_TIMELINE: HistoryTimelineEvent[] = [
   {
     year: 2022,
     title: "Messi's crowning glory",
-    description: "Argentina won a penalty-shootout epic against France — widely called the greatest final ever.",
+    description: "Argentina won a penalty-shootout epic against France - widely called the greatest final ever.",
     flag: "🇦🇷",
   },
   {
     year: 2026,
     title: "48 teams, three hosts",
-    description: "Mexico, USA, and Canada co-host the largest World Cup ever — 104 matches across 16 stadiums.",
+    description: "Mexico, USA, and Canada co-host the largest World Cup ever - 104 matches across 16 stadiums.",
     flag: "🇲🇽🇺🇸🇨🇦",
   },
 ];
@@ -144,7 +144,7 @@ export const FORMAT_MILESTONES = [
   { year: 1930, teams: 13, note: "Invited nations; no qualifiers as we know them today" },
   { year: 1954, teams: 16, note: "Standard 16-team format through 1978" },
   { year: 1982, teams: 24, note: "Second group stage introduced" },
-  { year: 1998, teams: 32, note: "Eight groups of four — format used through 2022" },
+  { year: 1998, teams: 32, note: "Eight groups of four - format used through 2022" },
   { year: 2026, teams: 48, note: "12 groups of four; top two plus eight best thirds advance" },
 ];
 
@@ -198,8 +198,8 @@ export const UPCOMING_EDITION = {
   teams: 48,
   matches: 104,
   venues: 16,
-  openingMatch: "Mexico vs South Africa — Estadio Azteca",
-  final: "MetLife Stadium, New Jersey — Jul 19, 2026",
+  openingMatch: "Mexico vs South Africa - Estadio Azteca",
+  final: "MetLife Stadium, New Jersey - Jul 19, 2026",
   note: "The first 48-team World Cup spans three nations and introduces a new knockout format.",
 };
 
@@ -270,7 +270,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Lionel Messi", goldenGlove: "Emiliano Martínez", bestYoungPlayer: "Enzo Fernández",
     finalVenue: "Lusail Stadium", finalDate: "Dec 18, 2022",
     motto: "Now is All", ball: "Al Rihla",
-    highlight: "Messi's crowning glory — Argentina's third star after a penalty shootout epic.",
+    highlight: "Messi's crowning glory - Argentina's third star after a penalty shootout epic.",
   },
   {
     year: 2018, host: "Russia", hostFlag: "🇷🇺", winner: "France", winnerFlag: "🇫🇷",
@@ -280,7 +280,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Luka Modrić", goldenGlove: "Thibaut Courtois", bestYoungPlayer: "Kylian Mbappé",
     finalVenue: "Luzhniki Stadium, Moscow", finalDate: "Jul 15, 2018",
     ball: "Telstar 18",
-    highlight: "France's second title — Mbappé announced himself on the world stage.",
+    highlight: "France's second title - Mbappé announced himself on the world stage.",
   },
   {
     year: 2014, host: "Brazil", hostFlag: "🇧🇷", winner: "Germany", winnerFlag: "🇩🇪",
@@ -300,7 +300,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Diego Forlán", goldenGlove: "Iker Casillas", bestYoungPlayer: "Thomas Müller",
     finalVenue: "Soccer City, Johannesburg", finalDate: "Jul 11, 2010",
     ball: "Jabulani",
-    highlight: "First World Cup in Africa — Spain's tiki-taka conquered the world.",
+    highlight: "First World Cup in Africa - Spain's tiki-taka conquered the world.",
   },
   {
     year: 2006, host: "Germany", hostFlag: "🇩🇪", winner: "Italy", winnerFlag: "🇮🇹",
@@ -320,7 +320,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Oliver Kahn", goldenGlove: "Oliver Kahn", bestYoungPlayer: "Landon Donovan",
     finalVenue: "International Stadium, Yokohama", finalDate: "Jun 30, 2002",
     ball: "Fevernova",
-    highlight: "Ronaldo's redemption — Brazil's fifth star in the first Asian World Cup.",
+    highlight: "Ronaldo's redemption - Brazil's fifth star in the first Asian World Cup.",
   },
   {
     year: 1998, host: "France", hostFlag: "🇫🇷", winner: "France", winnerFlag: "🇫🇷",
@@ -330,7 +330,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Ronaldo", goldenGlove: "Fabien Barthez",
     finalVenue: "Stade de France, Paris", finalDate: "Jul 12, 1998",
     ball: "Tricolore",
-    highlight: "Zidane's double header — France's first World Cup on home soil.",
+    highlight: "Zidane's double header - France's first World Cup on home soil.",
   },
   {
     year: 1994, host: "USA", hostFlag: "🇺🇸", winner: "Brazil", winnerFlag: "🇧🇷",
@@ -340,7 +340,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Romário", goldenGlove: "Michel Preud'homme",
     finalVenue: "Rose Bowl, Pasadena", finalDate: "Jul 17, 1994",
     ball: "Questra",
-    highlight: "Record attendance — Baggio's penalty miss hands Brazil a fourth title.",
+    highlight: "Record attendance - Baggio's penalty miss hands Brazil a fourth title.",
   },
   {
     year: 1990, host: "Italy", hostFlag: "🇮🇹", winner: "West Germany", winnerFlag: "🇩🇪",
@@ -350,7 +350,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Salvatore Schillaci", goldenGlove: "Luis Goycochea",
     finalVenue: "Stadio Olimpico, Rome", finalDate: "Jul 8, 1990",
     ball: "Etrusco Unico",
-    highlight: "A defensive tournament — West Germany's third title before reunification.",
+    highlight: "A defensive tournament - West Germany's third title before reunification.",
   },
   {
     year: 1986, host: "Mexico", hostFlag: "🇲🇽", winner: "Argentina", winnerFlag: "🇦🇷",
@@ -360,7 +360,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Diego Maradona", goldenGlove: "Jean-Pierre Papin",
     finalVenue: "Estadio Azteca, Mexico City", finalDate: "Jun 29, 1986",
     ball: "Azteca",
-    highlight: "Maradona's 'Hand of God' and 'Goal of the Century' — Argentina's second star.",
+    highlight: "Maradona's 'Hand of God' and 'Goal of the Century' - Argentina's second star.",
   },
   {
     year: 1982, host: "Spain", hostFlag: "🇪🇸", winner: "Italy", winnerFlag: "🇮🇹",
@@ -370,7 +370,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Paolo Rossi", goldenGlove: "Dino Zoff",
     finalVenue: "Santiago Bernabéu, Madrid", finalDate: "Jul 11, 1982",
     ball: "Tango España",
-    highlight: "Expanded to 24 teams — Paolo Rossi's hat-trick vs Brazil in the second group stage.",
+    highlight: "Expanded to 24 teams - Paolo Rossi's hat-trick vs Brazil in the second group stage.",
   },
   {
     year: 1978, host: "Argentina", hostFlag: "🇦🇷", winner: "Argentina", winnerFlag: "🇦🇷",
@@ -390,7 +390,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Johan Cruyff",
     finalVenue: "Olympiastadion, Munich", finalDate: "Jul 7, 1974",
     ball: "Telstar Durlast",
-    highlight: "Total Football meets German efficiency — the new FIFA trophy debuted.",
+    highlight: "Total Football meets German efficiency - the new FIFA trophy debuted.",
   },
   {
     year: 1970, host: "Mexico", hostFlag: "🇲🇽", winner: "Brazil", winnerFlag: "🇧🇷",
@@ -400,7 +400,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     goldenBall: "Pelé",
     finalVenue: "Estadio Azteca, Mexico City", finalDate: "Jun 21, 1970",
     ball: "Telstar",
-    highlight: "Pelé's third title — Brazil kept the Jules Rimet Trophy forever.",
+    highlight: "Pelé's third title - Brazil kept the Jules Rimet Trophy forever.",
   },
   {
     year: 1966, host: "England", hostFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", winner: "England", winnerFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -409,7 +409,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "1.6M", topScorer: { name: "Eusébio", goals: 9, country: "Portugal", flag: "🇵🇹" },
     finalVenue: "Wembley Stadium, London", finalDate: "Jul 30, 1966",
     ball: "Challenge 4-Star",
-    highlight: "'They think it's all over' — Geoff Hurst's hat-trick and England's only World Cup.",
+    highlight: "'They think it's all over' - Geoff Hurst's hat-trick and England's only World Cup.",
   },
   {
     year: 1962, host: "Chile", hostFlag: "🇨🇱", winner: "Brazil", winnerFlag: "🇧🇷",
@@ -418,7 +418,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "900K", topScorer: { name: "Flórián Albert", goals: 4, country: "Hungary", flag: "🇭🇺" },
     finalVenue: "Estadio Nacional, Santiago", finalDate: "Jun 17, 1962",
     ball: "Crack",
-    highlight: "Garrincha shone as Pelé got injured — Brazil defended their crown.",
+    highlight: "Garrincha shone as Pelé got injured - Brazil defended their crown.",
   },
   {
     year: 1958, host: "Sweden", hostFlag: "🇸🇪", winner: "Brazil", winnerFlag: "🇧🇷",
@@ -427,7 +427,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "820K", topScorer: { name: "Just Fontaine", goals: 13, country: "France", flag: "🇫🇷" },
     finalVenue: "Råsunda Stadium, Stockholm", finalDate: "Jun 29, 1958",
     ball: "Top Star",
-    highlight: "17-year-old Pelé announced himself — Fontaine's record 13 goals still stands.",
+    highlight: "17-year-old Pelé announced himself - Fontaine's record 13 goals still stands.",
   },
   {
     year: 1954, host: "Switzerland", hostFlag: "🇨🇭", winner: "West Germany", winnerFlag: "🇩🇪",
@@ -436,7 +436,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "770K", topScorer: { name: "Sándor Kocsis", goals: 11, country: "Hungary", flag: "🇭🇺" },
     finalVenue: "Wankdorf Stadium, Bern", finalDate: "Jul 4, 1954",
     ball: "Swiss World Champion",
-    highlight: "The 'Miracle of Bern' — West Germany stunned unbeaten Hungary.",
+    highlight: "The 'Miracle of Bern' - West Germany stunned unbeaten Hungary.",
   },
   {
     year: 1950, host: "Brazil", hostFlag: "🇧🇷", winner: "Uruguay", winnerFlag: "🇺🇾",
@@ -445,7 +445,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "1.0M", topScorer: { name: "Ademir", goals: 9, country: "Brazil", flag: "🇧🇷" },
     finalVenue: "Maracanã, Rio", finalDate: "Jul 16, 1950",
     ball: "Superball",
-    highlight: "Maracanazo — Uruguay silenced 200,000 Brazilians in the decisive final group match.",
+    highlight: "Maracanazo - Uruguay silenced 200,000 Brazilians in the decisive final group match.",
   },
   {
     year: 1938, host: "France", hostFlag: "🇫🇷", winner: "Italy", winnerFlag: "🇮🇹",
@@ -472,7 +472,7 @@ export const WORLD_CUP_EDITIONS: WorldCupEdition[] = [
     attendance: "590K", topScorer: { name: "Guillermo Stábile", goals: 8, country: "Argentina", flag: "🇦🇷" },
     finalVenue: "Estadio Centenario, Montevideo", finalDate: "Jul 30, 1930",
     ball: "Tiento",
-    highlight: "The inaugural World Cup — Uruguay triumphed in front of 93,000 fans.",
+    highlight: "The inaugural World Cup - Uruguay triumphed in front of 93,000 fans.",
   },
 ];
 

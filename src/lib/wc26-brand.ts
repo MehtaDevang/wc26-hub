@@ -1,4 +1,4 @@
-/** FIFA World Cup 2026 host branding — Mexico, USA, Canada */
+/** FIFA World Cup 2026 host branding - Mexico, USA, Canada */
 
 export const WC26_HOSTS = [
   {

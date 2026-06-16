@@ -46,7 +46,7 @@ export function buildMatchPreview(match: Match, detail: MatchDetail): string[] {
   if (detail.venue?.name) {
     lines.push(
       `Kickoff at ${detail.venue.name}${detail.venue.city ? `, ${detail.venue.city}` : ""}${
-        detail.venue.capacity ? ` — capacity ${detail.venue.capacity.toLocaleString()}` : ""
+        detail.venue.capacity ? ` - capacity ${detail.venue.capacity.toLocaleString()}` : ""
       }.`
     );
   }

@@ -99,7 +99,7 @@ export function getEventSummary(event: MatchEvent): string {
 export function formatTimelineMinute(event: MatchEvent): string {
   if (event.milestone === "kickoff") return "0′";
   if (event.milestone === "second-half") return "46′";
-  if (event.minute === 0 && !event.extraTime) return "—";
+  if (event.minute === 0 && !event.extraTime) return " - ";
   if (event.extraTime) return `${event.minute}+${event.extraTime}′`;
   return `${event.minute}′`;
 }

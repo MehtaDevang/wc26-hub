@@ -38,8 +38,8 @@ export async function generateMetadata({ params }: PageProps) {
     }
 
     return createPageMetadata({
-      title: `${player.name} — ${player.teamName} World Cup 2026 Player Stats`,
-      description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 — ${player.worldCupGoals} goals, ${player.matchesPlayed} matches, position, cards, and match-by-match football stats.`,
+      title: `${player.name} - ${player.teamName} World Cup 2026 Player Stats`,
+      description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 - ${player.worldCupGoals} goals, ${player.matchesPlayed} matches, position, cards, and match-by-match football stats.`,
       path: `/players/${player.espnId ?? player.id}`,
       keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS, [
         player.name,

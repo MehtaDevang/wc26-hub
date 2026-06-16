@@ -9,7 +9,7 @@ const RULES = [
   "Award 1 point for each correct Round of 32 winner, 2 for Round of 16, 4 for quarter-finals, 8 for semi-finals, and 16 for the champion.",
   "Optional: add 3 bonus points for predicting the exact final score.",
   "Tiebreaker: closest total goals in the final, then most correct semi-finalists.",
-  "Pool manager collects sheets before the first knockout kickoff — no changes after.",
+  "Pool manager collects sheets before the first knockout kickoff - no changes after.",
 ];
 
 export function OfficePoolKit() {

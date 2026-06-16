@@ -200,7 +200,7 @@ export function BracketPredictor({ initialData }: BracketPredictorProps) {
             My World Cup Bracket
           </h2>
           <p className="text-sm text-zinc-500 mt-1">
-            Tap a team to pick the winner — {pickCount}/{totalSlots} picks made
+            Tap a team to pick the winner - {pickCount}/{totalSlots} picks made
           </p>
           {championName && (
             <p className="text-sm font-semibold text-amber-700 mt-2 flex items-center gap-1.5">

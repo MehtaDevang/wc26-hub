@@ -1,6 +1,6 @@
 # The Goal Posts
 
-Live football hub — World Cup scores, match details, fixtures, standings, history, and daily puzzles.
+Live football hub - World Cup scores, match details, fixtures, standings, history, and daily puzzles.
 
 **Live site:** [thegoalposts.in](https://www.thegoalposts.in)
 
@@ -56,13 +56,13 @@ Built-in SEO: canonical URLs, `robots.txt`, dynamic sitemap (static pages + matc
 
 ## Features
 
-- **Live Scores** — Real ESPN data, auto-refreshing
-- **Match Details** — Videos, photos, lineups, stats, standings, minute-by-minute
-- **Fixtures & Tables** — Full schedule and group standings
-- **Daily Puzzles** — Guess the Player, Name Scramble, and Daily Quiz
+- **Live Scores** - Real ESPN data, auto-refreshing
+- **Match Details** - Videos, photos, lineups, stats, standings, minute-by-minute
+- **Fixtures & Tables** - Full schedule and group standings
+- **Daily Puzzles** - Guess the Player, Name Scramble, and Daily Quiz
 
 ## Monetization
 
-1. **Google AdSense** — Configure slot env vars (see `.env.example`)
-2. **Stripe** — Wire up Premium upsell in `PremiumUpsell.tsx`
-3. **Sponsored contests** — Customize `SponsoredBanner.tsx`
+1. **Google AdSense** - Configure slot env vars (see `.env.example`)
+2. **Stripe** - Wire up Premium upsell in `PremiumUpsell.tsx`
+3. **Sponsored contests** - Customize `SponsoredBanner.tsx`

@@ -232,7 +232,7 @@ function resolveGoalImage(
     usedUrls.add(teamLogo.url);
     return {
       imageUrl: teamLogo.url,
-      imageAlt: `${scorer ?? "Goal"} — ${teamLogo.code}`,
+      imageAlt: `${scorer ?? "Goal"} - ${teamLogo.code}`,
       imageType: "team",
       playerName: scorer,
     };
@@ -318,7 +318,7 @@ export function extractMomentHighlights(
       id: `m-${match.id}-p-${img.id ?? moments.length}`,
       matchId: match.id,
       title: img.caption ?? img.name ?? "Match Photo",
-      description: `${match.venue} — ${match.homeName} vs ${match.awayName}`,
+      description: `${match.venue} - ${match.homeName} vs ${match.awayName}`,
       type: "moment",
       minute: "Photo",
       teams: `${match.homeName} vs ${match.awayName}`,

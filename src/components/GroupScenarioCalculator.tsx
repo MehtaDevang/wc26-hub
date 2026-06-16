@@ -167,7 +167,7 @@ export function GroupScenarioCalculator({ standings, matches }: GroupScenarioCal
           ))}
         </select>
         <p className="text-xs text-zinc-400 mt-2">
-          See what your team needs to qualify — top two advance, plus eight best third-place teams.
+          See what your team needs to qualify - top two advance, plus eight best third-place teams.
         </p>
       </div>
 
@@ -175,7 +175,7 @@ export function GroupScenarioCalculator({ standings, matches }: GroupScenarioCal
         <ScenarioPanel result={result} />
       ) : (
         <p className="text-sm text-zinc-400 text-center py-12 card-surface rounded-2xl">
-          Standings not available yet — check back once the group stage begins.
+          Standings not available yet - check back once the group stage begins.
         </p>
       )}
     </div>

@@ -179,7 +179,7 @@ function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
             {CANCELLED_EDITIONS.map((e) => (
               <div key={e.year} className="rounded-xl border border-zinc-100 px-4 py-3">
                 <p className="text-sm font-bold text-zinc-900">
-                  {e.year} — <span className="text-zinc-500 font-medium">{e.reason}</span>
+                  {e.year} - <span className="text-zinc-500 font-medium">{e.reason}</span>
                 </p>
                 <p className="text-xs text-zinc-500 mt-1 leading-relaxed">{e.note}</p>
               </div>
@@ -212,7 +212,7 @@ function FinalsTab() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-zinc-500">
-        Every FIFA World Cup final since 1930 — winners, runners-up, scores, and venues.
+        Every FIFA World Cup final since 1930 - winners, runners-up, scores, and venues.
       </p>
       <div className="card-surface rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
@@ -460,7 +460,7 @@ function EditionsTab() {
   return (
     <div className="space-y-2">
       <p className="text-sm text-zinc-500 mb-4">
-        Every FIFA World Cup from 1930 to 2022 — tap an edition for finals, stats, and awards.
+        Every FIFA World Cup from 1930 to 2022 - tap an edition for finals, stats, and awards.
       </p>
       {WORLD_CUP_EDITIONS.map((edition) => (
         <EditionCard key={edition.year} edition={edition} />
@@ -757,7 +757,7 @@ function ControversiesTab() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-zinc-500">
-        Documented disputes and incidents from World Cup history — factual summaries, sorted by year.
+        Documented disputes and incidents from World Cup history - factual summaries, sorted by year.
       </p>
 
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">

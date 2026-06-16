@@ -15,7 +15,7 @@ export const QUICK_NAV: SearchItem[] = [
   { id: "fixtures", label: "All fixtures & results", href: "/fixtures", group: "Today", keywords: "schedule calendar matches" },
   { id: "standings", label: "Group tables", href: "/standings", group: "Today", keywords: "standings points table" },
   { id: "bracket", label: "Knockout bracket", href: "/bracket", group: "Today", keywords: "knockout elimination" },
-  { id: "leaders", label: "Stat leaders — Golden Boot", href: "/leaders", group: "Stats", keywords: "top scorers assists" },
+  { id: "leaders", label: "Stat leaders - Golden Boot", href: "/leaders", group: "Stats", keywords: "top scorers assists" },
   { id: "teams", label: "All 48 teams", href: "/teams", group: "Teams", keywords: "countries nations squads" },
   { id: "players", label: "Player stats", href: "/players", group: "Teams", keywords: "squad roster" },
   { id: "watch", label: "Where to watch", href: "/watch", group: "Watch", keywords: "tv stream broadcast" },

@@ -32,7 +32,7 @@ export function HomeHero({
 
         <div className="inline-flex items-center gap-2 rounded-full bg-white/90 border border-zinc-200 px-4 py-1.5 text-sm mb-6 shadow-sm">
           <span className="flex h-2 w-2 rounded-full bg-[var(--wc-canada)] animate-pulse" />
-          <span className="text-zinc-600 font-medium">FIFA World Cup 2026 — Live</span>
+          <span className="text-zinc-600 font-medium">FIFA World Cup 2026 - Live</span>
         </div>
 
         <h1 className="text-4xl sm:text-[3.5rem] font-extrabold text-zinc-900 leading-[1.1] tracking-tight">

@@ -126,11 +126,11 @@ export const ALL_TIME_TEAM_GOALS: TeamGoalRecord[] = [
 
 /** Most goals by a nation in one World Cup tournament. */
 export const SINGLE_TOURNAMENT_TEAM_GOALS: TeamGoalRecord[] = [
-  { rank: 1, team: "Germany", flag: "🇩🇪", goals: 18, note: "2014 — incl. 7–1 vs Brazil" },
-  { rank: 2, team: "Hungary", flag: "🇭🇺", goals: 17, note: "1954 — 9–0 and 8–3 in group stage" },
-  { rank: 3, team: "Brazil", flag: "🇧🇷", goals: 16, note: "2002 — champions" },
-  { rank: 3, team: "France", flag: "🇫🇷", goals: 16, note: "2018 — champions" },
-  { rank: 5, team: "Brazil", flag: "🇧🇷", goals: 15, note: "1958 — Pelé's first title" },
+  { rank: 1, team: "Germany", flag: "🇩🇪", goals: 18, note: "2014 - incl. 7–1 vs Brazil" },
+  { rank: 2, team: "Hungary", flag: "🇭🇺", goals: 17, note: "1954 - 9–0 and 8–3 in group stage" },
+  { rank: 3, team: "Brazil", flag: "🇧🇷", goals: 16, note: "2002 - champions" },
+  { rank: 3, team: "France", flag: "🇫🇷", goals: 16, note: "2018 - champions" },
+  { rank: 5, team: "Brazil", flag: "🇧🇷", goals: 15, note: "1958 - Pelé's first title" },
 ];
 
 /** Highest-scoring individual World Cup matches. */

@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return createPageMetadata({
-    title: `World Cup 2026 Group ${group} — Live Standings, Teams & Fixtures`,
-    description: `FIFA World Cup 2026 Group ${group} — live points table, standings, fixtures, results, and every national team in the group.`,
+    title: `World Cup 2026 Group ${group} - Live Standings, Teams & Fixtures`,
+    description: `FIFA World Cup 2026 Group ${group} - live points table, standings, fixtures, results, and every national team in the group.`,
     path: `/groups/${group}`,
     ogImagePath: `/groups/${group}/opengraph-image`,
     keywords: mergeKeywords(TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS, [

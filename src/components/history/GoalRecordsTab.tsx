@@ -224,11 +224,11 @@ function TournamentsSection() {
 
 const CATEGORY_INTRO: Record<GoalRecordCategory, string> = {
   "all-time-players": "Career World Cup goals across every edition a player appeared in (1930–2022).",
-  "single-tournament-players": "Golden Boot territory — most goals by one player in a single World Cup.",
+  "single-tournament-players": "Golden Boot territory - most goals by one player in a single World Cup.",
   "all-time-teams": "Total goals scored by each nation across all World Cups through 2022.",
   "single-tournament-teams": "Most goals scored by one country in a single tournament.",
   "single-match": "Individual hauls and the highest-scoring games in World Cup history.",
-  tournaments: "Editions with the most total goals — and the highest scoring rate ever (1954).",
+  tournaments: "Editions with the most total goals - and the highest scoring rate ever (1954).",
 };
 
 export function GoalRecordsTab() {

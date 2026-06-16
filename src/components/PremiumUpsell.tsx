@@ -12,7 +12,7 @@ export function PremiumUpsell({ onClose, feature = "Premium features" }: Premium
   function handleUpgrade() {
     setPremium(true);
     onClose();
-    alert("🎉 Premium activated! (Demo mode — integrate Stripe for real payments)");
+    alert("🎉 Premium activated! (Demo mode - integrate Stripe for real payments)");
   }
 
   return (

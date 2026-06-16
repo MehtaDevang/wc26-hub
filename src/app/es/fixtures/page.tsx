@@ -6,7 +6,7 @@ import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createLocalizedMetadata({
   locale: "es",
-  title: "Mundial 2026 — Calendario y resultados",
+  title: "Mundial 2026 - Calendario y resultados",
   description:
     "Calendario completo del Mundial FIFA 2026 con horarios, sedes, grupos y resultados en vivo.",
   path: "/fixtures",

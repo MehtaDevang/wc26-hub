@@ -14,7 +14,7 @@ const RIVALRIES: Record<string, RivalryInfo> = {
   "ARG-FRA": {
     name: "Argentina vs France",
     context:
-      "Two World Cup heavyweights with a rivalry sharpened by the 2018 final in Moscow and the 2022 final in Lusail — back-to-back deciders that rank among the greatest in tournament history.",
+      "Two World Cup heavyweights with a rivalry sharpened by the 2018 final in Moscow and the 2022 final in Lusail - back-to-back deciders that rank among the greatest in tournament history.",
     funFact: "France beat Argentina 4-3 on penalties after a 3-3 draw in 2022; Argentina had won 4-3 on penalties in 2018 after a 4-4 draw in a friendly.",
   },
   "BRA-ARG": {
@@ -26,7 +26,7 @@ const RIVALRIES: Record<string, RivalryInfo> = {
   "ENG-GER": {
     name: "England vs Germany",
     context:
-      "A rivalry forged in World Cup knockouts — from 1966 at Wembley to penalty heartbreak in 1990 and 1996, and Germany's 4-1 demolition in South Africa 2010.",
+      "A rivalry forged in World Cup knockouts - from 1966 at Wembley to penalty heartbreak in 1990 and 1996, and Germany's 4-1 demolition in South Africa 2010.",
     funFact: "England's only World Cup triumph came against West Germany in the 1966 final.",
   },
   "MEX-USA": {
@@ -38,7 +38,7 @@ const RIVALRIES: Record<string, RivalryInfo> = {
   "POR-ESP": {
     name: "Iberian Derby",
     context:
-      "Neighbours with shared history and contrasting styles — Portugal's organisation against Spain's possession. Their 2010 World Cup Round of 16 clash went to Spain on a David Villa goal.",
+      "Neighbours with shared history and contrasting styles - Portugal's organisation against Spain's possession. Their 2010 World Cup Round of 16 clash went to Spain on a David Villa goal.",
     funFact: "Spain beat Portugal 1-0 in the 2010 World Cup Round of 16 en route to their first title.",
   },
   "NED-GER": {
@@ -50,7 +50,7 @@ const RIVALRIES: Record<string, RivalryInfo> = {
   "ITA-FRA": {
     name: "Mediterranean Giants",
     context:
-      "Two nations that have shaped World Cup history — Italy's four stars against France's 1998 and 2018 triumphs, including the dramatic 2006 final in Berlin.",
+      "Two nations that have shaped World Cup history - Italy's four stars against France's 1998 and 2018 triumphs, including the dramatic 2006 final in Berlin.",
     funFact: "Italy won the 2006 World Cup final on penalties after Zinedine Zidane's infamous headbutt.",
   },
   "URU-ARG": {
@@ -62,7 +62,7 @@ const RIVALRIES: Record<string, RivalryInfo> = {
   "BRA-GER": {
     name: "Samba vs Die Mannschaft",
     context:
-      "Brazil and Germany have produced some of the World Cup's most dramatic nights — from the 2002 final to the seismic 7-1 in Belo Horizonte in 2014.",
+      "Brazil and Germany have produced some of the World Cup's most dramatic nights - from the 2002 final to the seismic 7-1 in Belo Horizonte in 2014.",
     funFact: "Germany's 7-1 semi-final win in 2014 is the biggest margin in a World Cup semi-final.",
   },
   "CRO-ARG": {

@@ -39,21 +39,21 @@ const QUALIFICATION: Record<string, TeamQualification> = {
   CAN: {
     confederation: "CONCACAF",
     method: "host",
-    headline: "Co-host — automatic berth",
+    headline: "Co-host - automatic berth",
     detail:
       "Canada qualified automatically as one of three co-hosts alongside Mexico and the United States. The Maple Leafs return after appearing at Qatar 2022.",
   },
   MEX: {
     confederation: "CONCACAF",
     method: "host",
-    headline: "Co-host — automatic berth",
+    headline: "Co-host - automatic berth",
     detail:
       "Mexico qualified automatically as tournament co-hosts. El Tri have appeared at every World Cup since 1994 and will play on home soil.",
   },
   USA: {
     confederation: "CONCACAF",
     method: "host",
-    headline: "Co-host — automatic berth",
+    headline: "Co-host - automatic berth",
     detail:
       "The United States qualified automatically as co-hosts. The USMNT reached the Round of 16 at Qatar 2022 and will look to go further on home turf.",
   },
@@ -70,7 +70,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "group-top-two",
     headline: "AFC Group A runners-up",
     detail:
-      "Uzbekistan finished second in AFC third-round Group A with 21 points — their first-ever World Cup qualification.",
+      "Uzbekistan finished second in AFC third-round Group A with 21 points - their first-ever World Cup qualification.",
     qualifiedDate: "2025-06-05",
     firstWorldCup: true,
   },
@@ -87,7 +87,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "group-top-two",
     headline: "AFC Group B runners-up",
     detail:
-      "Jordan finished second in AFC Group B with 16 points — qualifying for the World Cup for the first time in their history.",
+      "Jordan finished second in AFC Group B with 16 points - qualifying for the World Cup for the first time in their history.",
     qualifiedDate: "2025-06-05",
     firstWorldCup: true,
   },
@@ -128,7 +128,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "intercontinental-playoff",
     headline: "FIFA inter-confederation play-off winners",
     detail:
-      "Iraq played a record 21 qualifying matches over 28 months — winning the AFC fifth-round tie, then beating Bolivia 2-1 in the FIFA play-off final in Monterrey to reach their first World Cup since 1986.",
+      "Iraq played a record 21 qualifying matches over 28 months - winning the AFC fifth-round tie, then beating Bolivia 2-1 in the FIFA play-off final in Monterrey to reach their first World Cup since 1986.",
     qualifiedDate: "2026-03-31",
   },
   EGY: {
@@ -193,7 +193,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "group-winner",
     headline: "CAF Group H winners",
     detail:
-      "Tunisia dominated CAF Group H with 28 points from 10 games — the highest points tally of any African group winner.",
+      "Tunisia dominated CAF Group H with 28 points from 10 games - the highest points tally of any African group winner.",
     qualifiedDate: "2025-10-14",
   },
   GHA: {
@@ -209,7 +209,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "intercontinental-playoff",
     headline: "FIFA inter-confederation play-off winners",
     detail:
-      "DR Congo advanced from CAF's best-runners-up play-off, then beat Jamaica in the FIFA inter-confederation play-off final in Guadalajara — their first World Cup since 1974 (as Zaire).",
+      "DR Congo advanced from CAF's best-runners-up play-off, then beat Jamaica in the FIFA inter-confederation play-off final in Guadalajara - their first World Cup since 1974 (as Zaire).",
     qualifiedDate: "2026-03-31",
   },
   PAN: {
@@ -225,7 +225,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "group-winner",
     headline: "CONCACAF third-round Group B winners",
     detail:
-      "Curaçao won CONCACAF Group B with 12 points — the smallest nation by population ever to qualify for a men's World Cup.",
+      "Curaçao won CONCACAF Group B with 12 points - the smallest nation by population ever to qualify for a men's World Cup.",
     qualifiedDate: "2025-11-18",
     firstWorldCup: true,
   },
@@ -274,7 +274,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "confederation-round",
     headline: "CONMEBOL 5th place",
     detail:
-      "Brazil took the fifth automatic berth with 28 points — the Seleção have qualified for every World Cup in history.",
+      "Brazil took the fifth automatic berth with 28 points - the Seleção have qualified for every World Cup in history.",
     qualifiedDate: "2025-09-09",
   },
   PAR: {
@@ -410,7 +410,7 @@ const QUALIFICATION: Record<string, TeamQualification> = {
     method: "uefa-playoff",
     headline: "UEFA play-off Path C winners",
     detail:
-      "Türkiye finished second in UEFA Group E behind Spain, then beat Romania and Kosovo in the play-offs — their first World Cup since finishing third in 2002.",
+      "Türkiye finished second in UEFA Group E behind Spain, then beat Romania and Kosovo in the play-offs - their first World Cup since finishing third in 2002.",
     qualifiedDate: "2026-03-31",
   },
   CZE: {

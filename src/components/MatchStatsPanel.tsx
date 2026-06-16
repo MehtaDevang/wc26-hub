@@ -561,7 +561,7 @@ export function MatchStatsPanel({
                   {home.name}
                 </p>
                 <p className="text-2xl font-extrabold text-[var(--wc-usa)]">
-                  {homeLineup?.formation || "—"}
+                  {homeLineup?.formation || " - "}
                 </p>
               </div>
               <div className="rounded-lg bg-zinc-50 px-3 py-4 text-center">
@@ -569,7 +569,7 @@ export function MatchStatsPanel({
                   {away.name}
                 </p>
                 <p className="text-2xl font-extrabold text-[var(--wc-canada)]">
-                  {awayLineup?.formation || "—"}
+                  {awayLineup?.formation || " - "}
                 </p>
               </div>
             </div>

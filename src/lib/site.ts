@@ -2,7 +2,7 @@ export const SITE_NAME = "The Goal Posts";
 export const SITE_SHORT_NAME = "Goal Posts";
 
 export const SITE_DESCRIPTION =
-  "FIFA World Cup 2026 live scores today, fixtures, results, group standings, team & player stats, match highlights, head-to-head history, and World Cup records — updated throughout the tournament.";
+  "FIFA World Cup 2026 live scores today, fixtures, results, group standings, team & player stats, match highlights, head-to-head history, and World Cup records - updated throughout the tournament.";
 
 export const SITE_TAGLINE =
   "Live scores, teams, players, stats & history for FIFA World Cup 2026";

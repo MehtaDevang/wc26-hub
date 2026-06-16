@@ -17,7 +17,7 @@ export const PUZZLE_CATALOG: PuzzleMeta[] = [
   {
     id: "guess-player",
     title: "Guess the Player",
-    description: "Identify 5 players from 10+ progressive clues — region, league, caps, trivia, and more.",
+    description: "Identify 5 players from 10+ progressive clues - region, league, caps, trivia, and more.",
     href: "/puzzles/guess-player",
     icon: User,
     color: "blue",

@@ -31,7 +31,7 @@ function dateSeed(key: string, salt = 0): number {
   return Math.abs(h);
 }
 
-/** Deterministic daily shuffle — new set every calendar day. */
+/** Deterministic daily shuffle - new set every calendar day. */
 export function pickDailySet<T>(
   items: T[],
   count: number = PUZZLES_PER_DAY,
@@ -58,7 +58,7 @@ export function pickDaily<T>(items: T[], date = new Date(), offset = 0): T {
   return set[offset % set.length];
 }
 
-/** Milliseconds until local midnight — next puzzle reset. */
+/** Milliseconds until local midnight - next puzzle reset. */
 export function getMsUntilNextPuzzleReset(now = new Date()): number {
   const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   return next.getTime() - now.getTime();

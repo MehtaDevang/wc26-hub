@@ -23,7 +23,7 @@ function matchTimes(match: Match): { start: Date; end: Date } | null {
 
 function matchTitle(match: Match): string {
   const stage = match.group !== "?" ? `Group ${match.group}` : match.stageLabel ?? "World Cup 2026";
-  return `${match.homeName} vs ${match.awayName} — FIFA World Cup 2026 (${stage})`;
+  return `${match.homeName} vs ${match.awayName} - FIFA World Cup 2026 (${stage})`;
 }
 
 function matchLocation(match: Match): string {

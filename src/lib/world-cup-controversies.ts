@@ -52,7 +52,7 @@ export const WORLD_CUP_CONTROVERSIES: WorldCupControversy[] = [
     summary:
       "Mexico, the United States, and Canada will co-host, requiring fans and teams to travel across North America.",
     facts: [
-      "16 host cities span three countries — the widest geographic spread in World Cup history.",
+      "16 host cities span three countries - the widest geographic spread in World Cup history.",
       "Environmental groups raised concerns about carbon emissions from long-haul fan and team travel.",
       "Visa requirements and border crossings add logistical complexity for supporters.",
     ],
@@ -151,7 +151,7 @@ export const WORLD_CUP_CONTROVERSIES: WorldCupControversy[] = [
     year: 2014,
     category: "on-field",
     summary:
-      "Germany beat hosts Brazil 7–1 in the semifinal at Belo Horizonte — the biggest margin in a World Cup semifinal.",
+      "Germany beat hosts Brazil 7–1 in the semifinal at Belo Horizonte - the biggest margin in a World Cup semifinal.",
     facts: [
       "Brazil played without Neymar (injury) and captain Thiago Silva (suspension).",
       "Germany led 5–0 within 29 minutes; the result shocked the host nation.",
@@ -254,7 +254,7 @@ export const WORLD_CUP_CONTROVERSIES: WorldCupControversy[] = [
     year: 1983,
     category: "governance",
     summary:
-      "The original Jules Rimet Trophy — awarded from 1930 to 1970 — was stolen from the Brazilian FA headquarters and never recovered.",
+      "The original Jules Rimet Trophy - awarded from 1930 to 1970 - was stolen from the Brazilian FA headquarters and never recovered.",
     facts: [
       "Brazil had been awarded permanent possession after winning a third title in 1970.",
       "The trophy was first stolen in England in 1966 before being recovered by a dog named Pickles.",
@@ -271,7 +271,7 @@ export const WORLD_CUP_CONTROVERSIES: WorldCupControversy[] = [
       "Argentina's first World Cup win came amid military dictatorship and persistent rumors about Peru's 6–0 loss to Argentina.",
     facts: [
       "The junta used the tournament for propaganda; some players later described political pressure.",
-      "Peru needed a large-margin loss for Argentina to reach the final on goal difference — Peru lost 6–0.",
+      "Peru needed a large-margin loss for Argentina to reach the final on goal difference - Peru lost 6–0.",
       "No proof of match-fixing was ever confirmed; FIFA investigations found insufficient evidence.",
     ],
   },

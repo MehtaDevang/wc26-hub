@@ -2,7 +2,7 @@ import type { NewsArticleDetail } from "./types";
 import { getDb } from "./mongodb";
 
 /**
- * Original Goal Posts editorial — written in-house and stored in MongoDB
+ * Original Goal Posts editorial - written in-house and stored in MongoDB
  * (collection `news`), not aggregated from ESPN.
  *
  * Documents match the {@link NewsArticleDetail} shape and carry a string `id`

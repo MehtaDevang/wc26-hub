@@ -96,7 +96,7 @@ export function QuizPuzzle() {
           <div className="mt-6 space-y-2 text-left">
             {rounds.map((r, i) => (
               <div key={i} className="flex justify-between text-sm py-2 border-b border-zinc-50 gap-2">
-                <span className="text-zinc-600 line-clamp-1">#{i + 1} {questions[i]?.question ?? "—"}</span>
+                <span className="text-zinc-600 line-clamp-1">#{i + 1} {questions[i]?.question ?? " - "}</span>
                 <span className="shrink-0">{r.correct ? "✅" : "❌"}</span>
               </div>
             ))}

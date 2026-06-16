@@ -97,7 +97,7 @@ function buildHeadline(match: Match): { headline: string; subheadline: string; r
   if (hs === as) {
     return {
       headline: "Points shared after an even battle",
-      subheadline: `${scoreline} — ${group}`,
+      subheadline: `${scoreline} - ${group}`,
       resultLabel: "Full-time draw",
     };
   }
@@ -108,14 +108,14 @@ function buildHeadline(match: Match): { headline: string; subheadline: string; r
   if (margin >= 3) {
     return {
       headline: `${winner} win in commanding fashion`,
-      subheadline: `${scoreline} — ${group}`,
+      subheadline: `${scoreline} - ${group}`,
       resultLabel: `${margin}-goal victory`,
     };
   }
 
   return {
     headline: `${winner} take all three points`,
-    subheadline: `${scoreline} — ${group}`,
+    subheadline: `${scoreline} - ${group}`,
     resultLabel: margin === 1 ? "Narrow win" : `${margin}-goal win`,
   };
 }

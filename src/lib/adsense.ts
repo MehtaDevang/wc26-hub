@@ -9,7 +9,7 @@ export type AdPlacement =
   | "history"
   | "puzzles";
 
-/** Google AdSense publisher ID — override with NEXT_PUBLIC_ADSENSE_CLIENT_ID if needed. */
+/** Google AdSense publisher ID - override with NEXT_PUBLIC_ADSENSE_CLIENT_ID if needed. */
 export const ADSENSE_CLIENT_ID =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-8009690168862509";
 

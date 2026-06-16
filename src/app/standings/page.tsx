@@ -10,9 +10,9 @@ import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Standings — Live Group Tables & Points",
+  title: "World Cup 2026 Standings - Live Group Tables & Points",
   description:
-    "Live FIFA World Cup 2026 group standings for all 12 groups. Points, goal difference, qualification spots, and knockout bracket — updated after every match.",
+    "Live FIFA World Cup 2026 group standings for all 12 groups. Points, goal difference, qualification spots, and knockout bracket - updated after every match.",
   path: "/standings",
   keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, [
     "World Cup points table",
@@ -35,7 +35,7 @@ export default async function StandingsPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Group Standings"
-        subtitle="Live tables for all 12 World Cup groups — tap a team or browse by group"
+        subtitle="Live tables for all 12 World Cup groups - tap a team or browse by group"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap items-center gap-x-3 gap-y-1">
         <Link href="/groups" className="text-blue-600 hover:underline font-medium">

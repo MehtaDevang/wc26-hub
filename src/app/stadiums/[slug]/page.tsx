@@ -53,8 +53,8 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return createPageMetadata({
-    title: `${venue.name} — World Cup 2026 Venue Guide`,
-    description: `${venue.name} in ${venue.city}, ${venue.country} — capacity ${venue.capacity.toLocaleString()}, fixtures, and World Cup 2026 match schedule at this stadium.`,
+    title: `${venue.name} - World Cup 2026 Venue Guide`,
+    description: `${venue.name} in ${venue.city}, ${venue.country} - capacity ${venue.capacity.toLocaleString()}, fixtures, and World Cup 2026 match schedule at this stadium.`,
     path: `/stadiums/${slug}`,
     keywords: [
       venue.name,

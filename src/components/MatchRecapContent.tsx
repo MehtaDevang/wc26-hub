@@ -90,7 +90,7 @@ export function MatchRecapContent({
         </section>
       )}
 
-      {/* Stats bars — full recap page only (overview has stats elsewhere) */}
+      {/* Stats bars - full recap page only (overview has stats elsewhere) */}
       {variant === "full" && recap.stats.length > 0 && (
         <section className="card-surface rounded-2xl p-5 sm:p-6">
           <h3 className="section-title mb-4 flex items-center gap-2 text-base">

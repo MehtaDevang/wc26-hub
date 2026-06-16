@@ -121,7 +121,7 @@ export const WATCH_COUNTRIES: WatchCountry[] = [
       { name: "BBC", type: "TV", url: NETWORK_URLS.BBC },
       { name: "ITV", type: "TV", url: NETWORK_URLS.ITV },
     ],
-    rightsNote: "BBC and ITV share UK rights — each broadcasts a selection of matches free-to-air.",
+    rightsNote: "BBC and ITV share UK rights - each broadcasts a selection of matches free-to-air.",
   },
   {
     id: "india",
@@ -143,7 +143,7 @@ export const WATCH_COUNTRIES: WatchCountry[] = [
       { name: "SBS", type: "TV", url: NETWORK_URLS.SBS },
       { name: "SBS On Demand", type: "Streaming", url: NETWORK_URLS["SBS On Demand"] },
     ],
-    rightsNote: "SBS holds exclusive rights — all 104 matches live and free on TV and SBS On Demand.",
+    rightsNote: "SBS holds exclusive rights - all 104 matches live and free on TV and SBS On Demand.",
   },
   {
     id: "germany",

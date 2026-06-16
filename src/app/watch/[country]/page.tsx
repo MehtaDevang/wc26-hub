@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps) {
   const channels = country.broadcasters.map((b) => b.name).join(", ");
 
   return createPageMetadata({
-    title: `Where to Watch World Cup 2026 in ${country.name} — ${channels}`,
+    title: `Where to Watch World Cup 2026 in ${country.name} - ${channels}`,
     description: `How to watch FIFA World Cup 2026 in ${country.name}. TV channels and streaming: ${channels}. Full match schedule with broadcaster links.`,
     path: `/watch/${country.id}`,
     keywords: [
@@ -58,7 +58,7 @@ export default async function WatchCountryPage({ params }: PageProps) {
     <div className="space-y-6">
       <WC26PageBanner
         title={`Watch in ${country.name} ${country.flag}`}
-        subtitle={`TV & streaming links for World Cup 2026 — ${country.broadcasters.map((b) => b.name).join(", ")}`}
+        subtitle={`TV & streaming links for World Cup 2026 - ${country.broadcasters.map((b) => b.name).join(", ")}`}
       />
       <p className="text-sm text-zinc-500">
         <Link href="/watch" className="text-blue-600 hover:underline font-medium">

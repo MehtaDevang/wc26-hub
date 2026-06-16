@@ -93,5 +93,5 @@ export function buildStreakShareText(streak: PuzzleStreakState): string {
   if (streak.currentStreak > 0) {
     return `🔥 ${streak.currentStreak}-day puzzle streak on The Goal Posts! Can you beat my run?`;
   }
-  return `I completed today's World Cup puzzles on The Goal Posts — join me!`;
+  return `I completed today's World Cup puzzles on The Goal Posts - join me!`;
 }

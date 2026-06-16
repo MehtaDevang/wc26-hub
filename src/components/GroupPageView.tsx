@@ -87,7 +87,7 @@ export function GroupPageView({ data }: { data: GroupPageData }) {
             World Cup 2026 {data.label}
           </h1>
           <p className="text-sm text-zinc-500 mt-2">
-            Live standings, fixtures, and results for {data.label} — {data.matches.length} matches
+            Live standings, fixtures, and results for {data.label} - {data.matches.length} matches
             {finished > 0 && ` · ${finished} played`}
             {upcoming > 0 && ` · ${upcoming} upcoming`}
           </p>

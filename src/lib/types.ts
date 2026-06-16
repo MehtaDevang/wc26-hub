@@ -34,7 +34,7 @@ export interface Match {
 export interface NewsArticle {
   id: string;
   headline: string;
-  /** Short editorial summary — not the full source article */
+  /** Short editorial summary - not the full source article */
   summary: string;
   imageUrl?: string;
   imageAlt?: string;
@@ -47,7 +47,7 @@ export interface NewsArticle {
 
 export interface NewsArticleDetail extends NewsArticle {
   byline?: string;
-  /** Full original story paragraphs — present only for our own articles */
+  /** Full original story paragraphs - present only for our own articles */
   body?: string[];
 }
 
@@ -391,7 +391,7 @@ export interface HeadToHeadMatch {
   isWorldCup?: boolean;
   /** W/D/L from the current fixture home team's perspective */
   resultForHome: "W" | "D" | "L";
-  /** Kept for older UI — opponent relative to fixture home team */
+  /** Kept for older UI - opponent relative to fixture home team */
   opponent: string;
   result: string;
 }

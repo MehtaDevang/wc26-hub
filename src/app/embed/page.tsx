@@ -31,7 +31,7 @@ export default function EmbedDocsPage() {
       </div>
 
       <section className="card-surface rounded-2xl p-6 space-y-3">
-        <h2 className="font-bold text-zinc-900">Option 1 — Script tag</h2>
+        <h2 className="font-bold text-zinc-900">Option 1 - Script tag</h2>
         <p className="text-sm text-zinc-500">Auto-resizes iframe to content height.</p>
         <pre className="rounded-xl bg-zinc-900 text-zinc-100 p-4 text-xs overflow-x-auto leading-relaxed">
           {snippet}
@@ -39,7 +39,7 @@ export default function EmbedDocsPage() {
       </section>
 
       <section className="card-surface rounded-2xl p-6 space-y-3">
-        <h2 className="font-bold text-zinc-900">Option 2 — iframe</h2>
+        <h2 className="font-bold text-zinc-900">Option 2 - iframe</h2>
         <p className="text-sm text-zinc-500">Paste directly into HTML or CMS embed blocks.</p>
         <pre className="rounded-xl bg-zinc-900 text-zinc-100 p-4 text-xs overflow-x-auto leading-relaxed">
           {iframeSnippet}

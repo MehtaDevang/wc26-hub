@@ -64,7 +64,7 @@ export function FollowOnX({
             <h3 className="font-bold text-base sm:text-lg">Follow us on X</h3>
           </div>
           <p className="text-sm text-zinc-500 leading-relaxed max-w-lg">
-            Live score updates, match takes, and World Cup 2026 moments — follow{" "}
+            Live score updates, match takes, and World Cup 2026 moments - follow{" "}
             <a
               href={SITE_TWITTER_URL}
               target="_blank"

@@ -6,9 +6,9 @@ import { createPageMetadata } from "@/lib/seo";
 import { getTournamentLeaders } from "@/lib/espn/tournament-stats";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Stat Leaders — Golden Boot, Assists & Cards",
+  title: "World Cup 2026 Stat Leaders - Golden Boot, Assists & Cards",
   description:
-    "FIFA World Cup 2026 tournament stat leaders — Golden Boot top scorers, assists, appearances, yellow cards, and red cards updated from every match.",
+    "FIFA World Cup 2026 tournament stat leaders - Golden Boot top scorers, assists, appearances, yellow cards, and red cards updated from every match.",
   path: "/leaders",
   keywords: [
     "World Cup Golden Boot",
@@ -28,7 +28,7 @@ export default async function LeadersPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Tournament Leaders"
-        subtitle="Golden Boot, assists, appearances, and discipline — updated after every match"
+        subtitle="Golden Boot, assists, appearances, and discipline - updated after every match"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
         <Link href="/players" className="text-blue-600 hover:underline font-medium">

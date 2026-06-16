@@ -8,9 +8,9 @@ import { getServerTimezone } from "@/lib/timezone";
 import { getWatchCountry, guessWatchCountryFromTimezone } from "@/lib/watch-by-country";
 
 export const metadata = createPageMetadata({
-  title: "Where to Watch World Cup 2026 — TV Channels & Broadcast Guide",
+  title: "Where to Watch World Cup 2026 - TV Channels & Broadcast Guide",
   description:
-    "World Cup 2026 TV schedule and broadcast guide by country — USA, UK, India, Mexico, Canada and more. Find channels, streaming links, and kickoff times.",
+    "World Cup 2026 TV schedule and broadcast guide by country - USA, UK, India, Mexico, Canada and more. Find channels, streaming links, and kickoff times.",
   path: "/watch",
   keywords: [
     "World Cup 2026 TV schedule",
@@ -32,7 +32,7 @@ export default async function WatchPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Where to Watch"
-        subtitle="TV & streaming by country — official broadcasters with links for every match"
+        subtitle="TV & streaming by country - official broadcasters with links for every match"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
         <Link href="/fixtures" className="text-blue-600 hover:underline font-medium">

@@ -165,7 +165,7 @@ function buildHeadline(
     return {
       favorite,
       headline: `${name} tipped to edge it`,
-      detail: `Level at ${clock} — live stats and rankings give ${name} a ${pct}% win chance from here.`,
+      detail: `Level at ${clock} - live stats and rankings give ${name} a ${pct}% win chance from here.`,
     };
   }
 
@@ -255,5 +255,5 @@ export function buildWinPredictionShareText(
       : prediction.favorite === "away"
         ? `${awayName} ${prediction.awayWin}%`
         : `Draw ${prediction.draw}%`;
-  return `📊 Win predictor${score}: ${leader} — ${homeName} vs ${awayName} at World Cup 2026`;
+  return `📊 Win predictor${score}: ${leader} - ${homeName} vs ${awayName} at World Cup 2026`;
 }

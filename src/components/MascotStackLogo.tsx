@@ -5,7 +5,7 @@ interface MascotStackLogoProps {
 }
 
 /**
- * Three host-nation mascots (Zayu · Clutch · Maple) — site logo on all screen sizes.
+ * Three host-nation mascots (Zayu · Clutch · Maple) - site logo on all screen sizes.
  * Single SVG stack (no duplicate mobile/desktop instances).
  */
 export function MascotStackLogo({ className = "" }: MascotStackLogoProps) {

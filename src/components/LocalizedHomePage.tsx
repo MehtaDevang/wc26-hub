@@ -73,9 +73,9 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
 
   const jsonTitle =
     locale === "es"
-      ? "Mundial 2026 — Resultados en vivo"
+      ? "Mundial 2026 - Resultados en vivo"
       : locale === "fr"
-        ? "Coupe du monde 2026 — Scores en direct"
+        ? "Coupe du monde 2026 - Scores en direct"
         : "FIFA World Cup 2026 Live Scores Today";
 
   return (
@@ -354,7 +354,7 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
           <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
-                1930 — 2022
+                1930 - 2022
               </p>
               <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--wc-usa)] transition-colors">
                 {copy.historyTitle}

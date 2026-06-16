@@ -8,9 +8,9 @@ import { getKnockoutBracket } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Bracket Predictor — Pick & Share Your Knockout Picks",
+  title: "World Cup 2026 Bracket Predictor - Pick & Share Your Knockout Picks",
   description:
-    "Fill in your FIFA World Cup 2026 knockout bracket — pick every winner from the Round of 32 to the Final and share your prediction with friends.",
+    "Fill in your FIFA World Cup 2026 knockout bracket - pick every winner from the Round of 32 to the Final and share your prediction with friends.",
   path: "/bracket/predict",
   keywords: [
     "World Cup bracket predictor",

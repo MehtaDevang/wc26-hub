@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps) {
     const timeZone = await getServerTimezone();
     const { match } = await requireMatchPageData(id, timeZone);
     return createPageMetadata({
-      title: `${match.homeName} vs ${match.awayName} Preview — World Cup 2026`,
-      description: `Preview ${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 — form guide, head-to-head, venue, weather, and keys to watch before kickoff.`,
+      title: `${match.homeName} vs ${match.awayName} Preview - World Cup 2026`,
+      description: `Preview ${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 - form guide, head-to-head, venue, weather, and keys to watch before kickoff.`,
       path: `/match/${id}/preview`,
       keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS, [
         `${match.homeName} vs ${match.awayName} preview`,

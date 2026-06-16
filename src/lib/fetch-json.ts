@@ -16,7 +16,7 @@ export async function fetchJson<T>(
     return res.json() as Promise<T>;
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new Error("Request timed out — check your connection");
+      throw new Error("Request timed out - check your connection");
     }
     throw err;
   } finally {

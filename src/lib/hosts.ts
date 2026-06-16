@@ -3,7 +3,7 @@ import { getVenuesByCountry } from "./venues";
 
 const HOST_BLURBS: Record<string, string> = {
   Mexico:
-    "Three iconic cities — Mexico City, Guadalajara, and Monterrey — including the legendary Estadio Azteca, host of two World Cup finals.",
+    "Three iconic cities - Mexico City, Guadalajara, and Monterrey - including the legendary Estadio Azteca, host of two World Cup finals.",
   USA:
     "Eleven venues across the country, from MetLife Stadium (Final) and SoFi Stadium to Arrowhead, NRG, and more.",
   Canada:

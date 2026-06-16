@@ -71,7 +71,7 @@ export default async function RootLayout({
             <footer className="border-t border-zinc-200 bg-white py-8">
               <WC26MascotStrip variant="footer" className="mb-4" />
               <p className="text-center text-xs text-zinc-400">
-                {SITE_NAME} © 2026 — Not affiliated with FIFA. Live data via ESPN.
+                {SITE_NAME} © 2026 - Not affiliated with FIFA. Live data via ESPN.
               </p>
               <div className="mt-4 flex justify-center">
                 <FollowOnX variant="footer" />

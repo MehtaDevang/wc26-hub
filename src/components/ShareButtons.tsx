@@ -5,7 +5,7 @@ import { Share2, Link2, Check } from "lucide-react";
 import { buildTwitterShareUrl, buildWhatsAppShareUrl } from "@/lib/share";
 
 interface ShareButtonsProps {
-  /** SSR fallback only — click handlers use the current page URL in the browser. */
+  /** SSR fallback only - click handlers use the current page URL in the browser. */
   url?: string;
   title: string;
   text: string;

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
-export const alt = `${SITE_NAME} — FIFA World Cup 2026 Live Scores`;
+export const alt = `${SITE_NAME} - FIFA World Cup 2026 Live Scores`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

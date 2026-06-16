@@ -52,8 +52,8 @@ export async function generateMetadata({ params }: PageProps) {
     const liveTag = match.status === "live" ? "Live Score" : match.status === "finished" ? "Result" : "Preview";
 
     return createPageMetadata({
-      title: `${match.homeName} ${score} ${match.awayName} — World Cup 2026 ${liveTag}`,
-      description: `${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 — live score, scorers, match stats, lineups, head-to-head history, highlights, and full match report.`,
+      title: `${match.homeName} ${score} ${match.awayName} - World Cup 2026 ${liveTag}`,
+      description: `${match.homeName} vs ${match.awayName} at FIFA World Cup 2026 - live score, scorers, match stats, lineups, head-to-head history, highlights, and full match report.`,
       path: `/match/${id}`,
       ogImagePath: `/match/${id}/opengraph-image`,
       keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS, [
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps) {
     });
   } catch {
     return createPageMetadata({
-      title: "World Cup 2026 Match — Live Score, Stats & Highlights",
+      title: "World Cup 2026 Match - Live Score, Stats & Highlights",
       description: "FIFA World Cup 2026 match live score, stats, lineups, head-to-head history, and highlights.",
       path: `/match/${id}`,
       ogImagePath: `/match/${id}/opengraph-image`,
@@ -111,7 +111,7 @@ export default async function MatchPage({ params }: PageProps) {
     }
     highlights = buildAllMatchHighlights(match, summary);
   } catch {
-    // ESPN summary can be unavailable for early knockout placeholders — keep minimal detail
+    // ESPN summary can be unavailable for early knockout placeholders - keep minimal detail
   }
 
   const venueMeta = lookupVenue(

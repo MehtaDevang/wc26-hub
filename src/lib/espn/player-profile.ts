@@ -549,7 +549,7 @@ export async function getPlayersByTeamCode(teamCode: string): Promise<PlayerList
     .sort(sortPlayers);
 }
 
-/** Fast squad list for a single nation — roster + tournament goal counts */
+/** Fast squad list for a single nation - roster + tournament goal counts */
 export async function fetchTeamSquadPlayers(teamCode: string): Promise<PlayerListItem[]> {
   const code = resolveTeamCode(teamCode) ?? teamCode.toUpperCase();
   const teamsResponse = await fetchEspnTeams();

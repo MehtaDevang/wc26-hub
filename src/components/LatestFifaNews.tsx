@@ -183,7 +183,7 @@ export function LatestFifaNews({ initialArticles, limit = 8 }: LatestFifaNewsPro
 
         {error && articles.length > 0 && (
           <p className="border-t border-zinc-100 px-4 py-2 text-center text-xs text-amber-600">
-            Couldn&apos;t refresh — showing last loaded headlines
+            Couldn&apos;t refresh - showing last loaded headlines
           </p>
         )}
       </div>

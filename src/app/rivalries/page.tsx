@@ -5,9 +5,9 @@ import { createPageMetadata } from "@/lib/seo";
 import { getAllRivalryPages } from "@/lib/rivalry-pages";
 
 export const metadata = createPageMetadata({
-  title: "World Cup Rivalries — Historic International Football Matchups",
+  title: "World Cup Rivalries - Historic International Football Matchups",
   description:
-    "Explore the greatest FIFA World Cup rivalries — Argentina vs Brazil, England vs Germany, Mexico vs USA, and more. History, fun facts, and WC 2026 context.",
+    "Explore the greatest FIFA World Cup rivalries - Argentina vs Brazil, England vs Germany, Mexico vs USA, and more. History, fun facts, and WC 2026 context.",
   path: "/rivalries",
   keywords: [
     "World Cup rivalries",
@@ -31,7 +31,7 @@ export default function RivalriesPage() {
             World Cup Rivalries
           </h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-            The international matchups that define tournament history — context, iconic moments,
+            The international matchups that define tournament history - context, iconic moments,
             and what to watch when these nations meet at World Cup 2026.
           </p>
         </div>

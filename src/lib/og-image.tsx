@@ -269,7 +269,7 @@ export function OgPuzzlesLayout() {
     <OgShell
       eyebrow="Daily Football Puzzles"
       title="Can you solve today's World Cup set?"
-      subtitle="Guess the Player · Name Scramble · Trivia Quiz — new puzzles every day."
+      subtitle="Guess the Player · Name Scramble · Trivia Quiz - new puzzles every day."
       badge={{ label: "Play now", color: "#ffffff", bg: "#1d4ed8" }}
     />
   );

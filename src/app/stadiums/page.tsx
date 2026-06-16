@@ -12,9 +12,9 @@ const COUNTRY_FLAGS: Record<string, string> = {
 };
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Stadiums — All 16 Venues & Capacities",
+  title: "World Cup 2026 Stadiums - All 16 Venues & Capacities",
   description:
-    "Every FIFA World Cup 2026 stadium — Estadio Azteca, MetLife Stadium, SoFi Stadium, BC Place, and all 16 host venues with cities and capacities.",
+    "Every FIFA World Cup 2026 stadium - Estadio Azteca, MetLife Stadium, SoFi Stadium, BC Place, and all 16 host venues with cities and capacities.",
   path: "/stadiums",
   keywords: [
     "World Cup 2026 stadiums",
@@ -36,7 +36,7 @@ export default function StadiumsPage() {
         <div className="p-5 sm:p-6">
           <h1 className="section-title text-2xl sm:text-3xl">World Cup 2026 Stadiums</h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-            {venues.length} venues across Mexico, the United States, and Canada — tap a stadium
+            {venues.length} venues across Mexico, the United States, and Canada - tap a stadium
             for capacity, location, and the full match schedule at that venue.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function StadiumsPage() {
           <h2 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
             Host nations guide
           </h2>
-          <p className="text-sm text-zinc-500 mt-1">Mexico, USA & Canada — cities and mascots</p>
+          <p className="text-sm text-zinc-500 mt-1">Mexico, USA & Canada - cities and mascots</p>
         </div>
         <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600 shrink-0" />
       </Link>

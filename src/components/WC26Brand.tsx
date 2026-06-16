@@ -39,7 +39,7 @@ export function WC26MascotStrip({ variant = "compact", className = "" }: WC26Mas
         {ORDER.map((id) => {
           const m = MASCOTS[id];
           return (
-            <div key={id} className="flex items-center gap-2" title={`${m.name} — ${m.host}`}>
+            <div key={id} className="flex items-center gap-2" title={`${m.name} - ${m.host}`}>
               <WC26MascotIcon id={id} size={28} />
               <span className="text-[10px] font-semibold text-zinc-500 hidden sm:inline">{m.name}</span>
             </div>

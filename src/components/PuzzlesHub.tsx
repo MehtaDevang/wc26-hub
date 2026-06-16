@@ -89,7 +89,7 @@ export function PuzzlesHub() {
         <div>
           <p className="font-semibold text-zinc-900">Challenge a friend</p>
           <p className="text-sm text-zinc-500 mt-1">
-            Share today&apos;s puzzles — {completed}/{PUZZLE_CATALOG.length} done on your board.
+            Share today&apos;s puzzles - {completed}/{PUZZLE_CATALOG.length} done on your board.
           </p>
         </div>
         <ShareButtons

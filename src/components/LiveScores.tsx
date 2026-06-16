@@ -161,7 +161,7 @@ export function LiveScores({
           <div className="match-clash-list">
             {error && localizedMatches.length > 0 && (
               <p className="px-4 py-2 text-xs text-amber-600 bg-amber-50 border-b border-amber-100">
-                Couldn&apos;t refresh — showing cached scores
+                Couldn&apos;t refresh - showing cached scores
               </p>
             )}
             {liveMatches.length > 0 && (

@@ -254,7 +254,7 @@ export function MatchTimeline({
                 Match Timeline
               </h2>
               <p className="text-xs text-zinc-500 mt-1">
-                Key moments in order — home ({home.name}) on the left, away ({away.name}) on the right
+                Key moments in order - home ({home.name}) on the left, away ({away.name}) on the right
               </p>
             </div>
             <div className="flex items-center gap-3 text-center text-xs">

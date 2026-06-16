@@ -97,7 +97,7 @@ export function buildRankingInsight(
     return `On FIFA rankings (${formatFifaRank(homeRank)} vs ${formatFifaRank(awayRank)}), ${favorite} start as clear favorites.`;
   }
   if (gap <= 5) {
-    return `A tight rankings matchup — ${homeName} (${formatFifaRank(homeRank)}) and ${awayName} (${formatFifaRank(awayRank)}) are separated by just ${gap} places.`;
+    return `A tight rankings matchup - ${homeName} (${formatFifaRank(homeRank)}) and ${awayName} (${formatFifaRank(awayRank)}) are separated by just ${gap} places.`;
   }
   return `${homeName} (${formatFifaRank(homeRank)}) vs ${awayName} (${formatFifaRank(awayRank)}) on the June 2026 FIFA chart.`;
 }

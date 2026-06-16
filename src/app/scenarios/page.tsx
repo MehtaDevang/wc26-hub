@@ -8,9 +8,9 @@ import { getMatchesByParams } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Qualification Scenarios — What Does Each Team Need?",
+  title: "World Cup 2026 Qualification Scenarios - What Does Each Team Need?",
   description:
-    "World Cup 2026 group qualification calculator — see what each team needs to advance, possible points, and knockout scenarios for all 12 groups.",
+    "World Cup 2026 group qualification calculator - see what each team needs to advance, possible points, and knockout scenarios for all 12 groups.",
   path: "/scenarios",
   keywords: [
     "World Cup qualification scenarios",

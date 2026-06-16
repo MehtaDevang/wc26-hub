@@ -448,7 +448,7 @@ button:disabled,
   font-weight: 600;
 }
 
-/* Knockout bracket — convergent tree layout */
+/* Knockout bracket - convergent tree layout */
 .bracket-tree {
   gap: 0;
 }
@@ -532,7 +532,7 @@ button:disabled,
   50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
 }
 
-/* Countdown battle cards — country colours + live background */
+/* Countdown battle cards - country colours + live background */
 .countdown-battle-card {
   min-height: 280px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
@@ -821,7 +821,7 @@ button:disabled,
   }
 }
 
-/* Clean match rows — subtle country accents */
+/* Clean match rows - subtle country accents */
 .match-clash-list {
   display: flex;
   flex-direction: column;
@@ -1280,7 +1280,7 @@ input:focus, select:focus {
   transform: scale(0.96);
 }
 
-/* Embed mode — strip site chrome when loaded in /embed routes */
+/* Embed mode - strip site chrome when loaded in /embed routes */
 body.embed-mode header,
 body.embed-mode footer,
 body.embed-mode .site-main > *:not(.embed-live-scores),

@@ -7,9 +7,9 @@ import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, PLAYERS_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Players — Squads, Stats & Top Scorers",
+  title: "World Cup 2026 Players - Squads, Stats & Top Scorers",
   description:
-    "Every FIFA World Cup 2026 player by country — live stats, goals, assists, cards, positions, photos, and full profiles for all 48 squad lists.",
+    "Every FIFA World Cup 2026 player by country - live stats, goals, assists, cards, positions, photos, and full profiles for all 48 squad lists.",
   path: "/players",
   keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS),
 });
@@ -33,7 +33,7 @@ export default async function PlayersIndexPage() {
           World Cup 2026 Players
         </h1>
         <p className="text-sm text-zinc-500 mt-2 max-w-2xl">
-          Full squads for all 48 nations at the FIFA World Cup 2026 — tap any player for photos,
+          Full squads for all 48 nations at the FIFA World Cup 2026 - tap any player for photos,
           personal info, tournament stats, and recent club performances.
         </p>
         {totalPlayers > 0 && (

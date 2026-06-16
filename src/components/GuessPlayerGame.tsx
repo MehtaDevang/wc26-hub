@@ -101,7 +101,7 @@ export function GuessPlayerGame() {
           <div className="mt-6 space-y-2 text-left">
             {rounds.map((r, i) => (
               <div key={i} className="flex justify-between text-sm py-2 border-b border-zinc-50">
-                <span className="text-zinc-600">#{i + 1} {players[i]?.name ?? "—"}</span>
+                <span className="text-zinc-600">#{i + 1} {players[i]?.name ?? " - "}</span>
                 <span>{r.won ? "✅" : "❌"}</span>
               </div>
             ))}

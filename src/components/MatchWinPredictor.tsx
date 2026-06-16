@@ -118,7 +118,7 @@ export function MatchWinPredictor({
           </div>
           <MediaShareButton
             url={absoluteUrl(`/match/${matchId}`)}
-            title={`Win predictor — ${homeName} vs ${awayName}`}
+            title={`Win predictor - ${homeName} vs ${awayName}`}
             text={shareText}
             label="Share prediction"
             variant="overlay"

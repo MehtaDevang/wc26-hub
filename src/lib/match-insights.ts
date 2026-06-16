@@ -72,9 +72,9 @@ export function buildMatchInsights({
       }
     }
     if (homeAcc >= 50 && awayAcc < 35 && stats.shots[0] >= 4) {
-      facts.push(`${homeName}'s finishing was clinical — ${homeAcc}% of shots were on target.`);
+      facts.push(`${homeName}'s finishing was clinical - ${homeAcc}% of shots were on target.`);
     } else if (awayAcc >= 50 && homeAcc < 35 && stats.shots[1] >= 4) {
-      facts.push(`${awayName}'s finishing was clinical — ${awayAcc}% of shots were on target.`);
+      facts.push(`${awayName}'s finishing was clinical - ${awayAcc}% of shots were on target.`);
     }
 
     if (stats.corners[0] + stats.corners[1] >= 8) {
@@ -89,7 +89,7 @@ export function buildMatchInsights({
     const awayYellow = stats.yellowCards?.[1] ?? 0;
     if (homeYellow + awayYellow >= 4) {
       facts.push(
-        `A physical contest — ${homeYellow + awayYellow} yellow cards shown (${homeName} ${homeYellow}, ${awayName} ${awayYellow}).`
+        `A physical contest - ${homeYellow + awayYellow} yellow cards shown (${homeName} ${homeYellow}, ${awayName} ${awayYellow}).`
       );
     } else if (homeFouls + awayFouls >= 22) {
       facts.push(`The referee had a busy game with ${homeFouls + awayFouls} fouls whistled.`);
@@ -109,7 +109,7 @@ export function buildMatchInsights({
     const firstHalf = goals.filter((g) => g.minute <= 45).length;
     const secondHalf = goals.length - firstHalf;
     if (firstHalf === 0 && secondHalf > 0) {
-      facts.push("All goals came after the break — a second-half story.");
+      facts.push("All goals came after the break - a second-half story.");
     } else if (secondHalf === 0 && firstHalf > 0) {
       facts.push("Every goal arrived in the first half.");
     } else if (goals.length >= 3 && secondHalf >= 2) {
@@ -129,7 +129,7 @@ export function buildMatchInsights({
       const pct = Math.round((attNum / venue.capacity) * 100);
       if (pct >= 90) {
         facts.push(
-          `A near-sellout at ${venue.name} — ${attendance} fans (${pct}% of capacity).`
+          `A near-sellout at ${venue.name} - ${attendance} fans (${pct}% of capacity).`
         );
       } else if (pct >= 75) {
         facts.push(`${attendance} fans packed into ${venue.name}.`);
@@ -144,7 +144,7 @@ export function buildMatchInsights({
   }
 
   if (match.status === "finished" && match.homeScore === match.awayScore) {
-    facts.push(`Honours even — ${homeName} and ${awayName} share the points.`);
+    facts.push(`Honours even - ${homeName} and ${awayName} share the points.`);
   } else if (match.status === "finished") {
     const winner =
       (match.homeScore ?? 0) > (match.awayScore ?? 0) ? homeName : awayName;

@@ -63,7 +63,7 @@ export function TeamJourneyButton({
           : "px-2.5 py-1.5 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-100",
         className
       )}
-      title={`${label} — tournament path`}
+      title={`${label} - tournament path`}
     >
       <Route size={compact ? 14 : 13} />
       {!compact && label}

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps) {
     });
   }
   return createPageMetadata({
-    title: `${rivalry.name} — World Cup Rivalry History`,
+    title: `${rivalry.name} - World Cup Rivalry History`,
     description: `${rivalry.teamAName} vs ${rivalry.teamBName} rivalry at the FIFA World Cup. ${rivalry.context.slice(0, 140)}…`,
     path: `/rivalries/${rivalry.slug}`,
     keywords: [

@@ -14,9 +14,9 @@ const MASCOT_IDS: Record<string, MascotId> = {
 };
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Host Nations — Mexico, USA & Canada",
+  title: "World Cup 2026 Host Nations - Mexico, USA & Canada",
   description:
-    "FIFA World Cup 2026 host countries — Mexico, United States, and Canada. Host cities, stadiums, mascots, and venue guide for the first tri-nation tournament.",
+    "FIFA World Cup 2026 host countries - Mexico, United States, and Canada. Host cities, stadiums, mascots, and venue guide for the first tri-nation tournament.",
   path: "/hosts",
   keywords: [
     "World Cup 2026 hosts",
@@ -36,7 +36,7 @@ export default function HostsPage() {
         <div className="p-5 sm:p-6">
           <h1 className="section-title text-2xl sm:text-3xl">Host Nations</h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-            FIFA World Cup 2026 is the first edition hosted across three countries — 48 teams, 104
+            FIFA World Cup 2026 is the first edition hosted across three countries - 48 teams, 104
             matches, and 16 stadiums from Vancouver to Mexico City.
           </p>
         </div>

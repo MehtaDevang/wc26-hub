@@ -8,7 +8,7 @@ import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Fixtures & Results — Full Schedule & Live Scores",
+  title: "World Cup 2026 Fixtures & Results - Full Schedule & Live Scores",
   description:
     "Complete FIFA World Cup 2026 fixture list with kick-off times, venues, groups, live scores, and match results. Every game from the group stage to the final.",
   path: "/fixtures",

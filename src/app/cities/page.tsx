@@ -7,7 +7,7 @@ import { getAllCityGuides } from "@/lib/city-guides";
 export const metadata = createPageMetadata({
   title: "World Cup 2026 Host City Travel Guides",
   description:
-    "Fan travel guides for every FIFA World Cup 2026 host city — airports, stadium transit, fan zones, weather, and local tips across USA, Mexico, and Canada.",
+    "Fan travel guides for every FIFA World Cup 2026 host city - airports, stadium transit, fan zones, weather, and local tips across USA, Mexico, and Canada.",
   path: "/cities",
   keywords: [
     "World Cup 2026 travel",
@@ -32,7 +32,7 @@ export default function CitiesPage() {
         <div className="p-5 sm:p-6">
           <h1 className="section-title text-2xl sm:text-3xl">Host City Guides</h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-            Plan your World Cup 2026 trip — airports, getting to the stadium, fan zones, and local
+            Plan your World Cup 2026 trip - airports, getting to the stadium, fan zones, and local
             tips for all {cities.length} host cities across North America.
           </p>
         </div>

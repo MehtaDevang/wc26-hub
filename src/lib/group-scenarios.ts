@@ -132,9 +132,9 @@ function rankLabel(rank: number): string {
 }
 
 function knockoutNote(rank: number): string {
-  if (rank <= 2) return " — in the top-two knockout spots";
-  if (rank === 3) return " — third-place / best-third contention";
-  return " — outside the top two";
+  if (rank <= 2) return " - in the top-two knockout spots";
+  if (rank === 3) return " - third-place / best-third contention";
+  return " - outside the top two";
 }
 
 export function analyzeTeamScenario(input: TeamScenarioInput): TeamScenarioResult | null {
@@ -185,24 +185,24 @@ export function analyzeTeamScenario(input: TeamScenarioInput): TeamScenarioResul
 
   if (remaining === 0) {
     if (row.rank <= 2) {
-      summary.push(`Finished ${row.rank}${row.rank === 1 ? "st" : "nd"} in ${group.group} — qualified for the knockout stage.`);
+      summary.push(`Finished ${row.rank}${row.rank === 1 ? "st" : "nd"} in ${group.group} - qualified for the knockout stage.`);
     } else if (row.rank === 3) {
-      summary.push(`Finished 3rd in ${group.group} — may qualify as one of the eight best third-place teams (depends on other groups).`);
+      summary.push(`Finished 3rd in ${group.group} - may qualify as one of the eight best third-place teams (depends on other groups).`);
     } else {
-      summary.push(`Finished ${row.rank}th in ${group.group} — eliminated from the knockout stage.`);
+      summary.push(`Finished ${row.rank}th in ${group.group} - eliminated from the knockout stage.`);
     }
   } else {
     summary.push(
-      `${remaining} group match${remaining === 1 ? "" : "es"} left — between ${minPoints} and ${maxPoints} points possible.`
+      `${remaining} group match${remaining === 1 ? "" : "es"} left - between ${minPoints} and ${maxPoints} points possible.`
     );
 
     summary.push(
-      `Best case (${best.label}): ${best.points} pts — could finish ${rankLabel(best.rank)}${knockoutNote(best.rank)}.`
+      `Best case (${best.label}): ${best.points} pts - could finish ${rankLabel(best.rank)}${knockoutNote(best.rank)}.`
     );
 
     if (worst.points < best.points) {
       summary.push(
-        `Worst case (${worst.label}): ${worst.points} pts — could finish ${rankLabel(worst.rank)}${knockoutNote(worst.rank)}.`
+        `Worst case (${worst.label}): ${worst.points} pts - could finish ${rankLabel(worst.rank)}${knockoutNote(worst.rank)}.`
       );
     }
   }
@@ -210,7 +210,7 @@ export function analyzeTeamScenario(input: TeamScenarioInput): TeamScenarioResul
   let thirdPlaceNote: string | undefined;
   if (row.rank === 3 || outcomes.some((o) => o.rank === 3)) {
     thirdPlaceNote =
-      "Eight of the twelve third-place teams advance in 2026. Usually ~4–7 points and strong goal difference are needed — compare across all groups on the standings page.";
+      "Eight of the twelve third-place teams advance in 2026. Usually ~4–7 points and strong goal difference are needed - compare across all groups on the standings page.";
   }
 
   return {

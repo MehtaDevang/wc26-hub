@@ -232,7 +232,7 @@ function LeadersTable({
   if (players.length === 0) {
     return (
       <p className="text-sm text-zinc-400 text-center py-12">
-        No tournament data yet — check back after matches kick off.
+        No tournament data yet - check back after matches kick off.
       </p>
     );
   }

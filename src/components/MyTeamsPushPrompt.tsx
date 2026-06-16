@@ -43,7 +43,7 @@ export function MyTeamsPushPrompt() {
           markMatchNotified(m.id);
           showMatchNotification(
             `⚽ ${m.homeName} vs ${m.awayName}`,
-            `Live now — ${m.homeScore ?? 0}–${m.awayScore ?? 0}`,
+            `Live now - ${m.homeScore ?? 0}–${m.awayScore ?? 0}`,
             `/match/${m.id}`
           );
         }

@@ -3,7 +3,7 @@ import { PuzzleStatsDashboard } from "@/components/PuzzleStatsDashboard";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
-  title: "Your Puzzle League Stats — World Cup 2026 Daily Puzzles",
+  title: "Your Puzzle League Stats - World Cup 2026 Daily Puzzles",
   description:
     "Track your World Cup 2026 daily puzzle streak, perfect days, and today's progress on The Goal Posts.",
   path: "/puzzles/stats",

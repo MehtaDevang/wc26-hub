@@ -1,4 +1,4 @@
-/** Editorial brief for feed + modal — not a verbatim ESPN republish. */
+/** Editorial brief for feed + modal - not a verbatim ESPN republish. */
 export const NEWS_SUMMARY_WORD_LIMIT = 55;
 
 export function truncateWords(
@@ -23,7 +23,7 @@ function stripPromoCopy(text: string): string {
   return text
     .replace(/^check out all the[^.]*\.\s*/i, "")
     .replace(/^read more[^.]*\.\s*/i, "")
-    .replace(/\s*—?\s*on ESPN\.?$/i, "")
+    .replace(/\s* - ?\s*on ESPN\.?$/i, "")
     .replace(/\s*via ESPN\.?$/i, "")
     .trim();
 }
@@ -35,7 +35,7 @@ function isDuplicateOfHeadline(text: string, headline: string): boolean {
 }
 
 /**
- * Short Goal Posts-style recap — paraphrased from the source dek, not the full article.
+ * Short Goal Posts-style recap - paraphrased from the source dek, not the full article.
  */
 export function buildNewsSummary(
   headline: string,
@@ -47,9 +47,9 @@ export function buildNewsSummary(
 
   if (!desc || isDuplicateOfHeadline(desc, h)) {
     if (type === "video") {
-      return `Tournament clip — ${h}.`;
+      return `Tournament clip - ${h}.`;
     }
-    return `World Cup 2026 — ${h}.`;
+    return `World Cup 2026 - ${h}.`;
   }
 
   if (type === "video") {
@@ -60,7 +60,7 @@ export function buildNewsSummary(
   // Reframe common ESPN openers into a neutral brief
   let reframed = desc
     .replace(/^it's only one game, sure, but /i, "Early on, ")
-    .replace(/^join .+ each day as they /i, "Daily dispatch — ")
+    .replace(/^join .+ each day as they /i, "Daily dispatch - ")
     .replace(/^here is a list of /i, "A look at ");
 
   if (!/world cup|fifa|tournament/i.test(reframed)) {

@@ -99,7 +99,7 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
             </span>
           </h2>
           <p className="text-sm text-zinc-500 mb-4">
-            Tap to follow — your picks sync across this device.
+            Tap to follow - your picks sync across this device.
           </p>
           <div className="flex flex-wrap gap-2">
             {Object.values(TEAMS)

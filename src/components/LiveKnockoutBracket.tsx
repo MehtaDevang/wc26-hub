@@ -70,7 +70,7 @@ export function LiveKnockoutBracket({
       <KnockoutBracket data={data} compact={compact} showLink={showLink} refreshing={refreshing} />
       {error && (
         <p className="text-center text-xs text-amber-700">
-          Couldn&apos;t refresh bracket — showing last loaded data
+          Couldn&apos;t refresh bracket - showing last loaded data
         </p>
       )}
     </div>

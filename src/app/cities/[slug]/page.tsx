@@ -65,7 +65,7 @@ export default async function CityGuidePage({ params }: PageProps) {
           </p>
           <h1 className="section-title text-2xl sm:text-3xl">{guide.city}</h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">
-            Your fan travel guide for World Cup 2026 in {guide.city} — from touchdown to kickoff.
+            Your fan travel guide for World Cup 2026 in {guide.city} - from touchdown to kickoff.
           </p>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default async function CityGuidePage({ params }: PageProps) {
             Airport
           </h2>
           <p className="text-sm text-zinc-600 leading-relaxed">
-            <span className="font-semibold text-zinc-800">{guide.airportCode}</span> — {guide.airport}
+            <span className="font-semibold text-zinc-800">{guide.airportCode}</span> - {guide.airport}
           </p>
         </section>
 

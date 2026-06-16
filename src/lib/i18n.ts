@@ -207,7 +207,7 @@ const STRINGS: Record<Locale, LocaleStrings> = {
     fullFixtures: "Full Fixtures",
     fullFixturesDesc: "Every match, venue & kickoff time",
     knockoutBracket: "Knockout Bracket",
-    knockoutBracketDesc: "R32 through the Final — live tournament path",
+    knockoutBracketDesc: "R32 through the Final - live tournament path",
     exploreTournament: "Explore the Tournament",
     noMatchesToday: "No matches today",
     live: "Live",
@@ -222,7 +222,7 @@ const STRINGS: Record<Locale, LocaleStrings> = {
     fixturesTitle: "Calendario y resultados",
     fixturesSubtitle: (n) =>
       `Todos los partidos del Mundial 2026 · ${n} encuentros · horarios en tu zona`,
-    homeTitle: "Mundial 2026 — Resultados en vivo",
+    homeTitle: "Mundial 2026 - Resultados en vivo",
     homeSubtitle: "Marcadores, calendario, grupos y estadísticas de cada partido.",
     groupTables: "Tablas de grupos",
     groupTablesDesc: "Clasificación en vivo de los 12 grupos",
@@ -244,7 +244,7 @@ const STRINGS: Record<Locale, LocaleStrings> = {
     fixturesTitle: "Calendrier et résultats",
     fixturesSubtitle: (n) =>
       `Tous les matchs de la Coupe du monde 2026 · ${n} rencontres · heures locales`,
-    homeTitle: "Coupe du monde 2026 — Scores en direct",
+    homeTitle: "Coupe du monde 2026 - Scores en direct",
     homeSubtitle: "Scores, calendrier, classements et stats pour chaque match.",
     groupTables: "Classements des groupes",
     groupTablesDesc: "Classements en direct des 12 groupes",
@@ -315,7 +315,7 @@ export function createLocalizedMetadata({
   description: string;
   path: string;
 }): Metadata {
-  const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
+  const pageTitle = title.includes(SITE_NAME) ? title : `${title} - ${SITE_NAME}`;
   const localizedPath = localePath(locale, path);
 
   return {

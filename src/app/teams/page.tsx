@@ -7,9 +7,9 @@ import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Teams — All 48 Countries, Squads & Stats",
+  title: "World Cup 2026 Teams - All 48 Countries, Squads & Stats",
   description:
-    "Browse every FIFA World Cup 2026 country — live results, group standings, fixtures, squad players, and full tournament stats for all 48 national teams.",
+    "Browse every FIFA World Cup 2026 country - live results, group standings, fixtures, squad players, and full tournament stats for all 48 national teams.",
   path: "/teams",
   keywords: mergeKeywords(TEAMS_KEYWORDS, [
     "national teams",
@@ -30,7 +30,7 @@ export default function TeamsIndexPage() {
       <div>
         <h1 className="section-title text-2xl sm:text-3xl">World Cup 2026 Teams</h1>
         <p className="text-sm text-zinc-500 mt-2 max-w-2xl">
-          Every nation at the FIFA World Cup 2026 — sorted by FIFA world ranking (June 2026). Tap a team for fixtures, results, group position, and full tournament journey.
+          Every nation at the FIFA World Cup 2026 - sorted by FIFA world ranking (June 2026). Tap a team for fixtures, results, group position, and full tournament journey.
         </p>
       </div>
       <AdBanner placement="inline" />

@@ -29,7 +29,7 @@ export function buildMatchSharePayload(
     return {
       url,
       title: `${home} ${score} ${away} (Live)`,
-      text: `🔴 LIVE: ${home} ${score} ${away}${clock ? ` (${clock})` : ""} — World Cup 2026 on ${SITE_NAME}`,
+      text: `🔴 LIVE: ${home} ${score} ${away}${clock ? ` (${clock})` : ""} - World Cup 2026 on ${SITE_NAME}`,
       label: "Share live score",
     };
   }
@@ -38,7 +38,7 @@ export function buildMatchSharePayload(
     return {
       url,
       title: `${home} ${score} ${away}`,
-      text: `⚽ ${home} ${score} ${away} — World Cup 2026 result on ${SITE_NAME}`,
+      text: `⚽ ${home} ${score} ${away} - World Cup 2026 result on ${SITE_NAME}`,
       label: "Share result",
     };
   }
@@ -46,7 +46,7 @@ export function buildMatchSharePayload(
   return {
     url,
     title: `${home} vs ${away}`,
-    text: `📅 ${home} vs ${away} — World Cup 2026 preview on ${SITE_NAME}`,
+    text: `📅 ${home} vs ${away} - World Cup 2026 preview on ${SITE_NAME}`,
     label: "Share match",
   };
 }
@@ -55,8 +55,8 @@ export function buildTeamSharePayload(teamCode: string, teamName: string): Share
   const url = absoluteUrl(`/teams/${teamCode}`);
   return {
     url,
-    title: `${teamName} — World Cup 2026`,
-    text: `🏆 ${teamName} at FIFA World Cup 2026 — fixtures, results, squad & stats on ${SITE_NAME}`,
+    title: `${teamName} - World Cup 2026`,
+    text: `🏆 ${teamName} at FIFA World Cup 2026 - fixtures, results, squad & stats on ${SITE_NAME}`,
     label: "Share team",
   };
 }
@@ -66,7 +66,7 @@ export function buildGroupSharePayload(group: string, label: string): SharePaylo
   return {
     url,
     title: `World Cup 2026 ${label}`,
-    text: `📊 ${label} — live standings, fixtures & results on ${SITE_NAME}`,
+    text: `📊 ${label} - live standings, fixtures & results on ${SITE_NAME}`,
     label: "Share group",
   };
 }
@@ -75,8 +75,8 @@ export function buildPuzzlesSharePayload(): SharePayload {
   const url = absoluteUrl("/puzzles");
   return {
     url,
-    title: `Daily World Cup Puzzles — ${SITE_NAME}`,
-    text: `🧩 Daily World Cup puzzles on ${SITE_NAME} — guess the player, name scramble & trivia quiz. Can you solve today's set?`,
+    title: `Daily World Cup Puzzles - ${SITE_NAME}`,
+    text: `🧩 Daily World Cup puzzles on ${SITE_NAME} - guess the player, name scramble & trivia quiz. Can you solve today's set?`,
     label: "Share puzzles",
   };
 }
@@ -88,8 +88,8 @@ export function buildNewsSharePayload(
   const emoji = article.type === "video" ? "🎬" : "📰";
   const snippet = article.summary?.trim();
   const text = snippet
-    ? `${emoji} ${article.headline} — ${snippet} · World Cup 2026 on ${SITE_NAME}`
-    : `${emoji} ${article.headline} — World Cup 2026 on ${SITE_NAME}`;
+    ? `${emoji} ${article.headline} - ${snippet} · World Cup 2026 on ${SITE_NAME}`
+    : `${emoji} ${article.headline} - World Cup 2026 on ${SITE_NAME}`;
 
   return {
     url,
@@ -129,8 +129,8 @@ export function buildHighlightSharePayload(
     const minute = highlight.minute && highlight.minute !== "Clip" ? ` ${highlight.minute}` : "";
     return {
       url,
-      title: `Goal — ${match.homeName} vs ${match.awayName}`,
-      text: `⚽ GOAL! ${scorer}${minute} — ${match.homeName} vs ${match.awayName}${score}${liveTag} · World Cup 2026 on ${SITE_NAME}`,
+      title: `Goal - ${match.homeName} vs ${match.awayName}`,
+      text: `⚽ GOAL! ${scorer}${minute} - ${match.homeName} vs ${match.awayName}${score}${liveTag} · World Cup 2026 on ${SITE_NAME}`,
       label: "Share goal",
     };
   }
@@ -139,7 +139,7 @@ export function buildHighlightSharePayload(
     return {
       url,
       title: highlight.title,
-      text: `📸 ${highlight.playerName} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+      text: `📸 ${highlight.playerName} - ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
       label: "Share moment",
     };
   }
@@ -148,7 +148,7 @@ export function buildHighlightSharePayload(
   return {
     url,
     title: highlight.title,
-    text: `${emoji} ${highlight.title} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+    text: `${emoji} ${highlight.title} - ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
     label: highlight.videoUrl || highlight.webUrl ? "Share clip" : "Share photo",
   };
 }
@@ -165,7 +165,7 @@ export function buildVideoSharePayload(
   return {
     url: video.webUrl ?? url,
     title: video.title,
-    text: `🎬 ${video.title} — ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
+    text: `🎬 ${video.title} - ${match.homeName} vs ${match.awayName}${score} on ${SITE_NAME}`,
     label: "Share video",
   };
 }
@@ -183,7 +183,7 @@ export function buildPhotoSharePayload(
   return {
     url,
     title: caption,
-    text: `📸 ${caption}${score} — World Cup 2026 on ${SITE_NAME}`,
+    text: `📸 ${caption}${score} - World Cup 2026 on ${SITE_NAME}`,
     label: "Share photo",
   };
 }

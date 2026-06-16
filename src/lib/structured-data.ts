@@ -6,7 +6,7 @@ const FIFA_ORGANIZER_URL = "https://www.fifa.com/";
 const FIFA_TOURNAMENT_URL =
   "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026";
 
-/** Stable @id for the tournament — referenced from WebSite, teams, and matches */
+/** Stable @id for the tournament - referenced from WebSite, teams, and matches */
 export function worldCup2026EventId(siteUrl?: string): string {
   return `${siteUrl ?? getSiteUrl()}/#wc2026`;
 }
@@ -42,7 +42,7 @@ function matchEndDate(kickoffAt: string): string {
   return new Date(start + 105 * 60 * 1000).toISOString();
 }
 
-/** Minimal tournament reference — use when nesting under SportsTeam.memberOf */
+/** Minimal tournament reference - use when nesting under SportsTeam.memberOf */
 export function buildWorldCup2026EventRef(siteUrl?: string) {
   const base = siteUrl ?? getSiteUrl();
   return {
@@ -86,7 +86,7 @@ function buildMatchEventLocation(match: Match) {
   return place;
 }
 
-/** Full tournament SportsEvent — emitted once sitewide in layout */
+/** Full tournament SportsEvent - emitted once sitewide in layout */
 export function buildWorldCup2026EventJsonLd() {
   const siteUrl = getSiteUrl();
 
@@ -228,7 +228,7 @@ export function buildSportsEventJsonLd(match: Match, matchId: string) {
     "@context": "https://schema.org",
     "@type": "SportsEvent",
     "@id": `${url}#event`,
-    name: `${match.homeName} vs ${match.awayName} — FIFA World Cup 2026`,
+    name: `${match.homeName} vs ${match.awayName} - FIFA World Cup 2026`,
     sport: "Association Football",
     startDate,
     endDate,

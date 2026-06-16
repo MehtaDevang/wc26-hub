@@ -5,7 +5,7 @@ interface MascotSvgProps {
   className?: string;
 }
 
-/** Zayu — Mexico jaguar mascot (solid fills only — no gradient IDs) */
+/** Zayu - Mexico jaguar mascot (solid fills only - no gradient IDs) */
 export function ZayuMascot({ size = 48, className }: MascotSvgProps) {
   return (
     <svg
@@ -38,7 +38,7 @@ export function ZayuMascot({ size = 48, className }: MascotSvgProps) {
   );
 }
 
-/** Clutch — USA eagle mascot */
+/** Clutch - USA eagle mascot */
 export function ClutchMascot({ size = 48, className }: MascotSvgProps) {
   return (
     <svg
@@ -69,7 +69,7 @@ export function ClutchMascot({ size = 48, className }: MascotSvgProps) {
   );
 }
 
-/** Maple — Canada moose mascot */
+/** Maple - Canada moose mascot */
 export function MapleMascot({ size = 48, className }: MascotSvgProps) {
   return (
     <svg
