@@ -2,59 +2,36 @@
 
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
+import { useInstall } from "@/components/InstallProvider";
+import { useIsNativeApp } from "@/components/NativeAppProvider";
 
 const DISMISS_KEY = "wc26_pwa_install_dismissed";
 
 export function InstallPrompt() {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
+  const isNativeApp = useIsNativeApp();
+  const { canInstall, isIOS, isStandalone, promptInstall } = useInstall();
+  const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    if (localStorage.getItem(DISMISS_KEY)) return;
-
-    const isApple =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-      !(window as Window & { MSStream?: unknown }).MSStream;
-    setIsIOS(isApple);
-
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
-      setVisible(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handler);
-
-    if (isApple && !(navigator as Navigator & { standalone?: boolean }).standalone) {
-      setVisible(true);
+    try {
+      setDismissed(!!localStorage.getItem(DISMISS_KEY));
+    } catch {
+      setDismissed(false);
     }
-
-    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  async function handleInstall() {
-    if (deferred) {
-      await deferred.prompt();
-      await deferred.userChoice;
-      setVisible(false);
-      setDeferred(null);
-      return;
-    }
-    setVisible(false);
-  }
+  if (isNativeApp || isStandalone || dismissed) return null;
+  // Show when an install prompt is available (Android) or on iOS (manual install).
+  if (!canInstall && !isIOS) return null;
 
   function dismiss() {
-    localStorage.setItem(DISMISS_KEY, "1");
-    setVisible(false);
+    try {
+      localStorage.setItem(DISMISS_KEY, "1");
+    } catch {
+      // ignore
+    }
+    setDismissed(true);
   }
-
-  if (!visible) return null;
 
   return (
     <div className="fixed bottom-20 left-4 right-4 z-50 sm:left-auto sm:right-4 sm:max-w-sm">
@@ -78,10 +55,10 @@ export function InstallPrompt() {
             ? "Tap Share → Add to Home Screen for quick access to live scores."
             : "Add to your home screen for faster live scores and offline fixtures."}
         </p>
-        {!isIOS && deferred && (
+        {!isIOS && canInstall && (
           <button
             type="button"
-            onClick={handleInstall}
+            onClick={() => promptInstall()}
             className="mt-3 w-full btn-primary py-2 text-xs font-semibold"
           >
             Install app

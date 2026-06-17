@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
@@ -12,7 +13,9 @@ import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { AppProviders } from "@/components/AppProviders";
 import { DeferredAdSense } from "@/components/DeferredAdSense";
 import { CookieConsent } from "@/components/CookieConsent";
+import { NativeAppProvider } from "@/components/NativeAppProvider";
 import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
+import { isNativeUserAgent } from "@/lib/native";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
 import { getServerTimezone } from "@/lib/timezone";
@@ -45,6 +48,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const initialTimezone = await getServerTimezone();
+  const userAgent = (await headers()).get("user-agent");
+  const isNativeApp = isNativeUserAgent(userAgent);
 
   return (
     <html
@@ -62,7 +67,8 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        <DeferredAdSense />
+        {!isNativeApp && <DeferredAdSense />}
+        <NativeAppProvider initialIsNative={isNativeApp}>
         <TimezoneProvider initialTimezone={initialTimezone}>
           <AppProviders>
             <JsonLd data={buildSiteStructuredDataGraph()} />
@@ -86,6 +92,10 @@ export default async function RootLayout({
                 <span>Hosted across Mexico, USA & Canada</span>
                 <span>·</span>
                 <LocaleSwitcher />
+                <span>·</span>
+                <Link href="/install" className="hover:text-[var(--wc-usa)] transition-colors">
+                  Get the app
+                </Link>
                 <span>·</span>
                 <Link href="/privacy" className="hover:text-[var(--wc-usa)] transition-colors">
                   Privacy
@@ -121,9 +131,10 @@ export default async function RootLayout({
             </footer>
             <Analytics />
             <LiveNowStickyBar />
-            <CookieConsent />
+            {!isNativeApp && <CookieConsent />}
           </AppProviders>
         </TimezoneProvider>
+        </NativeAppProvider>
       </body>
     </html>
   );

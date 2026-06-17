@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import clsx from "clsx";
 import { getAdSenseClientId, getAdSlotId, type AdPlacement } from "@/lib/adsense";
+import { useIsNativeApp } from "@/components/NativeAppProvider";
 
 declare global {
   interface Window {
@@ -70,18 +71,22 @@ export function AdBanner({
   const resolvedPlacement = placement ?? slot ?? "inline";
   const clientId = getAdSenseClientId();
   const adSlotId = getAdSlotId(resolvedPlacement);
+  const isNativeApp = useIsNativeApp();
   const pushed = useRef(false);
   const insRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    if (!clientId || !adSlotId || pushed.current) return;
+    if (isNativeApp || !clientId || !adSlotId || pushed.current) return;
     pushed.current = true;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       pushed.current = false;
     }
-  }, [clientId, adSlotId, resolvedPlacement]);
+  }, [clientId, adSlotId, resolvedPlacement, isNativeApp]);
+
+  // AdSense is not permitted inside app webviews - render nothing in the native shell.
+  if (isNativeApp) return null;
 
   if (!clientId) {
     return (

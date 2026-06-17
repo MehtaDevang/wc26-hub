@@ -1,0 +1,52 @@
+{
+  "packageId": "in.thegoalposts.app",
+  "host": "www.thegoalposts.in",
+  "name": "The Goal Posts",
+  "launcherName": "Goal Posts",
+  "display": "standalone",
+  "orientation": "default",
+  "themeColor": "#002868",
+  "themeColorDark": "#002868",
+  "navigationColor": "#002868",
+  "navigationColorDark": "#002868",
+  "navigationDividerColor": "#002868",
+  "navigationDividerColorDark": "#002868",
+  "backgroundColor": "#ffffff",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://www.thegoalposts.in/icon-512.png",
+  "maskableIconUrl": "https://www.thegoalposts.in/icon-maskable-512.png",
+  "monochromeIconUrl": "https://www.thegoalposts.in/icon-512.png",
+  "webManifestUrl": "https://www.thegoalposts.in/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "splashScreenFadeOutDuration": 300,
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Live scores",
+      "shortName": "Fixtures",
+      "url": "/fixtures",
+      "chosenIconUrl": "https://www.thegoalposts.in/icon-512.png"
+    },
+    {
+      "name": "Standings",
+      "shortName": "Standings",
+      "url": "/standings",
+      "chosenIconUrl": "https://www.thegoalposts.in/icon-512.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "fingerprints": [],
+  "additionalTrustedOrigins": ["thegoalposts.in"],
+  "retainedBundles": [],
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://www.thegoalposts.in/",
+  "minSdkVersion": 21
+}

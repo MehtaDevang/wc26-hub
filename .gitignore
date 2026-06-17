@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# capacitor / ios native build artifacts
+/ios/App/Pods/
+/ios/App/build/
+/ios/App/App/public/
+/ios/.gitignore
+DerivedData/
+*.xcuserstate
