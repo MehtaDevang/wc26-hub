@@ -1,5 +1,6 @@
 import { fetchEspnScoreboard, fetchEspnSummary } from "./client";
 import { transformEvent } from "./transform";
+import { extractScorerName } from "./highlight-images";
 import { resolveTeamCode } from "../team-lookup";
 import { getTeamFlag } from "../teams";
 
@@ -135,6 +136,43 @@ function leaderToEntry(
   };
 }
 
+function parseAssist(text?: string): string | undefined {
+  if (!text) return undefined;
+  const match = text.match(/Assisted by ([^.]+)/i);
+  return match ? match[1].trim() : undefined;
+}
+
+function isScoringEvent(eventType: string, scoringPlay?: boolean): boolean {
+  if (eventType === "own-goal") return false;
+  return (
+    scoringPlay === true ||
+    eventType === "goal" ||
+    eventType === "penalty-goal"
+  );
+}
+
+function sortScorers(entries: TournamentLeaderEntry[]): TournamentLeaderEntry[] {
+  return [...entries]
+    .filter((e) => e.goals > 0)
+    .sort(
+      (a, b) =>
+        b.goals - a.goals ||
+        b.assists - a.assists ||
+        a.name.localeCompare(b.name)
+    );
+}
+
+function sortAssists(entries: TournamentLeaderEntry[]): TournamentLeaderEntry[] {
+  return [...entries]
+    .filter((e) => e.assists > 0)
+    .sort(
+      (a, b) =>
+        b.assists - a.assists ||
+        b.goals - a.goals ||
+        a.name.localeCompare(b.name)
+    );
+}
+
 async function fetchEspnTournamentStatistics(): Promise<EspnTournamentStatisticsResponse> {
   const res = await fetch(ESPN_STATS_URL, {
     next: { revalidate: 120 },
@@ -156,7 +194,9 @@ function leadersFromCategory(
     .map((leader) => leaderToEntry(leader, stat));
 }
 
-async function fetchDisciplineLeaders(): Promise<{
+async function fetchMatchDerivedLeaders(): Promise<{
+  scorers: TournamentLeaderEntry[];
+  assists: TournamentLeaderEntry[];
   yellowCards: TournamentLeaderEntry[];
   redCards: TournamentLeaderEntry[];
   appearances: TournamentLeaderEntry[];
@@ -171,6 +211,22 @@ async function fetchDisciplineLeaders(): Promise<{
     string,
     TournamentLeaderEntry & { _apps: Set<string> }
   >();
+  const nameIndex = new Map<string, string>();
+
+  function nameKey(teamCode: string, name: string): string {
+    return `${teamCode}:${slugifyPlayerName(name)}`;
+  }
+
+  function resolvePlayerId(
+    athleteId: string | undefined,
+    name: string,
+    teamCode: string
+  ): string {
+    if (athleteId) return athleteId;
+    const indexed = nameIndex.get(nameKey(teamCode, name));
+    if (indexed) return indexed;
+    return nameKey(teamCode, name);
+  }
 
   function upsert(
     athleteId: string,
@@ -199,7 +255,13 @@ async function fetchDisciplineLeaders(): Promise<{
         _apps: new Set(),
       };
       byId.set(athleteId, row);
+    } else {
+      row.name = name;
+      if (jersey && row.number === 0) {
+        row.number = parseInt(jersey, 10) || 0;
+      }
     }
+    nameIndex.set(nameKey(teamCode, name), athleteId);
     return row;
   }
 
@@ -229,20 +291,66 @@ async function fetchDisciplineLeaders(): Promise<{
       }
 
       for (const keyEvent of summary.keyEvents ?? []) {
+        const eventType = keyEvent.type?.type ?? "";
+
+        if (isScoringEvent(eventType, keyEvent.scoringPlay)) {
+          const scorerName =
+            keyEvent.athlete?.displayName ?? extractScorerName(keyEvent);
+          if (scorerName) {
+            const teamName = keyEvent.team?.displayName ?? "";
+            const teamAbbrev =
+              resolveTeamCode(teamName) ??
+              (teamName === match.homeName ? match.home : match.away);
+            const scorerId = resolvePlayerId(
+              keyEvent.athlete?.id,
+              scorerName,
+              resolveTeamCode(teamAbbrev) ?? teamAbbrev.toUpperCase()
+            );
+            const row = upsert(
+              scorerId,
+              scorerName,
+              teamAbbrev,
+              teamName,
+              keyEvent.athlete?.jersey
+            );
+            row.goals += 1;
+
+            const assistName = parseAssist(keyEvent.text);
+            if (assistName) {
+              const assistId = resolvePlayerId(
+                undefined,
+                assistName,
+                resolveTeamCode(teamAbbrev) ?? teamAbbrev.toUpperCase()
+              );
+              const assistRow = upsert(
+                assistId,
+                assistName,
+                teamAbbrev,
+                teamName
+              );
+              assistRow.assists += 1;
+            }
+          }
+        }
+
         const athlete = keyEvent.athlete;
-        if (!athlete?.id || !athlete.displayName) continue;
+        if (!athlete?.displayName) continue;
         const teamName = keyEvent.team?.displayName ?? "";
         const teamAbbrev =
           resolveTeamCode(teamName) ??
           (teamName === match.homeName ? match.home : match.away);
-        const row = upsert(
+        const athleteId = resolvePlayerId(
           athlete.id,
+          athlete.displayName,
+          resolveTeamCode(teamAbbrev) ?? teamAbbrev.toUpperCase()
+        );
+        const row = upsert(
+          athleteId,
           athlete.displayName,
           teamAbbrev,
           teamName,
           athlete.jersey
         );
-        const eventType = keyEvent.type?.type ?? "";
         if (eventType === "yellow-card") row.yellowCards += 1;
         if (eventType === "red-card") row.redCards += 1;
       }
@@ -262,6 +370,8 @@ async function fetchDisciplineLeaders(): Promise<{
   }
 
   return {
+    scorers: sortScorers(entries).slice(0, 25),
+    assists: sortAssists(entries).slice(0, 25),
     yellowCards: entries
       .filter((e) => e.yellowCards > 0)
       .sort((a, b) => b.yellowCards - a.yellowCards || a.name.localeCompare(b.name))
@@ -279,9 +389,11 @@ async function fetchDisciplineLeaders(): Promise<{
 }
 
 export async function getTournamentLeaders(): Promise<TournamentLeaders> {
-  const [stats, discipline] = await Promise.all([
-    fetchEspnTournamentStatistics(),
-    fetchDisciplineLeaders().catch(() => ({
+  const [stats, derived] = await Promise.all([
+    fetchEspnTournamentStatistics().catch(() => ({ stats: [] } as EspnTournamentStatisticsResponse)),
+    fetchMatchDerivedLeaders().catch(() => ({
+      scorers: [] as TournamentLeaderEntry[],
+      assists: [] as TournamentLeaderEntry[],
       yellowCards: [] as TournamentLeaderEntry[],
       redCards: [] as TournamentLeaderEntry[],
       appearances: [] as TournamentLeaderEntry[],
@@ -289,21 +401,30 @@ export async function getTournamentLeaders(): Promise<TournamentLeaders> {
     })),
   ]);
 
-  const scorers = leadersFromCategory(stats, "goalsLeaders", "goals", 25);
-  const assists = leadersFromCategory(stats, "assistsLeaders", "assists", 25);
+  const espnScorers = leadersFromCategory(stats, "goalsLeaders", "goals", 25);
+  const espnAssists = leadersFromCategory(stats, "assistsLeaders", "assists", 25);
 
-  // Merge discipline stats into scorer/assist rows when we have them
+  // Match summaries update faster than ESPN's aggregate statistics feed.
+  const scorers = derived.scorers.length > 0 ? derived.scorers : espnScorers;
+  const assists = derived.assists.length > 0 ? derived.assists : espnAssists;
+
   const disciplineMap = new Map(
-    [...discipline.yellowCards, ...discipline.redCards, ...discipline.appearances].map(
-      (e) => [e.id, e]
-    )
+    [
+      ...derived.yellowCards,
+      ...derived.redCards,
+      ...derived.appearances,
+      ...espnScorers,
+      ...espnAssists,
+    ].map((e) => [e.id, e])
   );
+
   for (const list of [scorers, assists]) {
     for (const row of list) {
       const extra = disciplineMap.get(row.id);
       if (!extra) continue;
-      row.yellowCards = extra.yellowCards;
-      row.redCards = extra.redCards;
+      if (row.yellowCards === 0) row.yellowCards = extra.yellowCards;
+      if (row.redCards === 0) row.redCards = extra.redCards;
+      if (row.appearances === 0) row.appearances = extra.appearances;
       if (!row.headshot && extra.headshot) row.headshot = extra.headshot;
     }
   }
@@ -311,13 +432,13 @@ export async function getTournamentLeaders(): Promise<TournamentLeaders> {
   for (const list of [
     scorers,
     assists,
-    discipline.appearances,
-    discipline.yellowCards,
-    discipline.redCards,
+    derived.appearances,
+    derived.yellowCards,
+    derived.redCards,
   ]) {
     for (const row of list) {
-      if (!row.headshot && discipline.headshots.has(row.id)) {
-        row.headshot = discipline.headshots.get(row.id);
+      if (!row.headshot && derived.headshots.has(row.id)) {
+        row.headshot = derived.headshots.get(row.id);
       }
     }
   }
@@ -325,9 +446,9 @@ export async function getTournamentLeaders(): Promise<TournamentLeaders> {
   return {
     scorers,
     assists,
-    appearances: discipline.appearances,
-    yellowCards: discipline.yellowCards,
-    redCards: discipline.redCards,
+    appearances: derived.appearances,
+    yellowCards: derived.yellowCards,
+    redCards: derived.redCards,
     updatedAt: new Date().toISOString(),
   };
 }

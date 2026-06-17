@@ -45,3 +45,12 @@ export async function fetchNewsArticle(id: string): Promise<NewsArticleDetail> {
   if (!data.article) throw new Error("Article not found");
   return data.article;
 }
+
+export async function fetchLeaders(): Promise<import("@/lib/espn/tournament-stats").TournamentLeaders> {
+  const data = await fetchJson<{ leaders: import("@/lib/espn/tournament-stats").TournamentLeaders }>(
+    "/api/leaders",
+    { timeoutMs: 45_000 }
+  );
+  if (!data.leaders) throw new Error("Failed to load tournament leaders");
+  return data.leaders;
+}

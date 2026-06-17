@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TournamentLeadersPanel } from "@/components/TournamentLeadersPanel";
+import { LiveTournamentLeadersPanel } from "@/components/LiveTournamentLeadersPanel";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
@@ -18,7 +18,7 @@ export const metadata = createPageMetadata({
   ],
 });
 
-export const revalidate = 120;
+export const revalidate = 60;
 export const maxDuration = 60;
 
 export default async function LeadersPage() {
@@ -44,7 +44,7 @@ export default async function LeadersPage() {
         </Link>
       </p>
       <AdBanner placement="inline" />
-      <TournamentLeadersPanel leaders={leaders} />
+      <LiveTournamentLeadersPanel initialLeaders={leaders} />
     </div>
   );
 }

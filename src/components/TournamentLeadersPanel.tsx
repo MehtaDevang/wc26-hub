@@ -362,7 +362,8 @@ export function TournamentLeadersPanel({ leaders }: { leaders: TournamentLeaders
       </div>
 
       <p className="text-xs text-zinc-400 text-center">
-        Stats from ESPN tournament data · Updated {new Date(leaders.updatedAt).toLocaleString()}
+        Stats from match data · Auto-refreshes every 90s · Updated{" "}
+        {new Date(leaders.updatedAt).toLocaleString()}
       </p>
     </div>
   );
