@@ -220,6 +220,13 @@ export function BracketPredictor({ initialData }: BracketPredictorProps) {
             text={`🏆 My FIFA World Cup 2026 bracket prediction on ${SITE_NAME}`}
             label="Share bracket"
           />
+          <Link
+            href="/bracket/pool"
+            className="btn-primary text-sm px-3 py-2 inline-flex items-center gap-1.5"
+          >
+            <Trophy size={14} />
+            Pool vs friends
+          </Link>
         </div>
       </div>
 

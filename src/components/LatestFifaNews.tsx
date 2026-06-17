@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { Loader2, Newspaper, Play, RefreshCw } from "lucide-react";
 import { CdnFillImage } from "@/components/CdnImage";
 import { fetchNews } from "@/lib/matches";
@@ -139,11 +140,16 @@ export function LatestFifaNews({ initialArticles, limit = 8 }: LatestFifaNewsPro
           <Newspaper size={20} className="text-blue-600" />
           Latest FIFA News
         </h2>
-        {lastUpdated && (
-          <span className="text-xs text-zinc-400">
-            Updated {formatRelativeTime(lastUpdated.toISOString())}
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          <Link href="/news" className="text-xs font-semibold text-blue-600 hover:underline">
+            All news →
+          </Link>
+          {lastUpdated && (
+            <span className="text-xs text-zinc-400">
+              Updated {formatRelativeTime(lastUpdated.toISOString())}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="card-surface rounded-2xl overflow-hidden">

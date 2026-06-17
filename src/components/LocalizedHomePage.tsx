@@ -36,6 +36,7 @@ import {
   HomeMyTeamsSection,
   HomeNewsSection,
   HomeNextMatchSection,
+  HomePlayerOfTheDaySection,
   HomeSectionSkeleton,
 } from "@/components/home/HomeSections";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
@@ -171,6 +172,10 @@ export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
       </div>
 
       <TeamJourneyPromo />
+
+      <Suspense fallback={<HomeSectionSkeleton height={120} />}>
+        <HomePlayerOfTheDaySection />
+      </Suspense>
 
       <Suspense fallback={<HomeSectionSkeleton height={240} />}>
         <HomeFeaturedPlayersSection />

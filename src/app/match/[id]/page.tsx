@@ -13,6 +13,8 @@ import { createPageMetadata } from "@/lib/seo";
 import { buildSportsEventJsonLd, buildBreadcrumbJsonLd } from "@/lib/structured-data";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidMatchId } from "@/lib/api-security";
+import { getWorldCupNews } from "@/lib/espn/services";
+import { getNewsForMatch } from "@/lib/news-tags";
 import { getServerTimezone } from "@/lib/timezone";
 
 interface PageProps {
@@ -122,6 +124,9 @@ export default async function MatchPage({ params }: PageProps) {
   const weather = await fetchMatchWeather(venueMeta.lat, venueMeta.lon, match.date);
   if (weather) detail.weather = weather;
 
+  const allNews = await getWorldCupNews(30).catch(() => []);
+  const relatedNews = getNewsForMatch(allNews, match.home, match.away, 4);
+
   const matchJsonLd = buildSportsEventJsonLd(match, id);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
@@ -148,6 +153,7 @@ export default async function MatchPage({ params }: PageProps) {
         highlights={highlights}
         liveMatches={liveMatches}
         relatedMatches={relatedMatches}
+        relatedNews={relatedNews}
       />
     </>
   );

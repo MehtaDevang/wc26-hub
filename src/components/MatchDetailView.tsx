@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft, MapPin, Users, User, Clock, Trophy,
-  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, Play, ExternalLink, Globe,
+  Cloud, Building2, Tv, BarChart3, ImageIcon, LayoutGrid, Play, ExternalLink, Globe, Radio,
 } from "lucide-react";
 import { getTeam, isKnownTeam } from "@/lib/data";
 import { getTeamColors } from "@/lib/team-colors";
-import type { Match, MatchDetail, Highlight } from "@/lib/types";
+import type { Match, MatchDetail, Highlight, NewsArticle } from "@/lib/types";
 import { MatchMedia } from "./MatchMedia";
 import { MatchLineups } from "./MatchLineups";
 import { GroupStandingsTable } from "./GroupStandingsTable";
@@ -30,9 +30,13 @@ import { resolveNetworkUrl } from "@/lib/watch-by-country";
 import { FifaRankBadge, FifaRankMatchup } from "@/components/FifaRankBadge";
 import { MatchWinPredictor } from "@/components/MatchWinPredictor";
 import { MatchTimeline } from "@/components/MatchTimeline";
+import { MatchLiveFeed } from "@/components/MatchLiveFeed";
+import { RivalryMatchdayHub } from "@/components/RivalryMatchdayHub";
+import { MatchRelatedNews } from "@/components/MatchRelatedNews";
 import { predictMatchOutcome } from "@/lib/win-predictor";
 
 const BASE_TABS = [
+  { id: "live", label: "Live", icon: Radio },
   { id: "overview", label: "Overview", icon: Trophy },
   { id: "highlights", label: "Highlights", icon: Play },
   { id: "media", label: "Media", icon: ImageIcon },
@@ -44,8 +48,9 @@ const BASE_TABS = [
 
 type TabId = (typeof BASE_TABS)[number]["id"];
 
-function getTabs(match: Match, hasHighlights: boolean) {
+function getTabs(match: Match, hasHighlights: boolean, hasFeed: boolean) {
   return BASE_TABS.filter((tab) => {
+    if (tab.id === "live" && !hasFeed) return false;
     if (tab.id === "highlights" && match.status === "upcoming" && !hasHighlights) {
       return false;
     }
@@ -53,10 +58,16 @@ function getTabs(match: Match, hasHighlights: boolean) {
   });
 }
 
-function parseTab(value: string | null, match: Match, hasHighlights: boolean): TabId {
-  const tabs = getTabs(match, hasHighlights);
+function parseTab(
+  value: string | null,
+  match: Match,
+  hasHighlights: boolean,
+  hasFeed: boolean
+): TabId {
+  const tabs = getTabs(match, hasHighlights, hasFeed);
   const normalized = value === "history" ? "overview" : value;
   if (normalized && tabs.some((t) => t.id === normalized)) return normalized as TabId;
+  if (match.status === "live" && tabs.some((t) => t.id === "live")) return "live";
   return "overview";
 }
 
@@ -78,6 +89,7 @@ export function MatchDetailView(props: {
   highlights: Highlight[];
   liveMatches?: Match[];
   relatedMatches?: Match[];
+  relatedNews?: NewsArticle[];
 }) {
   return (
     <Suspense
@@ -104,12 +116,14 @@ function MatchDetailContent({
   highlights,
   liveMatches = [],
   relatedMatches = [],
+  relatedNews = [],
 }: {
   match: Match;
   detail: MatchDetail;
   highlights: Highlight[];
   liveMatches?: Match[];
   relatedMatches?: Match[];
+  relatedNews?: NewsArticle[];
 }) {
   const timezone = useTimezone();
   const home = getTeam(match.home, match.homeName, match.homeLogo);
@@ -119,8 +133,13 @@ function MatchDetailContent({
     highlights.length > 0 ||
     (detail.videos?.length ?? 0) > 0 ||
     (detail.photos?.length ?? 0) > 0;
-  const tabs = getTabs(match, hasHighlights);
-  const tab = parseTab(searchParams.get("tab"), match, hasHighlights);
+  const hasFeed =
+    match.status === "live" ||
+    match.status === "finished" ||
+    (detail.events?.length ?? 0) > 0 ||
+    (detail.commentary?.length ?? 0) > 0;
+  const tabs = getTabs(match, hasHighlights, hasFeed);
+  const tab = parseTab(searchParams.get("tab"), match, hasHighlights, hasFeed);
   const [liveMinute, setLiveMinute] = useState(match.minute ?? 0);
   const kickoffDateLabel = match.kickoffAt
     ? formatKickoffDateLabel(match.kickoffAt, timezone)
@@ -361,6 +380,15 @@ function MatchDetailContent({
         />
       )}
 
+      {(detail.rivalryName || detail.rivalryNote) && (
+        <RivalryMatchdayHub
+          match={match}
+          rivalryName={detail.rivalryName}
+          rivalryNote={detail.rivalryNote}
+          rivalryFunFact={detail.rivalryFunFact}
+        />
+      )}
+
       <div
         className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scroll-smooth"
         role="tablist"
@@ -387,9 +415,25 @@ function MatchDetailContent({
                 {highlights.length || (detail.videos?.length ?? 0)}
               </span>
             )}
+            {id === "live" && match.status === "live" && (
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-600" />
+              </span>
+            )}
           </Link>
         ))}
       </div>
+
+      {tab === "live" && (
+        <MatchLiveFeed
+          matchId={match.id}
+          initialMatch={match}
+          initialEvents={detail.events}
+          initialCommentary={detail.commentary}
+          initialPlayers={detail.players}
+        />
+      )}
 
       {tab === "overview" && (
         <>
@@ -444,6 +488,12 @@ function MatchDetailContent({
         rivalryName={detail.rivalryName}
         rivalryNote={detail.rivalryNote}
         rivalryFunFact={detail.rivalryFunFact}
+      />
+
+      <MatchRelatedNews
+        articles={relatedNews}
+        homeName={home.name}
+        awayName={away.name}
       />
 
       <MatchRelatedMatches

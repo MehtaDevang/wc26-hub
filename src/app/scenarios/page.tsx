@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GroupScenarioCalculator } from "@/components/GroupScenarioCalculator";
+import { ScenariosTabs } from "@/components/ScenariosTabs";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
@@ -8,12 +8,14 @@ import { getMatchesByParams } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
-  title: "World Cup 2026 Qualification Scenarios - What Does Each Team Need?",
+  title: "World Cup 2026 Qualification Scenarios & Group Simulator",
   description:
-    "World Cup 2026 group qualification calculator - see what each team needs to advance, possible points, and knockout scenarios for all 12 groups.",
+    "World Cup 2026 group qualification calculator and what-if simulator - set hypothetical scores for remaining fixtures and watch the table reshuffle, or see what each team needs to advance.",
   path: "/scenarios",
   keywords: [
     "World Cup qualification scenarios",
+    "World Cup group simulator",
+    "what if group calculator",
     "can team qualify",
     "group stage calculator",
     "World Cup 2026 advancement",
@@ -33,7 +35,7 @@ export default async function ScenariosPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Qualification Scenarios"
-        subtitle="What does your team need? Top two advance, plus eight best third-place teams"
+        subtitle="What does your team need - or simulate the whole group yourself"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
         <Link href="/standings" className="text-blue-600 hover:underline font-medium">
@@ -45,7 +47,7 @@ export default async function ScenariosPage() {
         </Link>
       </p>
       <AdBanner placement="inline" />
-      <GroupScenarioCalculator standings={standings} matches={matches} />
+      <ScenariosTabs standings={standings} matches={matches} />
     </div>
   );
 }

@@ -18,14 +18,17 @@ const STATIC_ROUTES: Array<{
   priority: number;
 }> = [
   { path: "/", changeFrequency: "always", priority: 1 },
+  { path: "/daily", changeFrequency: "hourly", priority: 0.9 },
   { path: "/my", changeFrequency: "hourly", priority: 0.92 },
   { path: "/fixtures", changeFrequency: "always", priority: 0.95 },
   { path: "/standings", changeFrequency: "always", priority: 0.95 },
   { path: "/bracket", changeFrequency: "hourly", priority: 0.95 },
   { path: "/bracket/predict", changeFrequency: "daily", priority: 0.9 },
+  { path: "/bracket/pool", changeFrequency: "daily", priority: 0.85 },
   { path: "/scenarios", changeFrequency: "hourly", priority: 0.9 },
   { path: "/watch", changeFrequency: "hourly", priority: 0.9 },
   { path: "/leaders", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/news", changeFrequency: "hourly", priority: 0.9 },
   { path: "/teams", changeFrequency: "hourly", priority: 0.9 },
   { path: "/hosts", changeFrequency: "weekly", priority: 0.85 },
   { path: "/cities", changeFrequency: "weekly", priority: 0.85 },

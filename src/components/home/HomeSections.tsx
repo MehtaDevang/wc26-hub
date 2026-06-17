@@ -8,8 +8,11 @@ import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { MyTeamsMatches } from "@/components/MyTeamsMatches";
 import { LiveHomeHeroSpotlight } from "@/components/LiveHomeHeroSpotlight";
 import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
+import { PlayerOfTheDayCard } from "@/components/PlayerOfTheDayCard";
 import { buildHeroSlides } from "@/lib/hero-background";
 import { getServerTimezone } from "@/lib/timezone";
+import { getTournamentLeaders } from "@/lib/espn/tournament-stats";
+import { pickPlayerOfTheDay } from "@/lib/player-of-the-day";
 import {
   getKnockoutBracket,
   getNextUpcomingMatches,
@@ -151,6 +154,21 @@ export async function HomeNewsSection() {
       <LatestFifaNews initialArticles={news} />
     </section>
   );
+}
+
+const loadLeaders = cache(async () => {
+  try {
+    return await getTournamentLeaders();
+  } catch {
+    return null;
+  }
+});
+
+export async function HomePlayerOfTheDaySection() {
+  const leaders = await loadLeaders();
+  const potd = pickPlayerOfTheDay(leaders);
+  if (!potd) return null;
+  return <PlayerOfTheDayCard data={potd} />;
 }
 
 export async function HomeFeaturedPlayersSection() {

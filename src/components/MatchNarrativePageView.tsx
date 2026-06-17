@@ -4,6 +4,7 @@ import type { Match, MatchDetail } from "@/lib/types";
 import { getTeam } from "@/lib/data";
 import { MatchNarrative } from "./MatchNarrative";
 import { MatchRecapView } from "./MatchRecapView";
+import { HistoricalParallel } from "./HistoricalParallel";
 import { AddToCalendar } from "./AddToCalendar";
 import { MatchKickoffTime } from "./MatchKickoffTime";
 import { formatKickoffDateLabel } from "@/lib/timezone";
@@ -21,7 +22,12 @@ export function MatchNarrativePageView({
   timeZone: string;
 }) {
   if (mode === "recap") {
-    return <MatchRecapView match={match} detail={detail} timeZone={timeZone} />;
+    return (
+      <div className="space-y-6">
+        <MatchRecapView match={match} detail={detail} timeZone={timeZone} />
+        <HistoricalParallel match={match} />
+      </div>
+    );
   }
 
   const home = getTeam(match.home, match.homeName, match.homeLogo);

@@ -94,6 +94,34 @@ export function clearBracketPicks(): void {
   localStorage.removeItem(BRACKET_PICKS_KEY);
 }
 
+export function scoreBracketPicks(
+  picks: BracketPicks,
+  data: KnockoutBracketData
+): { correct: number; decided: number; pct: number } {
+  let correct = 0;
+  let decided = 0;
+
+  for (const round of data.rounds) {
+    for (const match of round.matches) {
+      const key = bracketMatchKey(round.id, match.slot);
+      const pick = picks[key];
+      if (!pick || match.status !== "finished") continue;
+
+      const winner = match.home.winner ? "home" : match.away.winner ? "away" : null;
+      if (!winner) continue;
+
+      decided += 1;
+      if (pick === winner) correct += 1;
+    }
+  }
+
+  return {
+    correct,
+    decided,
+    pct: decided > 0 ? Math.round((correct / decided) * 100) : 0,
+  };
+}
+
 function pickTeam(match: BracketMatch, side: BracketPickSide) {
   return side === "home" ? match.home : match.away;
 }

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Target } from "lucide-react";
 import { AdBanner } from "@/components/AdBanner";
-import { HomeSectionSkeleton } from "@/components/home/HomeSections";
+import { HomePlayerOfTheDaySection, HomeSectionSkeleton } from "@/components/home/HomeSections";
 import { PlayersTopScorersSection } from "@/components/players/PlayersPageSections";
 import { PlayersSquadsSection } from "@/components/players/PlayersSquadsSection";
 import { createPageMetadata } from "@/lib/seo";
@@ -32,6 +32,10 @@ export default function PlayersIndexPage() {
         </p>
       </div>
       <AdBanner placement="inline" />
+
+      <Suspense fallback={<HomeSectionSkeleton height={120} />}>
+        <HomePlayerOfTheDaySection />
+      </Suspense>
 
       <Suspense fallback={<HomeSectionSkeleton height={200} />}>
         <PlayersTopScorersSection />

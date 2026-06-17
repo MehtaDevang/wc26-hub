@@ -26,6 +26,7 @@ import {
   Puzzle,
   Target,
   Sparkles,
+  Newspaper,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
@@ -42,6 +43,8 @@ const PRIMARY_LINKS = [
 ] as const;
 
 const EXPLORE_LINKS = [
+  { href: "/daily", label: "Today at the World Cup", icon: Calendar },
+  { href: "/news", label: "News", icon: Newspaper },
   { href: "/players", label: "Players", icon: Target },
   { href: "/history", label: "FIFA World Cup History", icon: History },
   { href: "/hosts", label: "Host Nations", icon: Globe },
@@ -55,6 +58,7 @@ const EXPLORE_LINKS = [
 const TOOL_LINKS = [
   { href: "/bracket", label: "Live Bracket", icon: Trophy },
   { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
+  { href: "/bracket/pool", label: "Bracket Pool", icon: Users },
   { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
   { href: "/watch", label: "Where to Watch", icon: Tv },
   { href: "/leaders", label: "Stat Leaders", icon: BarChart3 },
@@ -64,10 +68,12 @@ const TOOL_LINKS = [
 
 function isActive(pathname: string, href: string): boolean {
   if (pathname === href) return true;
+  if (href === "/daily" && pathname.startsWith("/daily")) return true;
   if (href === "/my" && pathname.startsWith("/my")) return true;
   if (href === "/puzzles" && pathname.startsWith("/puzzles")) return true;
   if (href === "/history" && pathname.startsWith("/history")) return true;
   if (href === "/teams" && pathname.startsWith("/teams")) return true;
+  if (href === "/news" && pathname.startsWith("/news")) return true;
   if (href === "/players" && pathname.startsWith("/players")) return true;
   if (href === "/hosts" && pathname.startsWith("/hosts")) return true;
   if (href === "/cities" && pathname.startsWith("/cities")) return true;
@@ -75,7 +81,8 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/rivalries" && pathname.startsWith("/rivalries")) return true;
   if (href === "/which-team" && pathname.startsWith("/which-team")) return true;
   if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
-  if (href === "/bracket" && pathname.startsWith("/bracket")) return true;
+  if (href === "/bracket/pool" && pathname.startsWith("/bracket/pool")) return true;
+  if (href === "/bracket" && pathname === "/bracket") return true;
   if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;
   if (href === "/watch" && pathname.startsWith("/watch")) return true;
   if (href === "/leaders" && pathname.startsWith("/leaders")) return true;

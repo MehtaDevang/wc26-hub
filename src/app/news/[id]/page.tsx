@@ -37,7 +37,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <Link
-        href="/#news"
+        href="/news"
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 hover:text-blue-600 transition-colors"
       >
         <ArrowLeft size={16} />

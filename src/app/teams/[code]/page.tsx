@@ -5,6 +5,7 @@ import { getTeamSquadPlayers } from "@/lib/espn/player-profile";
 import { getTeamQualification } from "@/lib/team-qualification";
 import { TeamJourneyContent } from "@/components/TeamJourneyContent";
 import { TeamSquad } from "@/components/TeamSquad";
+import { TeamTopPerformers } from "@/components/TeamTopPerformers";
 import { TeamQualificationCard } from "@/components/TeamQualification";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
@@ -87,6 +88,7 @@ export default async function TeamPage({ params }: PageProps) {
       {qualification && (
         <TeamQualificationCard teamName={journey.teamName} qualification={qualification} />
       )}
+      <TeamTopPerformers teamName={journey.teamName} players={players} />
       <TeamSquad teamName={journey.teamName} players={players} />
       <TeamJourneyContent journey={journey} timezone={timeZone} />
     </div>

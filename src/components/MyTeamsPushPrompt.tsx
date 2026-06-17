@@ -10,9 +10,10 @@ import {
   requestPushPermission,
   setPushEnabled,
   showMatchNotification,
-  getNotifiedMatchIds,
-  markMatchNotified,
+  hasNotifiedEvent,
+  markNotifiedEvent,
 } from "@/lib/push-notifications";
+import { getTeam } from "@/lib/data";
 
 export function MyTeamsPushPrompt() {
   const timezone = useTimezone();
@@ -35,17 +36,69 @@ export function MyTeamsPushPrompt() {
     const poll = async () => {
       try {
         const matches = await fetchMatches({ range: "full", timeZone: timezone });
-        const notified = getNotifiedMatchIds();
+        const now = Date.now();
+
         for (const m of matches) {
-          if (m.status !== "live") continue;
           const mine = teams.includes(m.home) || teams.includes(m.away);
-          if (!mine || notified.has(m.id)) continue;
-          markMatchNotified(m.id);
-          showMatchNotification(
-            `⚽ ${m.homeName} vs ${m.awayName}`,
-            `Live now - ${m.homeScore ?? 0}–${m.awayScore ?? 0}`,
-            `/match/${m.id}`
-          );
+          if (!mine) continue;
+
+          const home = getTeam(m.home, m.homeName, m.homeLogo);
+          const away = getTeam(m.away, m.awayName, m.awayLogo);
+          const url = `/match/${m.id}`;
+          const matchup = `${home.name} vs ${away.name}`;
+          const hs = m.homeScore ?? 0;
+          const as = m.awayScore ?? 0;
+
+          if (m.status === "upcoming") {
+            const kickoff = m.kickoffAt ? new Date(m.kickoffAt).getTime() : NaN;
+            const minsToKickoff = Number.isFinite(kickoff) ? (kickoff - now) / 60000 : NaN;
+            const soonKey = `${m.id}:soon`;
+            if (
+              Number.isFinite(minsToKickoff) &&
+              minsToKickoff > 0 &&
+              minsToKickoff <= 15 &&
+              !hasNotifiedEvent(soonKey)
+            ) {
+              markNotifiedEvent(soonKey);
+              showMatchNotification(
+                `⏰ Starting soon: ${matchup}`,
+                `Kicks off in about ${Math.max(1, Math.round(minsToKickoff))} min`,
+                url
+              );
+            }
+            continue;
+          }
+
+          if (m.status === "live") {
+            const kickKey = `${m.id}:kickoff`;
+            if (!hasNotifiedEvent(kickKey)) {
+              markNotifiedEvent(kickKey);
+              showMatchNotification(`🟢 Kick-off! ${matchup}`, "It's live now", url);
+            }
+
+            const goalKey = `${m.id}:goal:${hs}-${as}`;
+            if (hs + as > 0 && !hasNotifiedEvent(goalKey)) {
+              markNotifiedEvent(goalKey);
+              showMatchNotification(
+                `⚽ GOAL! ${home.name} ${hs}–${as} ${away.name}`,
+                `${m.minute ? `${m.minute}'` : "Live"} - tap for the live feed`,
+                `${url}?tab=live`
+              );
+            }
+            continue;
+          }
+
+          if (m.status === "finished") {
+            const ftKey = `${m.id}:ft`;
+            if (!hasNotifiedEvent(ftKey)) {
+              markNotifiedEvent(ftKey);
+              showMatchNotification(
+                `🏁 Full time: ${home.name} ${hs}–${as} ${away.name}`,
+                "Tap for the recap and stats",
+                url
+              );
+            }
+          }
         }
       } catch {
         // ignore

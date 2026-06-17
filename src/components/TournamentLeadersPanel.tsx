@@ -120,6 +120,33 @@ function GoalBar({ value, max, className = "" }: { value: number; max: number; c
   );
 }
 
+function goldenBootNarrative(scorers: TournamentLeaderEntry[]): string | null {
+  const leader = scorers[0];
+  if (!leader || leader.goals === 0) return null;
+
+  const tiedAtTop = scorers.filter((p) => p.goals === leader.goals);
+  if (tiedAtTop.length > 1) {
+    const names = tiedAtTop.slice(0, 3).map((p) => p.name.split(/\s+/).pop());
+    const list =
+      tiedAtTop.length <= 3
+        ? names.join(", ").replace(/, ([^,]*)$/, " and $1")
+        : `${names.slice(0, 2).join(", ")} and ${tiedAtTop.length - 2} others`;
+    return `${list} are locked together at the top with ${leader.goals} goal${leader.goals === 1 ? "" : "s"} apiece.`;
+  }
+
+  const second = scorers.find((p) => p.goals < leader.goals);
+  const gap = second ? leader.goals - second.goals : leader.goals;
+  const lastName = leader.name.split(/\s+/).pop();
+
+  if (gap >= 3) {
+    return `${lastName} has pulled clear of the field, ${gap} goals ahead in the Golden Boot race.`;
+  }
+  if (gap === 1) {
+    return `${lastName} leads by a single goal - the Golden Boot is wide open.`;
+  }
+  return `${lastName} holds a ${gap}-goal cushion at the top of the scoring charts.`;
+}
+
 function GoldenBootRace({ scorers }: { scorers: TournamentLeaderEntry[] }) {
   const race = scorers.slice(0, 6);
   if (race.length === 0) return null;
@@ -127,6 +154,7 @@ function GoldenBootRace({ scorers }: { scorers: TournamentLeaderEntry[] }) {
   const leader = race[0];
   const maxGoals = Math.max(leader.goals, 1);
   const chasers = race.slice(1);
+  const narrative = goldenBootNarrative(scorers);
 
   return (
     <section className="card-elevated rounded-2xl overflow-hidden">
@@ -147,6 +175,12 @@ function GoldenBootRace({ scorers }: { scorers: TournamentLeaderEntry[] }) {
             {race.length} in contention
           </span>
         </div>
+
+        {narrative && (
+          <p className="relative -mt-2 mb-4 text-sm font-medium text-amber-900/80 leading-snug max-w-xl">
+            {narrative}
+          </p>
+        )}
 
         <Link
           href={getPlayerPath(leader)}

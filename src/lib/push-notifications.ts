@@ -24,7 +24,16 @@ export function getNotifiedMatchIds(): Set<string> {
 export function markMatchNotified(id: string): void {
   const set = getNotifiedMatchIds();
   set.add(id);
-  localStorage.setItem(NOTIFIED_KEY, JSON.stringify([...set].slice(-50)));
+  localStorage.setItem(NOTIFIED_KEY, JSON.stringify([...set].slice(-120)));
+}
+
+/** Whether a specific alert event (e.g. `matchId:kickoff`) has already fired. */
+export function hasNotifiedEvent(key: string): boolean {
+  return getNotifiedMatchIds().has(key);
+}
+
+export function markNotifiedEvent(key: string): void {
+  markMatchNotified(key);
 }
 
 export async function requestPushPermission(): Promise<boolean> {

@@ -16,7 +16,9 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { MatchClashRow } from "@/components/MatchBattleGraphic";
+import { FanScorecard } from "@/components/FanScorecard";
 import { MyTeamsPushPrompt } from "@/components/MyTeamsPushPrompt";
+import { MyTeamsWatchCard } from "@/components/MyTeamsWatchCard";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { getTeam, TEAMS } from "@/lib/data";
 import { getSavedTeamResult, type SavedTeamResult } from "@/lib/quiz/team-personality-storage";
@@ -95,6 +97,8 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
 
   return (
     <div className="space-y-8">
+      <FanScorecard todayMatches={initialTodayMatches} />
+
       <section className="card-surface rounded-2xl overflow-hidden">
         <div className="host-stripe" />
         <div className="p-5 sm:p-6">
@@ -148,6 +152,8 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
       {codes.length > 0 && (
         <>
           <MyTeamsPushPrompt />
+
+          <MyTeamsWatchCard codes={codes} matches={allMatches} />
 
           {(myToday.length > 0 || myUpcoming.length > 0) && (
             <section>
