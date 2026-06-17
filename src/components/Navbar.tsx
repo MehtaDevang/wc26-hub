@@ -27,12 +27,15 @@ import {
   Target,
   Sparkles,
   Newspaper,
+  Download,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
 import { MascotStackLogo } from "@/components/MascotStackLogo";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { CommandPalette } from "@/components/CommandPalette";
+import { useInstall } from "@/components/InstallProvider";
+import { useIsNativeApp } from "@/components/NativeAppProvider";
 
 const PRIMARY_LINKS = [
   { href: "/", label: "Today", icon: Trophy },
@@ -189,6 +192,9 @@ function BrandLogo() {
 export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isStandalone } = useInstall();
+  const isNativeApp = useIsNativeApp();
+  const showInstall = !isNativeApp && !isStandalone;
 
   useEffect(() => setMenuOpen(false), [pathname]);
   useEffect(() => {
@@ -237,6 +243,15 @@ export function Navbar() {
               <span>Search…</span>
               <kbd className="rounded bg-white border border-zinc-200 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘K</kbd>
             </button>
+            {showInstall && (
+              <Link
+                href="/install"
+                className="flex items-center gap-1.5 rounded-lg bg-[var(--wc-usa)] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                <Download size={14} />
+                Get app
+              </Link>
+            )}
             <LocaleSwitcher />
           </div>
 
@@ -270,6 +285,15 @@ export function Navbar() {
               onClick={() => setMenuOpen(false)}
             />
             <nav className="lg:hidden relative z-40 border-t border-zinc-100 bg-white px-4 py-4 shadow-lg max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+              {showInstall && (
+                <Link
+                  href="/install"
+                  className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-[var(--wc-usa)] px-3 py-3 text-sm font-semibold text-white"
+                >
+                  <Download size={18} />
+                  Get the app — free
+                </Link>
+              )}
               <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1 mb-2">Main</p>
               <div className="grid grid-cols-2 gap-2 mb-4">
                 {[...PRIMARY_LINKS, { href: "/players", label: "Players", icon: Target }].map(({ href, label, icon }) => {
