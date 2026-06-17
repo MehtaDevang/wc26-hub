@@ -33,6 +33,7 @@ export const QUICK_NAV: SearchItem[] = [
   { id: "stadiums", label: "Stadiums", href: "/stadiums", group: "Explore", keywords: "venues arenas" },
   { id: "cities", label: "Host city guides", href: "/cities", group: "Explore", keywords: "travel host cities" },
   { id: "puzzles", label: "Daily puzzles", href: "/puzzles", group: "Fun", keywords: "quiz guess scramble" },
+  { id: "wallpapers", label: "Iconic moments wallpapers", href: "/wallpapers", group: "Fun", keywords: "wallpaper wallpapers hd download phone laptop desktop background iconic moments maradona messi" },
   { id: "install", label: "Get the app", href: "/install", group: "Explore", keywords: "install app pwa add to home screen download mobile android iphone" },
 ];
 

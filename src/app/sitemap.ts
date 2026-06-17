@@ -42,6 +42,7 @@ const STATIC_ROUTES: Array<{
   { path: "/puzzles/quiz", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/stats", changeFrequency: "daily", priority: 0.55 },
   { path: "/rivalries", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/wallpapers", changeFrequency: "weekly", priority: 0.75 },
   { path: "/pool", changeFrequency: "weekly", priority: 0.75 },
   { path: "/install", changeFrequency: "monthly", priority: 0.7 },
   { path: "/embed", changeFrequency: "monthly", priority: 0.5 },
