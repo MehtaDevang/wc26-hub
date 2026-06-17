@@ -97,6 +97,10 @@ export default async function RootLayout({
                   Get the app
                 </Link>
                 <span>·</span>
+                <Link href="/wallpapers" className="hover:text-[var(--wc-usa)] transition-colors">
+                  Wallpapers
+                </Link>
+                <span>·</span>
                 <Link href="/privacy" className="hover:text-[var(--wc-usa)] transition-colors">
                   Privacy
                 </Link>

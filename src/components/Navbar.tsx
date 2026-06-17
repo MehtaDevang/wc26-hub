@@ -55,8 +55,8 @@ const EXPLORE_LINKS = [
   { href: "/cities", label: "City Guides", icon: MapPin },
   { href: "/stadiums", label: "Stadiums", icon: MapPin },
   { href: "/rivalries", label: "Rivalries", icon: Swords },
-  { href: "/puzzles", label: "Puzzles", icon: Puzzle },
   { href: "/wallpapers", label: "Wallpapers", icon: ImageIcon },
+  { href: "/puzzles", label: "Puzzles", icon: Puzzle },
   { href: "/which-team", label: "Which Team Are You?", icon: Sparkles },
 ] as const;
 
