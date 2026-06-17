@@ -1,4 +1,5 @@
 import { ExternalLink, Play } from "lucide-react";
+import { CdnFillImage } from "@/components/CdnImage";
 import type { Highlight, Match } from "@/lib/types";
 import { MediaShareButton } from "./MediaShareButton";
 import { buildHighlightSharePayload } from "@/lib/share";
@@ -24,11 +25,11 @@ function HighlightImage({ highlight, compact, hasLink }: { highlight: Highlight;
   if (highlight.imageUrl) {
     return (
       <div className={`relative overflow-hidden bg-zinc-100 ${compact ? "aspect-[16/10]" : "aspect-video"}`}>
-        <img
+        <CdnFillImage
           src={highlight.imageUrl}
           alt={highlight.imageAlt ?? highlight.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes={compact ? "(max-width: 640px) 50vw, 280px" : "(max-width: 768px) 100vw, 360px"}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         <div className="absolute left-3 top-3 flex items-center gap-2">

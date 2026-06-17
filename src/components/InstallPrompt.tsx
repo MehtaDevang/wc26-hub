@@ -64,7 +64,12 @@ export function InstallPrompt() {
             <Download size={16} className="text-blue-600" />
             Install The Goal Posts
           </p>
-          <button type="button" onClick={dismiss} className="text-zinc-400 hover:text-zinc-600 p-1">
+          <button
+            type="button"
+            onClick={dismiss}
+            className="text-zinc-400 hover:text-zinc-600 p-1"
+            aria-label="Dismiss install prompt"
+          >
             <X size={16} />
           </button>
         </div>

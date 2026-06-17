@@ -14,6 +14,7 @@ import {
   filterMatchesForScoreboardToday,
   todayDateKey,
 } from "@/lib/timezone";
+import { CdnImage } from "@/components/CdnImage";
 import {
   mergeMatchesById,
   pickNextUpcomingMatches,
@@ -58,7 +59,7 @@ function MatchSpotlightCard({
       />
       <div className="home-hero-teaser-body">
         <div className="flex items-center justify-between gap-2 mb-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
             {isLive ? "Live now" : "Up next"} · {groupLabel}
           </p>
           {isLive ? (
@@ -74,7 +75,7 @@ function MatchSpotlightCard({
         <div className="flex items-center justify-between gap-3">
           <div className="flex flex-col items-center gap-1.5 min-w-0 flex-1">
             {home.logo ? (
-              <img src={home.logo} alt="" className="h-9 w-9 object-contain" />
+              <CdnImage src={home.logo} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
             ) : (
               <span className="text-3xl">{home.flag}</span>
             )}
@@ -89,7 +90,7 @@ function MatchSpotlightCard({
               <>
                 <p className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tabular-nums leading-none">
                   {match.homeScore}
-                  <span className="mx-1.5 text-zinc-300">–</span>
+                  <span className="mx-1.5 text-zinc-400">–</span>
                   {match.awayScore}
                 </p>
                 <p className="mt-1 text-xs font-bold text-[var(--wc-canada)]">
@@ -97,13 +98,13 @@ function MatchSpotlightCard({
                 </p>
               </>
             ) : (
-              <span className="text-lg font-extrabold text-zinc-300">vs</span>
+              <span className="text-lg font-extrabold text-zinc-400">vs</span>
             )}
           </div>
 
           <div className="flex flex-col items-center gap-1.5 min-w-0 flex-1">
             {away.logo ? (
-              <img src={away.logo} alt="" className="h-9 w-9 object-contain" />
+              <CdnImage src={away.logo} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
             ) : (
               <span className="text-3xl">{away.flag}</span>
             )}

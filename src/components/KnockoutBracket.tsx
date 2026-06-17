@@ -96,6 +96,13 @@ function BracketMatchCard({ match, roundId }: { match: BracketMatch; roundId: Br
   const isFinal = roundId === "final";
   const hasTeams = match.home.code || match.away.code || !match.home.placeholder;
   const isClickable = Boolean(match.id);
+  const homeDisplay = match.home.code
+    ? getTeam(match.home.code, match.home.name, match.home.logo)
+    : null;
+  const awayDisplay = match.away.code
+    ? getTeam(match.away.code, match.away.name, match.away.logo)
+    : null;
+  const matchLabel = `${homeDisplay?.name ?? match.home.name} vs ${awayDisplay?.name ?? match.away.name}`;
 
   const content = (
     <div
@@ -154,7 +161,7 @@ function BracketMatchCard({ match, roundId }: { match: BracketMatch; roundId: Br
       <Link
         href={`/match/${match.id}`}
         className="bracket-match-link block w-full h-full relative z-10 rounded-lg"
-        aria-label={`${match.home.name} vs ${match.away.name}`}
+        aria-label={matchLabel}
       >
         {content}
       </Link>

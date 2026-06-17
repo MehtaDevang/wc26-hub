@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   Puzzle,
   Trophy,
@@ -17,61 +18,37 @@ import {
   Code2,
   Sparkles,
 } from "lucide-react";
-import { LiveScores } from "@/components/LiveScores";
-import { MatchHighlights } from "@/components/MatchHighlights";
-import { LatestFifaNews } from "@/components/LatestFifaNews";
 import { IconicMoments } from "@/components/IconicMoments";
 import { HomeHero } from "@/components/HomeHero";
-import { LiveMomentsStrip } from "@/components/LiveMomentsStrip";
-import { LiveNextMatchCountdown } from "@/components/LiveNextMatchCountdown";
-import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
-import { MyTeamsMatches } from "@/components/MyTeamsMatches";
 import { MyTeamsPicker } from "@/components/MyTeams";
 import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
 import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
-import { FeaturedPlayersStrip } from "@/components/FeaturedPlayersStrip";
 import { HomeJumpNav } from "@/components/HomeJumpNav";
 import { FollowOnX } from "@/components/FollowOnX";
 import { WhichTeamPromo } from "@/components/WhichTeamPromo";
 import { JsonLd } from "@/components/JsonLd";
-import { buildWebPageJsonLd } from "@/lib/structured-data";
 import {
-  getKnockoutBracket,
-  getNextUpcomingMatches,
-  getTodayMatches,
-  getRecentHighlights,
-  getWorldCupNews,
-} from "@/lib/espn/services";
-import { buildHeroSlides } from "@/lib/hero-background";
-import { getServerTimezone } from "@/lib/timezone";
+  HomeBracketSection,
+  HomeFeaturedPlayersSection,
+  HomeHighlightsSection,
+  HomeLiveScoresSection,
+  HomeMomentsSection,
+  HomeMyTeamsSection,
+  HomeNewsSection,
+  HomeNextMatchSection,
+  HomeSectionSkeleton,
+} from "@/components/home/HomeSections";
+import { buildWebPageJsonLd } from "@/lib/structured-data";
 import { getHomeCopy, getStrings, localePath, type Locale } from "@/lib/i18n";
 
 interface LocalizedHomePageProps {
   locale: Locale;
 }
 
-export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
-  const timeZone = await getServerTimezone();
+export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
   const t = getStrings(locale);
   const copy = getHomeCopy(locale);
   const fixturesHref = localePath(locale, "/fixtures");
-
-  const [matchesResult, highlightsResult, nextMatchesResult, bracketResult, newsResult] =
-    await Promise.allSettled([
-      getTodayMatches(timeZone),
-      getRecentHighlights(12, timeZone),
-      getNextUpcomingMatches(2, timeZone),
-      getKnockoutBracket(timeZone),
-      getWorldCupNews(8),
-    ]);
-
-  const initialMatches = matchesResult.status === "fulfilled" ? matchesResult.value : [];
-  const allHighlights = highlightsResult.status === "fulfilled" ? highlightsResult.value : [];
-  const initialHighlights = allHighlights.slice(0, 6);
-  const heroSlides = buildHeroSlides(allHighlights);
-  const nextMatches = nextMatchesResult.status === "fulfilled" ? nextMatchesResult.value : [];
-  const bracket = bracketResult.status === "fulfilled" ? bracketResult.value : null;
-  const initialNews = newsResult.status === "fulfilled" ? newsResult.value : [];
 
   const jsonTitle =
     locale === "es"
@@ -103,52 +80,41 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
         </div>
       )}
 
-      <HomeHero initialTodayMatches={initialMatches} initialUpcomingMatches={nextMatches} />
+      <HomeHero />
 
       <HomeJumpNav />
 
-      <div id="my-teams">
-        <MyTeamsMatches matches={initialMatches} />
-      </div>
+      <Suspense fallback={<HomeSectionSkeleton height={120} />}>
+        <HomeMyTeamsSection />
+      </Suspense>
 
-      <section id="live">
-      <LiveScores
-        initialMatches={initialMatches}
-        fixturesHref={fixturesHref}
-        labels={{
-          title: t.liveScores,
-          allFixtures: t.allFixtures,
-          live: t.live,
-          upcoming: t.upcoming,
-          fullTime: t.fullTime,
-          noMatchesToday: t.noMatchesToday,
-          loadingScores: t.loadingScores,
-          autoUpdates: t.autoUpdates,
-        }}
-      />
-      </section>
+      <Suspense fallback={<HomeSectionSkeleton height={220} />}>
+        <HomeLiveScoresSection locale={locale} />
+      </Suspense>
 
-      <LiveMomentsStrip slides={heroSlides} />
+      <Suspense fallback={<HomeSectionSkeleton height={200} />}>
+        <HomeMomentsSection />
+      </Suspense>
 
-      <LiveNextMatchCountdown initialMatches={nextMatches} />
+      <Suspense fallback={<HomeSectionSkeleton height={180} />}>
+        <HomeNextMatchSection />
+      </Suspense>
 
-      {bracket && (
-        <div id="bracket">
-          <LiveKnockoutBracket initialData={bracket} compact showLink />
-        </div>
-      )}
+      <Suspense fallback={<HomeSectionSkeleton height={280} />}>
+        <HomeBracketSection />
+      </Suspense>
 
-      <section id="highlights">
-      <MatchHighlights initialHighlights={initialHighlights} />
-      </section>
+      <Suspense fallback={<HomeSectionSkeleton height={320} />}>
+        <HomeHighlightsSection />
+      </Suspense>
 
       <section id="quiz">
         <WhichTeamPromo />
       </section>
 
-      <section id="news">
-        <LatestFifaNews initialArticles={initialNews} />
-      </section>
+      <Suspense fallback={<HomeSectionSkeleton height={280} />}>
+        <HomeNewsSection />
+      </Suspense>
 
       <FollowOnX />
 
@@ -206,7 +172,9 @@ export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
 
       <TeamJourneyPromo />
 
-      <FeaturedPlayersStrip />
+      <Suspense fallback={<HomeSectionSkeleton height={240} />}>
+        <HomeFeaturedPlayersSection />
+      </Suspense>
 
       <section>
         <h2 className="section-title mb-5 flex items-center gap-2">

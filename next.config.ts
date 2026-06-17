@@ -58,6 +58,13 @@ const nextConfig: NextConfig = {
   // Allow phone/tablet testing on LAN (e.g. http://192.168.x.x:3000)
   allowedDevOrigins: getLanOrigins(),
   poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      { protocol: "https", hostname: "a.espncdn.com", pathname: "/**" },
+      { protocol: "https", hostname: "media.licdn.com", pathname: "/**" },
+    ],
+  },
   async headers() {
     return [
       {

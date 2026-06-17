@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Puzzle, Calendar } from "lucide-react";
 import { WC26MascotStrip } from "@/components/WC26Brand";
-import { LiveHomeHeroSpotlight } from "@/components/LiveHomeHeroSpotlight";
+import {
+  HomeHeroSpotlightSection,
+  HomeSectionSkeleton,
+} from "@/components/home/HomeSections";
 import { WC26_HOSTS } from "@/lib/wc26-brand";
-import type { Match } from "@/lib/types";
 
 const STATS = [
   { label: "Matches", value: "104", color: "text-[var(--wc-usa)]" },
@@ -12,15 +15,7 @@ const STATS = [
   { label: "Days", value: "39", color: "text-[var(--wc-gold)]" },
 ] as const;
 
-interface HomeHeroProps {
-  initialTodayMatches: Match[];
-  initialUpcomingMatches: Match[];
-}
-
-export function HomeHero({
-  initialTodayMatches,
-  initialUpcomingMatches,
-}: HomeHeroProps) {
+export function HomeHero() {
   return (
     <section className="home-hero">
       <div className="home-hero-glow" aria-hidden />
@@ -78,10 +73,9 @@ export function HomeHero({
           </Link>
         </div>
 
-        <LiveHomeHeroSpotlight
-          initialTodayMatches={initialTodayMatches}
-          initialUpcomingMatches={initialUpcomingMatches}
-        />
+        <Suspense fallback={<HomeSectionSkeleton height={140} />}>
+          <HomeHeroSpotlightSection />
+        </Suspense>
       </div>
 
       <div className="grid grid-cols-4 gap-3 max-w-md mx-auto px-4 pb-6 sm:pb-8">

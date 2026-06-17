@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Camera } from "lucide-react";
+import { CdnFillImage } from "@/components/CdnImage";
 import type { HeroSlide } from "@/lib/hero-background";
 
 interface LiveMomentsStripProps {
@@ -27,12 +28,11 @@ export function LiveMomentsStrip({ slides }: LiveMomentsStripProps) {
         {slides.map((slide) => {
           const card = (
             <article className="group relative h-44 w-64 sm:h-48 sm:w-72 shrink-0 snap-start overflow-hidden rounded-2xl bg-zinc-200 shadow-sm">
-              <img
+              <CdnFillImage
                 src={slide.url}
                 alt={slide.alt}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 256px, 288px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               {slide.label && (

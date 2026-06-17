@@ -26,7 +26,7 @@ import "./globals.css";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -48,7 +48,9 @@ export default async function RootLayout({
       lang="en"
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head />
+      <head>
+        <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
         <a
           href="#main-content"

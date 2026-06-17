@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Loader2, Newspaper, Play, RefreshCw } from "lucide-react";
+import { CdnFillImage } from "@/components/CdnImage";
 import { fetchNews } from "@/lib/matches";
 import { buildNewsCardBlurb } from "@/lib/news-summary";
 import { NewsArticleModal } from "@/components/NewsArticleModal";
@@ -43,11 +44,11 @@ function NewsCard({
     >
       <div className="relative h-20 w-28 sm:h-24 sm:w-36 shrink-0 overflow-hidden rounded-xl bg-zinc-100">
         {article.imageUrl ? (
-          <img
+          <CdnFillImage
             src={article.imageUrl}
             alt={article.imageAlt ?? ""}
-            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="144px"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-zinc-300">
