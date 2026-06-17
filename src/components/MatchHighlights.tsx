@@ -31,9 +31,13 @@ export function MatchHighlights({ initialHighlights }: MatchHighlightsProps) {
   useEffect(() => {
     if (initialHighlights === undefined) {
       loadHighlights(true);
-    } else {
-      loadHighlights(false);
     }
+  }, [initialHighlights, loadHighlights]);
+
+  useEffect(() => {
+    if (initialHighlights === undefined) return;
+    const interval = setInterval(() => loadHighlights(false), 120_000);
+    return () => clearInterval(interval);
   }, [initialHighlights, loadHighlights]);
 
   const showSpinner = loading && highlights.length === 0;

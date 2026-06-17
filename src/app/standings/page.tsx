@@ -26,10 +26,8 @@ export const revalidate = 120;
 
 export default async function StandingsPage() {
   const timeZone = await getServerTimezone();
-  const [standings, bracket] = await Promise.all([
-    fetchAllGroupStandings(),
-    getKnockoutBracket(timeZone),
-  ]);
+  const standings = await fetchAllGroupStandings();
+  const bracket = await getKnockoutBracket(timeZone, standings);
 
   return (
     <div className="space-y-6">

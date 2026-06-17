@@ -80,9 +80,8 @@ export function LiveScores({
   useEffect(() => {
     if (initialMatches === undefined) {
       loadMatches(true);
-    } else {
-      loadMatches(false);
-      if (initialMatches.length > 0) setLastUpdated(new Date());
+    } else if (initialMatches.length > 0) {
+      setLastUpdated(new Date());
     }
   }, [initialMatches, loadMatches]);
 

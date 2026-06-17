@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { fetchEspnScoreboard, fetchEspnSummary } from "./client";
 import { transformEvent } from "./transform";
 import { extractScorerName } from "./highlight-images";
@@ -388,7 +389,7 @@ async function fetchMatchDerivedLeaders(): Promise<{
   };
 }
 
-export async function getTournamentLeaders(): Promise<TournamentLeaders> {
+export async function computeTournamentLeaders(): Promise<TournamentLeaders> {
   const [stats, derived] = await Promise.all([
     fetchEspnTournamentStatistics().catch(() => ({ stats: [] } as EspnTournamentStatisticsResponse)),
     fetchMatchDerivedLeaders().catch(() => ({
@@ -452,3 +453,10 @@ export async function getTournamentLeaders(): Promise<TournamentLeaders> {
     updatedAt: new Date().toISOString(),
   };
 }
+
+/** Cached across requests — aggregates goals from finished match summaries. */
+export const getTournamentLeaders = unstable_cache(
+  computeTournamentLeaders,
+  ["wc26-tournament-leaders"],
+  { revalidate: 60, tags: ["tournament-leaders"] }
+);

@@ -120,8 +120,8 @@ export function LatestFifaNews({ initialArticles, limit = 8 }: LatestFifaNewsPro
   useEffect(() => {
     if (initialArticles === undefined) {
       loadNews(true);
-    } else {
-      loadNews(false);
+    } else if (initialArticles.length > 0) {
+      setLastUpdated(new Date());
     }
   }, [initialArticles, loadNews]);
 

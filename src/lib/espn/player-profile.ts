@@ -206,7 +206,9 @@ async function buildSquadIndex(): Promise<Map<string, PlayerAccumulator>> {
 
 async function overlayMatchStats(players: Map<string, PlayerAccumulator>): Promise<void> {
   const scoreboard = await fetchEspnScoreboard({ dates: TOURNAMENT_DATES });
-  const events = scoreboard.events ?? [];
+  const events = (scoreboard.events ?? []).filter(
+    (event) => event.competitions[0]?.status.type.state === "post"
+  );
 
   await mapWithConcurrency(events, SUMMARY_CONCURRENCY, async (event) => {
     try {

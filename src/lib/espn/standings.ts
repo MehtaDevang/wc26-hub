@@ -1,10 +1,11 @@
+import { unstable_cache } from "next/cache";
 import { fetchEspnScoreboard, fetchEspnSummary } from "./client";
 import { transformEvent, transformStandings } from "./transform";
 import type { GroupStandings } from "../types";
 
 const GROUP_ORDER = "ABCDEFGHIJKL".split("");
 
-export async function fetchAllGroupStandings(): Promise<GroupStandings[]> {
+async function fetchAllGroupStandingsUncached(): Promise<GroupStandings[]> {
   const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
   const events = scoreboard.events ?? [];
 
@@ -35,3 +36,10 @@ export async function fetchAllGroupStandings(): Promise<GroupStandings[]> {
   tables.sort((a, b) => a.group.localeCompare(b.group));
   return tables;
 }
+
+/** Cached across requests — 1 scoreboard + up to 12 summaries. */
+export const fetchAllGroupStandings = unstable_cache(
+  fetchAllGroupStandingsUncached,
+  ["wc26-group-standings"],
+  { revalidate: 120, tags: ["group-standings"] }
+);

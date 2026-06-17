@@ -36,10 +36,6 @@ export function LiveNextMatchCountdown({ initialMatches }: LiveNextMatchCountdow
   }, [initialMatches]);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
-
-  useEffect(() => {
     const interval = setInterval(refresh, 120_000);
     return () => clearInterval(interval);
   }, [refresh]);

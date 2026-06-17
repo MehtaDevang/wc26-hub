@@ -19,13 +19,14 @@ function toArticle({ _id, ...rest }: NewsDoc): NewsArticleDetail {
   return rest;
 }
 
-export async function getOwnNews(): Promise<NewsArticleDetail[]> {
+export async function getOwnNews(limit = 40): Promise<NewsArticleDetail[]> {
   try {
     const db = await getDb();
     const docs = await db
       .collection<NewsDoc>(COLLECTION)
       .find({})
       .sort({ publishedAt: -1 })
+      .limit(limit)
       .toArray();
     return docs.map(toArticle);
   } catch (error) {

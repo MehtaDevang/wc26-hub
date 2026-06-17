@@ -29,7 +29,6 @@ export function LiveTournamentLeadersPanel({
   }, []);
 
   useEffect(() => {
-    refresh(false);
     const interval = setInterval(() => {
       if (document.visibilityState === "visible") {
         refresh(false);

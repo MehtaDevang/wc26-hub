@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { LiveTournamentLeadersPanel } from "@/components/LiveTournamentLeadersPanel";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
+import { HomeSectionSkeleton } from "@/components/home/HomeSections";
 import { createPageMetadata } from "@/lib/seo";
 import { getTournamentLeaders } from "@/lib/espn/tournament-stats";
 
@@ -21,9 +23,12 @@ export const metadata = createPageMetadata({
 export const revalidate = 60;
 export const maxDuration = 60;
 
-export default async function LeadersPage() {
+async function LeadersContent() {
   const leaders = await getTournamentLeaders();
+  return <LiveTournamentLeadersPanel initialLeaders={leaders} />;
+}
 
+export default function LeadersPage() {
   return (
     <div className="space-y-6">
       <WC26PageBanner
@@ -44,7 +49,9 @@ export default async function LeadersPage() {
         </Link>
       </p>
       <AdBanner placement="inline" />
-      <LiveTournamentLeadersPanel initialLeaders={leaders} />
+      <Suspense fallback={<HomeSectionSkeleton height={420} />}>
+        <LeadersContent />
+      </Suspense>
     </div>
   );
 }

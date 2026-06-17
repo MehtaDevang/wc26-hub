@@ -15,7 +15,7 @@ import {
   DEFAULT_TIMEZONE,
 } from "../timezone";
 import { pickNextUpcomingMatches } from "../upcoming-matches";
-import type { Match, Highlight, NewsArticle, NewsArticleDetail } from "../types";
+import type { GroupStandings, Match, Highlight, NewsArticle, NewsArticleDetail } from "../types";
 import { buildKnockoutBracket } from "./bracket";
 import { fetchAllGroupStandings } from "./standings";
 import { transformNewsResponse, transformNewsDetail } from "./news";
@@ -162,11 +162,16 @@ export async function getRecentHighlights(
 }
 
 export async function getKnockoutBracket(
-  timeZone: string = DEFAULT_TIMEZONE
+  timeZone: string = DEFAULT_TIMEZONE,
+  prefetchedStandings?: GroupStandings[]
 ): Promise<ReturnType<typeof buildKnockoutBracket>> {
   const [data, standings] = await Promise.all([
     withTimeout(fetchEspnScoreboard({ dates: "20260611-20260719" })),
-    withTimeout(fetchAllGroupStandings()).catch(() => [] as Awaited<ReturnType<typeof fetchAllGroupStandings>>),
+    prefetchedStandings
+      ? Promise.resolve(prefetchedStandings)
+      : withTimeout(fetchAllGroupStandings()).catch(
+          () => [] as Awaited<ReturnType<typeof fetchAllGroupStandings>>
+        ),
   ]);
   const matches = transformEvents(data.events ?? [], timeZone);
   return buildKnockoutBracket(matches, standings);
@@ -174,7 +179,7 @@ export async function getKnockoutBracket(
 
 export async function getWorldCupNews(limit = 8): Promise<NewsArticle[]> {
   const [own, espn] = await Promise.all([
-    getOwnNews(),
+    getOwnNews(Math.max(limit, 24)),
     (async () => {
       try {
         const data = await withTimeout(fetchEspnNews(Math.max(limit, 12)));

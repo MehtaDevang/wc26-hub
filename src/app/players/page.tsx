@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import { Target } from "lucide-react";
-import { getPlayersByCountry, getTopScorers } from "@/lib/espn/player-profile";
-import { PlayersExplorer } from "@/components/PlayersExplorer";
-import { PlayerListCard } from "@/components/PlayerPageView";
 import { AdBanner } from "@/components/AdBanner";
+import { HomeSectionSkeleton } from "@/components/home/HomeSections";
+import { PlayersTopScorersSection } from "@/components/players/PlayersPageSections";
+import { PlayersSquadsSection } from "@/components/players/PlayersSquadsSection";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, PLAYERS_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
 
@@ -17,14 +18,7 @@ export const metadata = createPageMetadata({
 export const revalidate = 300;
 export const maxDuration = 120;
 
-export default async function PlayersIndexPage() {
-  const [sections, scorers] = await Promise.all([
-    getPlayersByCountry(),
-    getTopScorers(16),
-  ]);
-
-  const totalPlayers = sections.reduce((sum, s) => sum + s.players.length, 0);
-
+export default function PlayersIndexPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -36,32 +30,16 @@ export default async function PlayersIndexPage() {
           Full squads for all 48 nations at the FIFA World Cup 2026 - tap any player for photos,
           personal info, tournament stats, and recent club performances.
         </p>
-        {totalPlayers > 0 && (
-          <p className="text-xs text-zinc-400 mt-2">
-            {totalPlayers} players across {sections.length} countries
-          </p>
-        )}
       </div>
       <AdBanner placement="inline" />
 
-      {scorers.length > 0 && (
-        <section>
-          <h2 className="section-title mb-4 text-base">Top Goal Scorers</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {scorers.map((player) => (
-              <PlayerListCard key={player.id} player={player} />
-            ))}
-          </div>
-        </section>
-      )}
+      <Suspense fallback={<HomeSectionSkeleton height={200} />}>
+        <PlayersTopScorersSection />
+      </Suspense>
 
-      {sections.length > 0 ? (
-        <PlayersExplorer sections={sections} />
-      ) : (
-        <p className="text-sm text-zinc-400 text-center py-12">
-          Squad lists will appear once ESPN publishes full World Cup 2026 rosters.
-        </p>
-      )}
+      <Suspense fallback={<HomeSectionSkeleton height={480} />}>
+        <PlayersSquadsSection />
+      </Suspense>
     </div>
   );
 }
