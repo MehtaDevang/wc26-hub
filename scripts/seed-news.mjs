@@ -124,6 +124,72 @@ const articles = [
       "The World Cup is back. And the champions mean business.",
     ],
   },
+  {
+    id: "900000005",
+    headline:
+      "Mbappé masterclass: France bury the 2002 ghost with ruthless 3-1 win over Senegal",
+    summary:
+      "Kylian Mbappé scored twice and Bradley Barcola added another as France beat Senegal 3-1 at MetLife Stadium. Ibrahim Mbaye scored a late consolation, but Les Bleus finally got their World Cup 2026 opener right.",
+    imageUrl: "/news/france-senegal-result.png",
+    imageAlt:
+      "France celebrate their 3-1 World Cup 2026 win over Senegal at MetLife Stadium",
+    publishedAt: "2026-06-17T04:30:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "The ghost of 2002 is gone. France walked into MetLife Stadium carrying history on their shoulders - and left with three points, two Mbappé goals, and a message for the rest of Group I.",
+      "Senegal made them sweat. The Lions of Teranga pressed, probed, and hit the post through Nicolas Jackson in the first half. For a while, the old nightmare felt close again. But France found their ruthlessness when it mattered.",
+      "Kylian Mbappé broke the deadlock in the 66th minute, lashing home from the centre of the box to make it 1-0. Bradley Barcola doubled the lead in the 82nd minute with a crisp finish from the right side of the area, and suddenly Les Bleus were in control.",
+      "Senegal refused to fold. Ibrahim Mbaye pulled one back in the fifth minute of stoppage time, finishing from the right side of the box to set up a frantic finale. The stadium held its breath.",
+      "Mbappé had the last word. Just a minute later, he struck from outside the box to seal a 3-1 win and complete his brace. France had their three points. Senegal had their fight - but not the result.",
+      "Final score: France 3, Senegal 1. Group I is open, but France have drawn the line under the past. The favourites are up and running.",
+    ],
+  },
+  {
+    id: "900000006",
+    headline:
+      "Haaland unstoppable: Norway tear Iraq apart 4-1 in Group I statement",
+    summary:
+      "Erling Haaland scored twice as Norway beat Iraq 4-1 in their World Cup 2026 opener. Aymen Hussein equalised with a header before an own goal in stoppage time capped a brutal night for the Lions of Mesopotamia.",
+    imageUrl: "/news/iraq-norway-result.png",
+    imageAlt:
+      "Norway celebrate after beating Iraq 4-1 at World Cup 2026",
+    publishedAt: "2026-06-17T05:00:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "Norway did not come to negotiate. They came to score - and Erling Haaland led the charge in a 4-1 demolition of Iraq at Gillette Stadium that sends a shiver through Group I.",
+      "Haaland opened the scoring in the 29th minute, turning home from close range to give Norway the lead. Iraq answered quickly: Aymen Hussein powered in a header in the 39th minute, and for a moment the underdogs were level at 1-1.",
+      "That hope did not last. Haaland struck again four minutes later, finishing from close range to restore Norway's advantage before half-time. The message was clear: starve him at your peril.",
+      "Iraq chased the game after the break, but Norway's grip only tightened. Leo Østigård headed home in the 76th minute to make it 3-1, and the Lions of Mesopotamia ran out of answers.",
+      "The cruelest twist came deep in stoppage time. Hussein, the man who had dragged Iraq back into it, turned the ball into his own net in the sixth minute of added time. Norway 4, Iraq 1. Heartbreak wrapped in a hammer blow.",
+      "Final score: Norway 4, Iraq 1. Haaland has two. Norway have three points. And Group I just got very interesting for France and Senegal.",
+    ],
+  },
+  {
+    id: "900000007",
+    headline:
+      "Messi magic: Argentina's captain fires hat-trick in flawless 3-0 defence opener",
+    summary:
+      "Lionel Messi scored all three goals as defending champions Argentina beat Algeria 3-0 at Arrowhead Stadium. The world champions sent a chilling message to Group J with a masterclass in Kansas City.",
+    imageUrl: "/news/argentina-algeria-result.png",
+    imageAlt:
+      "Argentina celebrate a 3-0 World Cup 2026 win over Algeria in Kansas City",
+    publishedAt: "2026-06-17T06:30:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "Same stage. Same expectation. Same Messi. Argentina opened their World Cup 2026 defence with a statement so loud the whole of Group J heard it - a 3-0 win over Algeria built entirely by their captain.",
+      "Lionel Messi did not just score. He settled the nerves, seized control, and put the champions on course before half-time. His first arrived in the 17th minute, a left-footed strike from outside the box curled into the top corner. Arrowhead Stadium erupted. Algeria's game plan wobbled.",
+      "The Albiceleste pressed their foot on the throat after the break. Messi doubled the lead in the 60th minute, finishing from the centre of the box with the cold certainty of a man who has done this a thousand times. Algeria chased shadows. Argentina looked like Argentina.",
+      "The third was the showstopper. In the 76th minute, Messi completed his hat-trick with another composed finish from the centre of the area. Three goals. One player. Zero doubt. Algeria had been brave, but they had no answer to the greatest problem in world football.",
+      "This was not a scrappy opener or a lucky escape. This was the holders announcing themselves. Clean sheet. Three points. A hat-trick for the captain. Everything else in Group J must now go through Argentina.",
+      "Final score: Argentina 3, Algeria 0. The defence of the title is underway - and Messi has already written the first chapter.",
+    ],
+  },
 ];
 
 async function main() {
