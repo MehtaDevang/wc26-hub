@@ -30,7 +30,16 @@ export function createPageMetadata({
   /** Route to page-specific opengraph-image (e.g. `/match/123/opengraph-image`). */
   ogImagePath?: string;
 }): Metadata {
-  const pageTitle = title.includes(SITE_NAME) ? title : `${title} - ${SITE_NAME}`;
+  // Keep the brand suffix only when the title stays within Google's ~60-char
+  // SERP cap; on long, keyword-rich titles we drop it so the keywords survive.
+  const suffix = ` - ${SITE_NAME}`;
+  const pageTitle = title.includes(SITE_NAME)
+    ? title
+    : title.length + suffix.length <= 60
+      ? `${title}${suffix}`
+      : title;
+  // Social cards always carry the brand for recognisability.
+  const socialTitle = pageTitle.includes(SITE_NAME) ? pageTitle : `${pageTitle}${suffix}`;
   const canonical = `${getSiteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
   const pageKeywords = keywords?.length
     ? [...new Set([...keywords, ...SITE_KEYWORDS])]
@@ -51,7 +60,7 @@ export function createPageMetadata({
     alternates: { canonical },
     category: "sports",
     openGraph: {
-      title: pageTitle,
+      title: socialTitle,
       description,
       url: canonical,
       siteName: SITE_NAME,
@@ -63,7 +72,7 @@ export function createPageMetadata({
       card: "summary_large_image",
       site: `@${SITE_TWITTER_HANDLE}`,
       creator: `@${SITE_TWITTER_HANDLE}`,
-      title: pageTitle,
+      title: socialTitle,
       description,
       images: [ogImage.url],
     },

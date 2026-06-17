@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WatchGuide } from "@/components/WatchGuide";
+import { FaqSection } from "@/components/FaqSection";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
@@ -45,6 +46,25 @@ export default async function WatchPage() {
       </p>
       <AdBanner placement="inline" />
       <WatchGuide entries={entries} initialCountry={defaultCountry} />
+      <FaqSection heading="Watching World Cup 2026 - FAQ" items={WATCH_FAQ} />
     </div>
   );
 }
+
+const WATCH_FAQ = [
+  {
+    question: "When does the World Cup 2026 take place?",
+    answer:
+      "The FIFA World Cup 2026 runs from 11 June to 19 July 2026, hosted across the United States, Canada and Mexico - the first 48-team, 104-match World Cup.",
+  },
+  {
+    question: "How can I watch World Cup 2026 matches?",
+    answer:
+      "Every match is shown by official rights-holding broadcasters in each country. Pick your country on this page to see the exact TV channels and streaming services, with links and local kickoff times.",
+  },
+  {
+    question: "Are all 104 matches televised?",
+    answer:
+      "Yes. With the expanded 48-team format, all 104 matches are broadcast, typically split across a rights-holder's TV channels and streaming platforms in each market.",
+  },
+];
