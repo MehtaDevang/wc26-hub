@@ -11,10 +11,10 @@ import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { AppProviders } from "@/components/AppProviders";
-import { DeferredAdSense } from "@/components/DeferredAdSense";
 import { CookieConsent } from "@/components/CookieConsent";
 import { NativeAppProvider } from "@/components/NativeAppProvider";
 import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
+import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { isNativeUserAgent } from "@/lib/native";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
@@ -58,6 +58,13 @@ export default async function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
+        {!isNativeApp && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
@@ -67,7 +74,6 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        {!isNativeApp && <DeferredAdSense />}
         <NativeAppProvider initialIsNative={isNativeApp}>
         <TimezoneProvider initialTimezone={initialTimezone}>
           <AppProviders>
