@@ -190,6 +190,50 @@ const articles = [
       "Final score: Argentina 3, Algeria 0. The defence of the title is underway - and Messi has already written the first chapter.",
     ],
   },
+  {
+    id: "900000008",
+    headline:
+      "Ronaldo's stage again: Portugal open up against a DR Congo side back from a 52-year wait",
+    summary:
+      "Portugal begin their World Cup 2026 campaign against DR Congo at NRG Stadium in Houston, opening Group K. All eyes are on Cristiano Ronaldo - the most prolific scorer men's international football has ever seen - as the Leopards return to the World Cup for the first time since 1974.",
+    imageUrl: "/football-soccer.png",
+    imageAlt:
+      "Portugal face DR Congo in their World Cup 2026 Group K opener at NRG Stadium, Houston",
+    publishedAt: "2026-06-17T13:30:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "Some players walk onto a World Cup pitch. Cristiano Ronaldo arrives like the main event. Tonight in Houston, Portugal begin their 2026 campaign against DR Congo - and once again, the story starts with their captain.",
+      "The setting is NRG Stadium, the stage is Group K, and the occasion is opening night for both nations. Portugal come in as one of the tournament's heavyweights; DR Congo come in carrying history, back at the World Cup for the first time since they appeared as Zaire in 1974 - a 52-year wait finally over for the Leopards.",
+      "At the centre of it all stands Ronaldo. At 41, he remains Portugal's figurehead and captain, and the most prolific goalscorer in the history of men's international football. In Qatar four years ago he became the first male player to score at five different World Cups - 2006, 2010, 2014, 2018 and 2022. A goal in Houston would stretch a record that already belongs to him alone across six tournaments.",
+      "But Portugal are far more than one man, and they know it. Around their talisman is a generation of pace, power and Champions League pedigree - the kind of supporting cast that can punish any side that switches off, even for a second.",
+      "DR Congo will not be there to admire them. Returning to the biggest stage after half a century, the Leopards have nothing to lose and a nation roaring behind them. Compact, physical and dangerous on the break, they are exactly the type of opponent that can make a glamorous favourite sweat on opening night.",
+      "Portugal want the perfect start. DR Congo want the result that announces their return. And Ronaldo, as ever, wants the headline. Under the lights at NRG Stadium, Group K gets going - and the man who has scored everywhere is ready to do it again.",
+    ],
+  },
+  {
+    id: "900000009",
+    headline:
+      "Unfinished business: England meet Croatia again, eight years after Moscow broke their hearts",
+    summary:
+      "England open their World Cup 2026 campaign against Croatia at AT&T Stadium in Arlington - a rematch of the 2018 semi-final that ended their run. Harry Kane leads the line as captain and his country's all-time record scorer, with Group L on the line.",
+    imageUrl: "/football-soccer.png",
+    imageAlt:
+      "England face Croatia in their World Cup 2026 Group L opener at AT&T Stadium, Arlington",
+    publishedAt: "2026-06-17T14:00:00.000Z",
+    type: "story",
+    byline: "The Goal Posts Desk",
+    isOriginal: true,
+    body: [
+      "Some opponents you draw by chance. Croatia, for England, feel like fate. Tonight in Arlington, the two meet on the World Cup stage once more - and the ghosts of Moscow are impossible to ignore.",
+      "The stage is AT&T Stadium, the occasion is Group L's opening night, and the subplot writes itself. The last time these nations met at a World Cup, Croatia broke English hearts: a 2-1 extra-time win in the 2018 semi-final, when Kieran Trippier's early free-kick was overturned and Mario Mandzukic struck the killer blow that sent Croatia to the final instead.",
+      "Eight years on, England return with a point to prove. Leading them is Harry Kane - the captain, the talisman, and his country's all-time leading goalscorer. Kane knows this opponent and this pain well; he won the Golden Boot at that 2018 tournament, only to watch Croatia end the dream.",
+      "Croatia, for their part, are no one's idea of an easy opener. Finalists in 2018 and a side built on tournament know-how, they have made a habit of dragging bigger names into long, draining battles - and winning the ones that matter.",
+      "England will want control, tempo and an early goal to settle nerves that history has frayed. Croatia will want to slow it down, frustrate, and remind England that nights like these rarely go to script.",
+      "Revenge against pedigree. Hurt against history. Under the lights at AT&T Stadium, England get the rematch they have waited years for - and the chance to finally rewrite the ending.",
+    ],
+  },
 ];
 
 async function main() {

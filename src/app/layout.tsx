@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
@@ -10,6 +11,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { TimezoneProvider } from "@/components/TimezoneProvider";
 import { AppProviders } from "@/components/AppProviders";
 import { DeferredAdSense } from "@/components/DeferredAdSense";
+import { CookieConsent } from "@/components/CookieConsent";
+import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
 import { getServerTimezone } from "@/lib/timezone";
@@ -49,6 +52,7 @@ export default async function RootLayout({
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
@@ -83,6 +87,14 @@ export default async function RootLayout({
                 <span>·</span>
                 <LocaleSwitcher />
                 <span>·</span>
+                <Link href="/privacy" className="hover:text-[var(--wc-usa)] transition-colors">
+                  Privacy
+                </Link>
+                <span>·</span>
+                <Link href="/terms" className="hover:text-[var(--wc-usa)] transition-colors">
+                  Terms
+                </Link>
+                <span>·</span>
                 <a
                   href={`mailto:${SITE_ADS_EMAIL}`}
                   className="hover:text-[var(--wc-usa)] transition-colors"
@@ -109,6 +121,7 @@ export default async function RootLayout({
             </footer>
             <Analytics />
             <LiveNowStickyBar />
+            <CookieConsent />
           </AppProviders>
         </TimezoneProvider>
       </body>

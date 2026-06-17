@@ -44,6 +44,8 @@ const STATIC_ROUTES: Array<{
   { path: "/rivalries", changeFrequency: "weekly", priority: 0.8 },
   { path: "/pool", changeFrequency: "weekly", priority: 0.75 },
   { path: "/embed", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
   { path: "/es", changeFrequency: "always", priority: 0.9 },
   { path: "/es/fixtures", changeFrequency: "always", priority: 0.9 },
   { path: "/fr", changeFrequency: "always", priority: 0.9 },
