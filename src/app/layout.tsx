@@ -5,7 +5,7 @@ import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
-import { SiteTopAd, SiteFooterAd } from "@/components/SiteAds";
+import { SiteFooterAd } from "@/components/SiteAds";
 import { LiveNowStickyBar } from "@/components/LiveNowStickyBar";
 import { WC26MascotStrip } from "@/components/WC26Brand";
 import { JsonLd } from "@/components/JsonLd";
@@ -14,7 +14,6 @@ import { AppProviders } from "@/components/AppProviders";
 import { CookieConsent } from "@/components/CookieConsent";
 import { NativeAppProvider } from "@/components/NativeAppProvider";
 import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
-import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { isNativeUserAgent } from "@/lib/native";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
@@ -58,13 +57,6 @@ export default async function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
-        {!isNativeApp && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
-            crossOrigin="anonymous"
-          />
-        )}
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
@@ -79,7 +71,6 @@ export default async function RootLayout({
           <AppProviders>
             <JsonLd data={buildSiteStructuredDataGraph()} />
             <Navbar />
-            <SiteTopAd />
             <main id="main-content" className="site-main flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
               {children}
             </main>

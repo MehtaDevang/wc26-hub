@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { WC26PageBanner } from "@/components/WC26Brand";
-import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getKnockoutBracket } from "@/lib/espn/services";
@@ -40,7 +39,6 @@ export default async function BracketPage() {
           Qualification scenarios →
         </Link>
       </p>
-      <AdBanner placement="inline" />
       <LiveKnockoutBracket initialData={bracket} />
     </div>
   );

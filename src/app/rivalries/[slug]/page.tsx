@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getAllRivalryPages, getRivalryBySlug, findRivalryMatches } from "@/lib/rivalry-pages";
 import { fetchEspnScoreboard } from "@/lib/espn/client";
@@ -127,8 +126,6 @@ export default async function RivalryDetailPage({ params }: PageProps) {
           <ArrowRight size={16} className="text-zinc-300 group-hover:text-blue-500" />
         </Link>
       </div>
-
-      <AdBanner placement="inline" />
     </div>
   );
 }

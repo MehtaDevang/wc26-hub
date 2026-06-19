@@ -107,7 +107,6 @@ export function GuessPlayerGame() {
             ))}
           </div>
         </div>
-        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }

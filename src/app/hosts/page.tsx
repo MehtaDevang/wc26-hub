@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Building2, MapPin } from "lucide-react";
-import { AdBanner } from "@/components/AdBanner";
 import { WC26MascotIcon } from "@/components/mascots/WC26Mascots";
 import { createPageMetadata } from "@/lib/seo";
 import { getHostNations } from "@/lib/hosts";
@@ -41,8 +40,6 @@ export default function HostsPage() {
           </p>
         </div>
       </div>
-
-      <AdBanner placement="inline" />
 
       <div className="grid gap-6 lg:grid-cols-3">
         {hosts.map((host) => {

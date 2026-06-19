@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getAllGroupLetters } from "@/lib/espn/groups";
-import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 
@@ -26,7 +25,6 @@ export default function GroupsIndexPage() {
           Live group standings and fixtures for all 12 groups at the 48-team FIFA World Cup 2026.
         </p>
       </div>
-      <AdBanner placement="standings" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {groups.map((letter) => (
           <Link

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, Swords } from "lucide-react";
-import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getAllRivalryPages } from "@/lib/rivalry-pages";
 
@@ -36,8 +35,6 @@ export default function RivalriesPage() {
           </p>
         </div>
       </div>
-
-      <AdBanner placement="inline" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {rivalries.map((r) => (

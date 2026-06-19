@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WatchGuide } from "@/components/WatchGuide";
 import { WC26PageBanner } from "@/components/WC26Brand";
-import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getWatchGuideMatches } from "@/lib/espn/watch-guide";
 import { getServerTimezone } from "@/lib/timezone";
@@ -69,7 +68,6 @@ export default async function WatchCountryPage({ params }: PageProps) {
           Fixtures schedule →
         </Link>
       </p>
-      <AdBanner placement="inline" />
       <WatchGuide entries={entries} initialCountry={country.id} />
     </div>
   );

@@ -1,6 +1,5 @@
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { WorldCupHistoryHub } from "@/components/history/WorldCupHistoryHub";
-import { AdBanner } from "@/components/AdBanner";
 import { IconicMoments } from "@/components/IconicMoments";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, HISTORY_KEYWORDS } from "@/lib/seo-keywords";
@@ -27,7 +26,6 @@ export default function HistoryPage() {
         subtitle="Winners, finals, host nations, records, awards, prizes & controversies - 1930 to 2026"
       />
       <IconicMoments limit={6} showClassicLink={false} />
-      <AdBanner placement="history" />
       <WorldCupHistoryHub />
     </div>
   );
