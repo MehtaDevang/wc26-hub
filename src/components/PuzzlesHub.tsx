@@ -121,6 +121,8 @@ export function PuzzlesHub() {
         <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600 shrink-0" />
       </Link>
 
+      <AdBanner placement="puzzles" />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {PUZZLE_CATALOG.map((puzzle) => {
           const c = COLOR_MAP[puzzle.color];

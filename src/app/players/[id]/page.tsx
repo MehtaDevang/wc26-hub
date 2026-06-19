@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPlayerWorldCupProfile } from "@/lib/espn/player-profile";
 import { PlayerPageView } from "@/components/PlayerPageView";
+import { AdBanner } from "@/components/AdBanner";
 import { JsonLd } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, PLAYERS_KEYWORDS, STATS_KEYWORDS } from "@/lib/seo-keywords";
@@ -99,6 +100,7 @@ export default async function PlayerPage({ params }: PageProps) {
         <span className="mx-2">/</span>
         <span className="text-zinc-600">{player.name}</span>
       </nav>
+      <AdBanner placement="match" />
       <PlayerPageView player={player} />
     </div>
   );

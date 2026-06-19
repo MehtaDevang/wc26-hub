@@ -19,30 +19,47 @@ interface AdBannerProps {
   className?: string;
 }
 
-function ensureAdSenseScript(clientId: string, onLoad: () => void) {
-  const existing = document.querySelector<HTMLScriptElement>(
-    `script[data-adsense="${clientId}"]`
-  );
-  if (existing) {
-    if (existing.dataset.loaded === "true") onLoad();
-    else existing.addEventListener("load", onLoad, { once: true });
-    return;
-  }
+const PLACEHOLDER_HEIGHT: Record<AdPlacement, string> = {
+  top: "min-h-[90px]",
+  footer: "min-h-[90px]",
+  inline: "min-h-[100px]",
+  sidebar: "min-h-[250px]",
+  match: "min-h-[100px]",
+  fixtures: "min-h-[100px]",
+  standings: "min-h-[100px]",
+  history: "min-h-[100px]",
+  puzzles: "min-h-[100px]",
+};
 
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
-  script.crossOrigin = "anonymous";
-  script.setAttribute("data-adsense", clientId);
-  script.addEventListener(
-    "load",
-    () => {
-      script.dataset.loaded = "true";
-      onLoad();
-    },
-    { once: true }
+function AdPlaceholder({
+  placement,
+  label,
+  className,
+  hint,
+}: {
+  placement: AdPlacement;
+  label: string;
+  className?: string;
+  hint?: string;
+}) {
+  return (
+    <div
+      className={clsx(
+        "flex w-full items-center justify-center rounded-xl border border-dashed border-zinc-200 bg-zinc-50/80 text-center",
+        PLACEHOLDER_HEIGHT[placement],
+        className
+      )}
+      data-ad-placement={placement}
+      aria-label={`${label} placeholder`}
+    >
+      <div className="px-4 py-3">
+        <p className="mb-0.5 text-[10px] uppercase tracking-widest text-zinc-300">{label}</p>
+        <p className="text-xs text-zinc-400">
+          {hint ?? "Google AdSense slot"}
+        </p>
+      </div>
+    </div>
   );
-  document.head.appendChild(script);
 }
 
 export function AdBanner({
@@ -56,24 +73,42 @@ export function AdBanner({
   const adSlotId = getAdSlotId(resolvedPlacement);
   const isNativeApp = useIsNativeApp();
   const pushed = useRef(false);
+  const insRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
     if (isNativeApp || !clientId || !adSlotId || pushed.current) return;
+    pushed.current = true;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {
+      pushed.current = false;
+    }
+  }, [clientId, adSlotId, resolvedPlacement, isNativeApp]);
 
-    const pushAd = () => {
-      if (pushed.current) return;
-      pushed.current = true;
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch {
-        pushed.current = false;
-      }
-    };
+  // AdSense is not permitted inside app webviews - render nothing in the native shell.
+  if (isNativeApp) return null;
 
-    ensureAdSenseScript(clientId, pushAd);
-  }, [clientId, adSlotId, isNativeApp]);
+  if (!clientId) {
+    return (
+      <AdPlaceholder
+        placement={resolvedPlacement}
+        label={label}
+        className={className}
+        hint="AdSense client ID missing"
+      />
+    );
+  }
 
-  if (isNativeApp || !clientId || !adSlotId) return null;
+  if (!adSlotId) {
+    return (
+      <AdPlaceholder
+        placement={resolvedPlacement}
+        label={label}
+        className={className}
+        hint={`Set NEXT_PUBLIC_ADSENSE_SLOT_${resolvedPlacement.toUpperCase()}`}
+      />
+    );
+  }
 
   return (
     <div
@@ -84,6 +119,7 @@ export function AdBanner({
         {label}
       </p>
       <ins
+        ref={insRef}
         className="adsbygoogle block w-full"
         style={{ display: "block" }}
         data-ad-client={clientId}

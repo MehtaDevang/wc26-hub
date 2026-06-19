@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Target } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 import { HomePlayerOfTheDaySection, HomeSectionSkeleton } from "@/components/home/HomeSections";
 import { PlayersTopScorersSection } from "@/components/players/PlayersPageSections";
 import { PlayersSquadsSection } from "@/components/players/PlayersSquadsSection";
@@ -30,6 +31,7 @@ export default function PlayersIndexPage() {
           personal info, tournament stats, and recent club performances.
         </p>
       </div>
+      <AdBanner placement="inline" />
 
       <Suspense fallback={<HomeSectionSkeleton height={120} />}>
         <HomePlayerOfTheDaySection />

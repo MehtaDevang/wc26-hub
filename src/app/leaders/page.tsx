@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { LiveTournamentLeadersPanel } from "@/components/LiveTournamentLeadersPanel";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { HomeSectionSkeleton } from "@/components/home/HomeSections";
 import { createPageMetadata } from "@/lib/seo";
 import { getTournamentLeaders } from "@/lib/espn/tournament-stats";
@@ -47,6 +48,7 @@ export default function LeadersPage() {
           Group standings →
         </Link>
       </p>
+      <AdBanner placement="inline" />
       <Suspense fallback={<HomeSectionSkeleton height={420} />}>
         <LeadersContent />
       </Suspense>

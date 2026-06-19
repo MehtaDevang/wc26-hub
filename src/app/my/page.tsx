@@ -1,5 +1,6 @@
 import { MyWorldCupDashboard } from "@/components/MyWorldCupDashboard";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getTodayMatches } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
@@ -29,6 +30,7 @@ export default async function MyWorldCupPage() {
         title="My World Cup"
         subtitle="Your teams, matches, and tools - saved on this device"
       />
+      <AdBanner placement="inline" />
       <MyWorldCupDashboard initialTodayMatches={todayMatches} />
     </div>
   );

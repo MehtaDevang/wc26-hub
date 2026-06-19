@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ScenariosTabs } from "@/components/ScenariosTabs";
 import { FaqSection } from "@/components/FaqSection";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
 import { getMatchesByParams } from "@/lib/espn/services";
@@ -46,6 +47,7 @@ export default async function ScenariosPage() {
           All groups →
         </Link>
       </p>
+      <AdBanner placement="inline" />
       <ScenariosTabs standings={standings} matches={matches} />
       <FaqSection
         heading="World Cup 2026 qualification - FAQ"

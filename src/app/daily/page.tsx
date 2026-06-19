@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Radio, CalendarCheck, CalendarClock, Trophy, ArrowRight } from "lucide-react";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { getTeam } from "@/lib/data";
 import { createPageMetadata } from "@/lib/seo";
 import { getMatchesByParams } from "@/lib/espn/services";
@@ -101,6 +102,7 @@ export default async function DailyDigestPage() {
         title="Today at the World Cup"
         subtitle={formatTodayLabel(timeZone)}
       />
+      <AdBanner placement="inline" />
 
       {digest.liveNow.length > 0 && (
         <DigestCard

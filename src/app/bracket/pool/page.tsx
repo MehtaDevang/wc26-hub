@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { BracketPool } from "@/components/BracketPool";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getKnockoutBracket } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
@@ -36,6 +37,7 @@ export default async function BracketPoolPage() {
           Make your picks first →
         </Link>
       </p>
+      <AdBanner placement="inline" />
       <Suspense fallback={<p className="text-sm text-zinc-400 text-center py-12">Loading pool…</p>}>
         <BracketPool bracket={bracket} />
       </Suspense>

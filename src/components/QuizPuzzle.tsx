@@ -102,6 +102,7 @@ export function QuizPuzzle() {
             ))}
           </div>
         </div>
+        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }

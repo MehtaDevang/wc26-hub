@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 import { StadiumVenueCard } from "@/components/StadiumVenueCard";
 import { createPageMetadata } from "@/lib/seo";
 import { getAllVenues } from "@/lib/venues";
@@ -40,6 +41,8 @@ export default function StadiumsPage() {
           </p>
         </div>
       </div>
+
+      <AdBanner placement="inline" />
 
       {byCountry.map((country) => {
         const countryVenues = venues.filter((v) => v.country === country);

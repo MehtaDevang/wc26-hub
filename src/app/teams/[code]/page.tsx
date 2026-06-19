@@ -7,6 +7,7 @@ import { TeamJourneyContent } from "@/components/TeamJourneyContent";
 import { TeamSquad } from "@/components/TeamSquad";
 import { TeamTopPerformers } from "@/components/TeamTopPerformers";
 import { TeamQualificationCard } from "@/components/TeamQualification";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidTeamCode } from "@/lib/api-security";
@@ -83,6 +84,7 @@ export default async function TeamPage({ params }: PageProps) {
         <span className="mx-2">/</span>
         <span className="text-zinc-600">{journey.teamName}</span>
       </nav>
+      <AdBanner placement="match" />
       {qualification && (
         <TeamQualificationCard teamName={journey.teamName} qualification={qualification} />
       )}

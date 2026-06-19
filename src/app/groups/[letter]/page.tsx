@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getGroupPageData } from "@/lib/espn/groups";
 import { GroupPageView } from "@/components/GroupPageView";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { isValidGroupLetter } from "@/lib/api-security";
@@ -57,6 +58,7 @@ export default async function GroupPage({ params }: PageProps) {
         <span className="mx-2">/</span>
         <span className="text-zinc-600">{data.label}</span>
       </nav>
+      <AdBanner placement="standings" />
       <GroupPageView data={data} />
     </div>
   );

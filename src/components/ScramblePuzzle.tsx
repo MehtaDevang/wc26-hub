@@ -111,6 +111,7 @@ export function ScramblePuzzle() {
             ))}
           </div>
         </div>
+        <AdBanner placement="puzzles" />
       </PuzzleShell>
     );
   }

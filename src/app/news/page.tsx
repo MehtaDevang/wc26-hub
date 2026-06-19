@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { NewsHub } from "@/components/NewsHub";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { HomeSectionSkeleton } from "@/components/home/HomeSections";
 import { createPageMetadata } from "@/lib/seo";
 import { getWorldCupNews } from "@/lib/espn/services";
@@ -38,6 +39,7 @@ export default function NewsPage() {
           ← Back to live scores
         </Link>
       </p>
+      <AdBanner placement="inline" />
       <Suspense fallback={<HomeSectionSkeleton height={400} />}>
         <NewsHubSection />
       </Suspense>

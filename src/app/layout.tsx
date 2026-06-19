@@ -14,6 +14,7 @@ import { AppProviders } from "@/components/AppProviders";
 import { CookieConsent } from "@/components/CookieConsent";
 import { NativeAppProvider } from "@/components/NativeAppProvider";
 import { CONSENT_DEFAULT_SCRIPT } from "@/lib/consent";
+import { ADSENSE_CLIENT_ID } from "@/lib/adsense";
 import { isNativeUserAgent } from "@/lib/native";
 import { rootMetadata } from "@/lib/seo";
 import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
@@ -57,6 +58,13 @@ export default async function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
+        {!isNativeApp && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">

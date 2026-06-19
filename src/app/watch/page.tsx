@@ -2,6 +2,7 @@ import Link from "next/link";
 import { WatchGuide } from "@/components/WatchGuide";
 import { FaqSection } from "@/components/FaqSection";
 import { WC26PageBanner } from "@/components/WC26Brand";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getWatchGuideMatches } from "@/lib/espn/watch-guide";
 import { getServerTimezone } from "@/lib/timezone";
@@ -43,6 +44,7 @@ export default async function WatchPage() {
           Your region ({getWatchCountry(defaultCountry)?.name}) →
         </Link>
       </p>
+      <AdBanner placement="inline" />
       <WatchGuide entries={entries} initialCountry={defaultCountry} />
       <FaqSection heading="Watching World Cup 2026 - FAQ" items={WATCH_FAQ} />
     </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { getAllCityGuides } from "@/lib/city-guides";
 
@@ -36,6 +37,8 @@ export default function CitiesPage() {
           </p>
         </div>
       </div>
+
+      <AdBanner placement="inline" />
 
       {byCountry.map(({ country, cities: list }) => (
         <section key={country}>
