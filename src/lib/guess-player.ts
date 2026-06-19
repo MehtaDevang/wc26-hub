@@ -95,15 +95,17 @@ export function normalizeGuess(input: string): string {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.'-]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
 export function checkGuess(guess: string, player: GuessPlayer): boolean {
   const normalized = normalizeGuess(guess);
-  const names = [player.name, ...player.aliases].map(normalizeGuess);
-  return names.some(
-    (name) => normalized === name || name.includes(normalized) || normalized.includes(name)
-  );
+  if (!normalized) return false;
+
+  const accepted = [player.name, ...(player.aliases ?? [])].map(normalizeGuess);
+  return accepted.some((name) => normalized === name);
 }
 
 export function getPlayerClues(player: GuessPlayer): PlayerClue[] {
