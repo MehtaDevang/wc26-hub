@@ -21,7 +21,6 @@ import { buildSiteStructuredDataGraph } from "@/lib/structured-data";
 import { getServerTimezone } from "@/lib/timezone";
 import {
   SITE_ADS_EMAIL,
-  SITE_CONTACT_EMAIL,
   SITE_NAME,
   SITE_TWITTER_HANDLE,
   SITE_TWITTER_URL,
@@ -106,6 +105,14 @@ export default async function RootLayout({
                   Wallpapers
                 </Link>
                 <span>·</span>
+                <Link href="/about" className="hover:text-[var(--wc-usa)] transition-colors">
+                  About
+                </Link>
+                <span>·</span>
+                <Link href="/contact" className="hover:text-[var(--wc-usa)] transition-colors">
+                  Contact
+                </Link>
+                <span>·</span>
                 <Link href="/privacy" className="hover:text-[var(--wc-usa)] transition-colors">
                   Privacy
                 </Link>
@@ -119,13 +126,6 @@ export default async function RootLayout({
                   className="hover:text-[var(--wc-usa)] transition-colors"
                 >
                   Advertise
-                </a>
-                <span>·</span>
-                <a
-                  href={`mailto:${SITE_CONTACT_EMAIL}`}
-                  className="hover:text-[var(--wc-usa)] transition-colors"
-                >
-                  Contact
                 </a>
                 <span>·</span>
                 <a

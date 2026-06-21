@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { createPageMetadata } from "@/lib/seo";
-import { SITE_CONTACT_EMAIL, SITE_NAME, getSiteUrl } from "@/lib/site";
+import { SITE_NAME, SITE_TWITTER_HANDLE, getSiteUrl } from "@/lib/site";
 
 export const metadata = createPageMetadata({
   title: "Terms of Use",
@@ -108,10 +108,10 @@ export default function TermsPage() {
 
         <Section title="Contact">
           <p>
-            Questions about these terms? Email us at{" "}
-            <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="text-blue-600 hover:underline">
-              {SITE_CONTACT_EMAIL}
-            </a>
+            Questions about these terms?{" "}
+            <Link href="/contact" className="text-blue-600 hover:underline">
+              Message us on X (@{SITE_TWITTER_HANDLE})
+            </Link>
             .
           </p>
         </Section>
