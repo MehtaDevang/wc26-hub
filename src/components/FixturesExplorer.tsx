@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { Star, Filter } from "lucide-react";
 import { FixturesList } from "@/components/FixturesList";
 import { getMyTeams } from "@/lib/my-teams";
 import { useTimezone } from "@/components/TimezoneProvider";
-import { formatKickoffDateKey, formatKickoffDateLabel } from "@/lib/timezone";
+import {
+  formatKickoffDateKey,
+  formatKickoffDateLabel,
+  todayDateKey,
+} from "@/lib/timezone";
 import type { Match } from "@/lib/types";
 
 const GROUPS = "ABCDEFGHIJKL".split("");
@@ -20,13 +24,26 @@ function teamInMatch(match: Match, code: string): boolean {
   return match.home.toUpperCase() === u || match.away.toUpperCase() === u;
 }
 
+/** Prefer today; otherwise the next day with fixtures, then the most recent past day. */
+function defaultFixtureDateKey(dateKeys: string[], timeZone: string): string {
+  const today = todayDateKey(timeZone);
+  if (dateKeys.includes(today)) return today;
+  const upcoming = dateKeys.find((key) => key >= today);
+  if (upcoming) return upcoming;
+  return dateKeys[dateKeys.length - 1] ?? today;
+}
+
 export function FixturesExplorer({ matches }: FixturesExplorerProps) {
   const timezone = useTimezone();
+  const dateStripRef = useRef<HTMLDivElement>(null);
   const [group, setGroup] = useState<string | "all">("all");
   const [myTeamsOnly, setMyTeamsOnly] = useState(false);
   const [hideFinished, setHideFinished] = useState(false);
   const [dateKey, setDateKey] = useState<string | "all">("all");
   const [myTeams, setMyTeams] = useState<string[]>([]);
+  const [dateInitialized, setDateInitialized] = useState(false);
+
+  const today = useMemo(() => todayDateKey(timezone), [timezone]);
 
   useEffect(() => {
     setMyTeams(getMyTeams());
@@ -47,6 +64,20 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
     return [...keys].sort();
   }, [matches, timezone]);
 
+  useEffect(() => {
+    if (dateKeys.length === 0) return;
+    setDateKey(defaultFixtureDateKey(dateKeys, timezone));
+    setDateInitialized(true);
+  }, [dateKeys, timezone]);
+
+  useEffect(() => {
+    if (!dateInitialized || dateKey === "all") return;
+    const strip = dateStripRef.current;
+    if (!strip) return;
+    const active = strip.querySelector<HTMLElement>(`[data-date-key="${dateKey}"]`);
+    active?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [dateKey, dateInitialized]);
+
   const filtered = useMemo(() => {
     let list = matches;
     if (group !== "all") list = list.filter((m) => m.group === group);
@@ -65,7 +96,10 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
+      <div
+        ref={dateStripRef}
+        className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin"
+      >
         <button
           type="button"
           onClick={() => setDateKey("all")}
@@ -82,15 +116,18 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
           <button
             key={key}
             type="button"
+            data-date-key={key}
             onClick={() => setDateKey(key)}
             className={clsx(
               "shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap",
               dateKey === key
                 ? "bg-[var(--wc-usa)] text-white"
-                : "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                : key === today
+                  ? "bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100"
+                  : "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
             )}
           >
-            {formatKickoffDateLabel(key, timezone)}
+            {key === today ? "Today" : formatKickoffDateLabel(key, timezone)}
           </button>
         ))}
       </div>
