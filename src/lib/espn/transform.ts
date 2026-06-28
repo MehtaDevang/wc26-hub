@@ -298,8 +298,8 @@ function extractStats(summary: EspnSummary, homeCode: string): MatchStats | unde
   const teams = summary.boxscore?.teams;
   if (!teams || teams.length < 2) return undefined;
 
-  const home = teams.find((t) => t.team.abbreviation === homeCode || t.homeAway === "home");
-  const away = teams.find((t) => t !== home);
+  const home = teams.find((t) => t.homeAway === "home") ?? teams.find((t) => t.team.abbreviation === homeCode);
+  const away = teams.find((t) => t.homeAway === "away") ?? teams.find((t) => t !== home);
   if (!home || !away) return undefined;
 
   const get = (team: typeof home, name: string) => {

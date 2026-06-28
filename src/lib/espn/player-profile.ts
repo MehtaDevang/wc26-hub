@@ -8,6 +8,7 @@ import {
   fetchEspnTeams,
 } from "./client";
 import { transformEvent } from "./transform";
+import { getKeyEventAthlete } from "./key-event-athlete";
 import { getTeamName, resolveTeamCode } from "../team-lookup";
 import { getTeamFlag } from "../teams";
 import type {
@@ -256,8 +257,10 @@ async function overlayMatchStats(players: Map<string, PlayerAccumulator>): Promi
       }
 
       for (const keyEvent of summary.keyEvents ?? []) {
-        const athlete = keyEvent.athlete;
-        if (!athlete?.displayName || !athlete.id) continue;
+        const athlete = getKeyEventAthlete(keyEvent);
+        if (!athlete?.displayName) continue;
+
+        const athleteId = athlete.id ?? athlete.displayName;
 
         const teamName = keyEvent.team?.displayName ?? "";
         const teamCode =
@@ -269,7 +272,7 @@ async function overlayMatchStats(players: Map<string, PlayerAccumulator>): Promi
 
         const player = getOrCreatePlayer(
           players,
-          athlete.id,
+          athleteId,
           athlete.displayName,
           teamCode,
           teamName || getTeamName(teamCode),

@@ -29,6 +29,7 @@ import {
   Newspaper,
   Download,
   Image as ImageIcon,
+  Flag,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
@@ -61,6 +62,7 @@ const EXPLORE_LINKS = [
 ] as const;
 
 const TOOL_LINKS = [
+  { href: "/knockout", label: "Road to Round of 32", icon: Flag },
   { href: "/bracket", label: "Live Bracket", icon: Trophy },
   { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
   { href: "/bracket/pool", label: "Bracket Pool", icon: Users },
@@ -86,6 +88,7 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/rivalries" && pathname.startsWith("/rivalries")) return true;
   if (href === "/wallpapers" && pathname.startsWith("/wallpapers")) return true;
   if (href === "/which-team" && pathname.startsWith("/which-team")) return true;
+  if (href === "/knockout" && pathname.startsWith("/knockout")) return true;
   if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
   if (href === "/bracket/pool" && pathname.startsWith("/bracket/pool")) return true;
   if (href === "/bracket" && pathname === "/bracket") return true;

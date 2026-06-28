@@ -4,6 +4,7 @@ import { transformEvent } from "./transform";
 import { extractScorerName } from "./highlight-images";
 import { resolveTeamCode } from "../team-lookup";
 import { getTeamFlag } from "../teams";
+import { getKeyEventAthlete } from "./key-event-athlete";
 
 const ESPN_STATS_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics";
 const TOURNAMENT_DATES = "20260611-20260719";
@@ -334,7 +335,7 @@ async function fetchMatchDerivedLeaders(): Promise<{
           }
         }
 
-        const athlete = keyEvent.athlete;
+        const athlete = getKeyEventAthlete(keyEvent);
         if (!athlete?.displayName) continue;
         const teamName = keyEvent.team?.displayName ?? "";
         const teamAbbrev =

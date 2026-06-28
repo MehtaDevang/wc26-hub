@@ -39,6 +39,10 @@ export default async function ScenariosPage() {
         subtitle="What does your team need - or simulate the whole group yourself"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
+        <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
+          Road to Round of 32 →
+        </Link>
+        <span className="text-zinc-300">·</span>
         <Link href="/standings" className="text-blue-600 hover:underline font-medium">
           Live standings →
         </Link>

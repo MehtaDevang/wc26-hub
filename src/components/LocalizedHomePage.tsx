@@ -17,6 +17,7 @@ import {
   Users,
   Code2,
   Sparkles,
+  Flag,
 } from "lucide-react";
 import { IconicMoments } from "@/components/IconicMoments";
 import { HomeHero } from "@/components/HomeHero";
@@ -200,6 +201,13 @@ export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
               {copy.qualificationScenarios}
             </h3>
             <p className="text-sm text-zinc-500 mt-1">{copy.qualificationScenariosDesc}</p>
+          </Link>
+          <Link href="/knockout" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <Flag size={20} className="text-indigo-600 mb-3" />
+            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
+              {copy.roadToR32}
+            </h3>
+            <p className="text-sm text-zinc-500 mt-1">{copy.roadToR32Desc}</p>
           </Link>
           <Link href="/watch" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
             <Tv size={20} className="text-emerald-600 mb-3" />

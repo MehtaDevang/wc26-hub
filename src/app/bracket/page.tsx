@@ -36,6 +36,10 @@ export default async function BracketPage() {
           Fill in your bracket predictor →
         </Link>
         <span className="text-zinc-300">·</span>
+        <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
+          Road to Round of 32 →
+        </Link>
+        <span className="text-zinc-300">·</span>
         <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
           Qualification scenarios →
         </Link>

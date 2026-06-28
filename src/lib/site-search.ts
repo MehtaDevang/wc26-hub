@@ -15,6 +15,7 @@ export const QUICK_NAV: SearchItem[] = [
   { id: "my", label: "My World Cup", href: "/my", group: "Today", keywords: "my teams follow dashboard" },
   { id: "fixtures", label: "All fixtures & results", href: "/fixtures", group: "Today", keywords: "schedule calendar matches" },
   { id: "standings", label: "Group tables", href: "/standings", group: "Today", keywords: "standings points table" },
+  { id: "knockout", label: "Road to Round of 32", href: "/knockout", group: "Today", keywords: "knockout qualification best third place round of 32 advance" },
   { id: "bracket", label: "Knockout bracket", href: "/bracket", group: "Today", keywords: "knockout elimination" },
   { id: "leaders", label: "Stat leaders - Golden Boot", href: "/leaders", group: "Stats", keywords: "top scorers assists" },
   { id: "news", label: "World Cup news & exclusives", href: "/news", group: "Today", keywords: "news headlines exclusive stories articles" },

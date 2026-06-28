@@ -31,6 +31,8 @@ export interface HomeCopy {
   bracketPredictorDesc: string;
   qualificationScenarios: string;
   qualificationScenariosDesc: string;
+  roadToR32: string;
+  roadToR32Desc: string;
   whereToWatch: string;
   whereToWatchDesc: string;
   statLeaders: string;
@@ -90,6 +92,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     bracketPredictorDesc: "Pick winners & share your bracket",
     qualificationScenarios: "Qualification Scenarios",
     qualificationScenariosDesc: "What does each team need to advance?",
+    roadToR32: "Road to Round of 32",
+    roadToR32Desc: "Live 32-team board & best third-placed tracker",
     whereToWatch: "Where to Watch",
     whereToWatchDesc: "TV channels for every match",
     statLeaders: "Stat Leaders",
@@ -126,6 +130,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     bracketPredictorDesc: "Elige ganadores y comparte tu bracket",
     qualificationScenarios: "Escenarios de clasificación",
     qualificationScenariosDesc: "¿Qué necesita cada selección para avanzar?",
+    roadToR32: "Camino a los 16avos",
+    roadToR32Desc: "Tablero en vivo de 32 equipos y mejores terceros",
     whereToWatch: "Dónde ver",
     whereToWatchDesc: "Canales de TV para cada partido",
     statLeaders: "Líderes estadísticos",
@@ -162,6 +168,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     bracketPredictorDesc: "Choisissez les vainqueurs et partagez votre bracket",
     qualificationScenarios: "Scénarios de qualification",
     qualificationScenariosDesc: "De quoi chaque équipe a-t-elle besoin pour se qualifier ?",
+    roadToR32: "Route vers les 16es",
+    roadToR32Desc: "Tableau des 32 équipes et meilleurs troisièmes",
     whereToWatch: "Où regarder",
     whereToWatchDesc: "Chaînes TV pour chaque match",
     statLeaders: "Leaders statistiques",
