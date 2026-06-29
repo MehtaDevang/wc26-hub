@@ -13,8 +13,21 @@ export type AdPlacement =
 export const ADSENSE_CLIENT_ID =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-8009690168862509";
 
+/** IAB ads.txt certification authority ID for Google AdSense. */
+const ADSENSE_CERT_AUTHORITY_ID = "f08c47fec0942fa0";
+
 export function getAdSenseClientId(): string {
   return ADSENSE_CLIENT_ID;
+}
+
+/** Publisher ID as used in ads.txt (`pub-…`, without the `ca-` prefix). */
+export function getAdsTxtPublisherId(): string {
+  return ADSENSE_CLIENT_ID.replace(/^ca-/, "");
+}
+
+/** Full ads.txt body — single source of truth for the root `/ads.txt` route. */
+export function getAdsTxtContent(): string {
+  return `google.com, ${getAdsTxtPublisherId()}, DIRECT, ${ADSENSE_CERT_AUTHORITY_ID}\n`;
 }
 
 export function getAdSlotId(placement: AdPlacement): string | undefined {

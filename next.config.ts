@@ -69,6 +69,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/ads.txt",
+        headers: [
+          { key: "Content-Type", value: "text/plain; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=86400" },
+        ],
+      },
+      {
         source: "/embed/:path*",
         headers: [
           ...securityHeaders.filter((h) => h.key !== "X-Frame-Options"),
@@ -76,7 +83,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/(.*)",
+        source: "/((?!ads\\.txt$).*)",
         headers: [
           ...securityHeaders,
           { key: "Content-Security-Policy", value: siteCsp },
