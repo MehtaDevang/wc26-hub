@@ -657,6 +657,15 @@ export async function getAllPlayerSlugs(): Promise<Array<{ id: string; slug: str
   }));
 }
 
+/** Players with hand-written editorial — safe to index (sitemap + Google). */
+export async function getIndexablePlayerSlugs(): Promise<Array<{ id: string; slug: string }>> {
+  const { isFeaturedPlayer } = await import("../player-editorial");
+  const index = await getPlayerIndex();
+  return [...index.values()]
+    .filter((p) => isFeaturedPlayer({ teamCode: p.teamCode, slug: p.slug, name: p.name }))
+    .map((p) => ({ id: p.espnId, slug: p.slug }));
+}
+
 export function getPlayerPath(player: { id: string; slug?: string; espnId?: string }): string {
   return `/players/${player.espnId ?? player.id}`;
 }

@@ -43,6 +43,10 @@ npx vercel --prod
 
 Add `www.thegoalposts.in` and `thegoalposts.in` in Vercel **Domains**. Apex redirects to `www` automatically.
 
+## Deploy to EC2 (self-hosted)
+
+Full runbook: **[docs/ec2-deploy.md](docs/ec2-deploy.md)** — Mac build, rsync to EC2, nginx, PM2, DNS, and SSL. Use `./scripts/sync-to-ec2.sh` for routine deploys.
+
 ## SEO checklist (get on Google)
 
 1. **Set `NEXT_PUBLIC_SITE_URL`** to `https://www.thegoalposts.in` and redeploy.

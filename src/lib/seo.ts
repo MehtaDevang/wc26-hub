@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSiteUrl, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TWITTER_HANDLE } from "./site";
+import { ADSENSE_CLIENT_ID } from "./adsense";
 
 const OG_IMAGE = {
   url: "/opengraph-image",
@@ -141,6 +142,9 @@ export function rootMetadata(): Metadata {
       },
     },
     verification: buildVerification(),
+    other: {
+      "google-adsense-account": ADSENSE_CLIENT_ID,
+    },
     icons: {
       icon: [
         { url: "/favicon.svg", type: "image/svg+xml" },

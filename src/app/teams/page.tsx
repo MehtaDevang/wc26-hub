@@ -3,6 +3,8 @@ import { TEAMS } from "@/lib/data";
 import { getFifaRank } from "@/lib/fifa-rankings";
 import { FifaRankBadge } from "@/components/FifaRankBadge";
 import { AdBanner } from "@/components/AdBanner";
+import { EditorialHubIntro } from "@/components/EditorialHubIntro";
+import { TEAMS_HUB_INTRO } from "@/lib/editorial-hub-intros";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, TEAMS_KEYWORDS } from "@/lib/seo-keywords";
 
@@ -33,6 +35,7 @@ export default function TeamsIndexPage() {
           Every nation at the FIFA World Cup 2026 - sorted by FIFA world ranking (June 2026). Tap a team for fixtures, results, group position, and full tournament journey.
         </p>
       </div>
+      <EditorialHubIntro intro={TEAMS_HUB_INTRO} />
       <AdBanner placement="inline" />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {teams.map((team) => (

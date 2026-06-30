@@ -5,6 +5,8 @@ import { WC26PageBanner } from "@/components/WC26Brand";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
 import { getKnockoutBracket } from "@/lib/espn/services";
 import { AdBanner } from "@/components/AdBanner";
+import { EditorialHubIntro } from "@/components/EditorialHubIntro";
+import { STANDINGS_HUB_INTRO } from "@/lib/editorial-hub-intros";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
@@ -52,6 +54,7 @@ export default async function StandingsPage() {
           Qualification scenarios →
         </Link>
       </p>
+      <EditorialHubIntro intro={STANDINGS_HUB_INTRO} />
       <AdBanner placement="standings" />
       <InteractiveStandingsGrid groups={standings} />
       <LiveKnockoutBracket initialData={bracket} showLink />

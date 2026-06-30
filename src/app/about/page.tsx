@@ -71,6 +71,33 @@ export default function AboutPage() {
           </p>
         </Section>
 
+        <Section title="Editorial & original content" id="editorial">
+          <p>
+            {SITE_NAME} is more than a live-score widget. We publish original articles (marked
+            &ldquo;Exclusive&rdquo; on our news hub), hand-written team qualification stories for
+            every nation, curated player profiles for marquee stars, travel guides for all 20 host
+            cities, rivalry deep-dives, and a full{" "}
+            <Link href="/history" className="text-blue-600 hover:underline font-medium">
+              World Cup history
+            </Link>{" "}
+            section covering every tournament since 1930.
+          </p>
+          <p>
+            Headlines from external providers appear as short briefs with a link to the full story at
+            the source; we do not republish those articles in full. Syndicated news pages are not
+            indexed by search engines. Player pages without a curated profile are stats-only and
+            similarly excluded from search indexing so we surface our best editorial work first.
+          </p>
+          <p>
+            We follow Google&apos;s publisher policies: clear attribution, no scraped full-text
+            republishing, and substantive guides alongside live data. Questions or corrections:{" "}
+            <Link href="/contact" className="text-blue-600 hover:underline font-medium">
+              contact us on X
+            </Link>
+            .
+          </p>
+        </Section>
+
         <Section title="Not affiliated with FIFA">
           <p>
             {SITE_NAME} is not affiliated with, endorsed by, or connected to FIFA, any national
@@ -111,9 +138,17 @@ export default function AboutPage() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+  id,
+}: {
+  title: string;
+  children: React.ReactNode;
+  id?: string;
+}) {
   return (
-    <section className="space-y-2">
+    <section className="space-y-2" id={id}>
       <h2 className="text-base font-bold text-zinc-900">{title}</h2>
       {children}
     </section>

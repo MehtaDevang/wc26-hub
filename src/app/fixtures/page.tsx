@@ -2,7 +2,9 @@ import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { transformEvents } from "@/lib/espn/transform";
 import { LiveFixturesList } from "@/components/LiveFixturesList";
 import { AddTournamentCalendar } from "@/components/AddTournamentCalendar";
+import { EditorialHubIntro } from "@/components/EditorialHubIntro";
 import { AdBanner } from "@/components/AdBanner";
+import { FIXTURES_HUB_INTRO } from "@/lib/editorial-hub-intros";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
 import { getServerTimezone } from "@/lib/timezone";
@@ -38,6 +40,7 @@ export default async function FixturesPage() {
         </div>
         <AddTournamentCalendar matches={matches} />
       </div>
+      <EditorialHubIntro intro={FIXTURES_HUB_INTRO} />
       <AdBanner placement="fixtures" />
       <LiveFixturesList initialMatches={matches} />
     </div>

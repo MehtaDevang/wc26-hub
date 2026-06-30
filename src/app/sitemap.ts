@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { fetchEspnScoreboard } from "@/lib/espn/client";
 import { getAllGroupLetters } from "@/lib/espn/groups";
-import { getAllPlayerSlugs } from "@/lib/espn/player-profile";
+import { getIndexablePlayerSlugs } from "@/lib/espn/player-profile";
+import { getOwnNews } from "@/lib/own-news";
 import { TEAMS } from "@/lib/data";
 import { getSiteUrl } from "@/lib/site";
 import { getAllVenues, getVenueSlug } from "@/lib/venues";
@@ -29,6 +30,7 @@ const STATIC_ROUTES: Array<{
   { path: "/scenarios", changeFrequency: "hourly", priority: 0.9 },
   { path: "/watch", changeFrequency: "hourly", priority: 0.9 },
   { path: "/leaders", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/history", changeFrequency: "weekly", priority: 0.92 },
   { path: "/news", changeFrequency: "hourly", priority: 0.9 },
   { path: "/teams", changeFrequency: "hourly", priority: 0.9 },
   { path: "/hosts", changeFrequency: "weekly", priority: 0.85 },
@@ -36,7 +38,6 @@ const STATIC_ROUTES: Array<{
   { path: "/stadiums", changeFrequency: "weekly", priority: 0.85 },
   { path: "/groups", changeFrequency: "hourly", priority: 0.9 },
   { path: "/players", changeFrequency: "hourly", priority: 0.85 },
-  { path: "/history", changeFrequency: "weekly", priority: 0.8 },
   { path: "/puzzles", changeFrequency: "daily", priority: 0.7 },
   { path: "/puzzles/guess-player", changeFrequency: "daily", priority: 0.6 },
   { path: "/puzzles/scramble", changeFrequency: "daily", priority: 0.6 },
@@ -47,7 +48,7 @@ const STATIC_ROUTES: Array<{
   { path: "/pool", changeFrequency: "weekly", priority: 0.75 },
   { path: "/install", changeFrequency: "monthly", priority: 0.7 },
   { path: "/embed", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/about", changeFrequency: "yearly", priority: 0.35 },
+  { path: "/about", changeFrequency: "yearly", priority: 0.5 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.35 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
@@ -148,17 +149,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const players = await getAllPlayerSlugs();
+    const ownNews = await getOwnNews(50);
+    for (const article of ownNews) {
+      if (!article.isOriginal) continue;
+      entries.push({
+        url: `${siteUrl}/news/${article.id}`,
+        lastModified: article.publishedAt ? new Date(article.publishedAt) : now,
+        changeFrequency: "weekly",
+        priority: 0.88,
+      });
+    }
+  } catch {
+    // Original news omitted if MongoDB is unavailable.
+  }
+
+  try {
+    const players = await getIndexablePlayerSlugs();
     for (const player of players) {
       entries.push({
         url: `${siteUrl}/players/${player.id}`,
         lastModified: now,
-        changeFrequency: "daily",
-        priority: 0.7,
+        changeFrequency: "weekly",
+        priority: 0.75,
       });
     }
   } catch {
-    // Player URLs omitted if index build fails.
+    // Featured player URLs omitted if index build fails.
   }
 
   try {
@@ -170,23 +186,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "always",
         priority: 0.9,
       });
-      const state = event.competitions?.[0]?.status?.type?.state;
-      if (state === "pre") {
-        entries.push({
-          url: `${siteUrl}/match/${event.id}/preview`,
-          lastModified: now,
-          changeFrequency: "daily",
-          priority: 0.85,
-        });
-      }
-      if (state === "post") {
-        entries.push({
-          url: `${siteUrl}/match/${event.id}/recap`,
-          lastModified: now,
-          changeFrequency: "weekly",
-          priority: 0.85,
-        });
-      }
     }
   } catch {
     // Sitemap still works with static routes if ESPN is unavailable.

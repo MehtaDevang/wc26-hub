@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: PageProps) {
     title: article.headline,
     description: article.summary,
     path: `/news/${id}`,
+    noIndex: !article.isOriginal,
   });
 }
 

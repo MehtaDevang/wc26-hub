@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: PageProps) {
       title: `${player.name} - ${player.teamName} World Cup 2026 Player Stats`,
       description: `${player.name} (${player.teamName}) at FIFA World Cup 2026 - ${player.worldCupGoals} goals, ${player.matchesPlayed} matches. ${richSnippet}${editorialNote}`,
       path: `/players/${player.espnId ?? player.id}`,
+      noIndex: !player.richProfile?.hasEditorial,
       keywords: mergeKeywords(PLAYERS_KEYWORDS, STATS_KEYWORDS, [
         player.name,
         `${player.teamName} players`,
