@@ -11,7 +11,8 @@ function redirectToCanonicalWww(request: NextRequest): NextResponse | null {
 
   const url = request.nextUrl.clone();
   url.protocol = "https";
-  url.host = host.endsWith(".in") ? "www.thegoalposts.in" : "www.thegoalposts.com";
+  url.hostname = host.endsWith(".in") ? "www.thegoalposts.in" : "www.thegoalposts.com";
+  url.port = "";
   return NextResponse.redirect(url, 308);
 }
 

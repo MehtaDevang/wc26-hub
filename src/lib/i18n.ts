@@ -27,8 +27,8 @@ export interface EmbedStrings {
 export interface HomeCopy {
   localeLabel: string;
   fanTools: string;
-  bracketPredictor: string;
-  bracketPredictorDesc: string;
+  liveBracket: string;
+  liveBracketDesc: string;
   qualificationScenarios: string;
   qualificationScenariosDesc: string;
   roadToR32: string;
@@ -88,8 +88,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
   en: {
     localeLabel: "English",
     fanTools: "Fan Tools",
-    bracketPredictor: "Bracket Predictor",
-    bracketPredictorDesc: "Pick winners & share your bracket",
+    liveBracket: "Live Bracket",
+    liveBracketDesc: "Knockout scores from Round of 32 to the Final",
     qualificationScenarios: "Qualification Scenarios",
     qualificationScenariosDesc: "What does each team need to advance?",
     roadToR32: "Road to Round of 32",
@@ -126,8 +126,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
   es: {
     localeLabel: "Español",
     fanTools: "Herramientas para fans",
-    bracketPredictor: "Simulador de llave",
-    bracketPredictorDesc: "Elige ganadores y comparte tu bracket",
+    liveBracket: "Llave en vivo",
+    liveBracketDesc: "Resultados del knockout del dieciseisavos a la final",
     qualificationScenarios: "Escenarios de clasificación",
     qualificationScenariosDesc: "¿Qué necesita cada selección para avanzar?",
     roadToR32: "Camino a los 16avos",
@@ -164,8 +164,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
   fr: {
     localeLabel: "Français",
     fanTools: "Outils fans",
-    bracketPredictor: "Pronostics tableau",
-    bracketPredictorDesc: "Choisissez les vainqueurs et partagez votre bracket",
+    liveBracket: "Tableau en direct",
+    liveBracketDesc: "Scores du knockout des 16es à la finale",
     qualificationScenarios: "Scénarios de qualification",
     qualificationScenariosDesc: "De quoi chaque équipe a-t-elle besoin pour se qualifier ?",
     roadToR32: "Route vers les 16es",

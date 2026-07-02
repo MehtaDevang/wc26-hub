@@ -6,18 +6,15 @@ import {
   Star,
   Trophy,
   Flame,
-  GitBranch,
   Target,
   Sparkles,
   Radio,
 } from "lucide-react";
 import { getTeam } from "@/lib/data";
 import { getMyTeams } from "@/lib/my-teams";
-import { getBracketPicks, scoreBracketPicks } from "@/lib/bracket-picks";
 import { getSavedTeamResult } from "@/lib/quiz/team-personality-storage";
 import { getPuzzleStreakState } from "@/lib/puzzle-streaks";
 import { fetchLeaders } from "@/lib/matches";
-import type { KnockoutBracketData } from "@/lib/types";
 import type { Match } from "@/lib/types";
 
 function teamInMatch(match: Match, code: string): boolean {
@@ -31,12 +28,6 @@ export function FanScorecard({
   todayMatches: Match[];
 }) {
   const [teams, setTeams] = useState<string[]>([]);
-  const [bracketScore, setBracketScore] = useState<{
-    correct: number;
-    decided: number;
-    pct: number;
-  } | null>(null);
-  const [pickCount, setPickCount] = useState(0);
   const [topScorers, setTopScorers] = useState<
     Array<{ name: string; goals: number; teamCode: string; flag: string }>
   >([]);
@@ -48,19 +39,6 @@ export function FanScorecard({
     setTeams(getMyTeams());
     setQuiz(getSavedTeamResult());
     setStreak(getPuzzleStreakState());
-    const picks = getBracketPicks();
-    setPickCount(Object.keys(picks).length);
-
-    if (Object.keys(picks).length === 0) return;
-
-    fetch("/api/bracket")
-      .then((r) => r.json())
-      .then((data: { bracket?: KnockoutBracketData }) => {
-        if (data.bracket) {
-          setBracketScore(scoreBracketPicks(picks, data.bracket));
-        }
-      })
-      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -90,7 +68,6 @@ export function FanScorecard({
 
   const hasContent =
     teams.length > 0 ||
-    pickCount > 0 ||
     quiz ||
     (streak && streak.currentStreak > 0) ||
     topScorers.length > 0;
@@ -133,36 +110,6 @@ export function FanScorecard({
               <p className="text-2xl font-black text-zinc-900">{liveForMe.length}</p>
               <p className="text-xs text-zinc-500 mt-1">of your teams playing</p>
             </div>
-          )}
-
-          {bracketScore && bracketScore.decided > 0 && (
-            <Link
-              href="/bracket/predict"
-              className="rounded-xl border border-blue-100 bg-blue-50/50 p-4 hover:border-blue-200 transition-colors"
-            >
-              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-700 mb-2 flex items-center gap-1">
-                <GitBranch size={11} />
-                Bracket
-              </p>
-              <p className="text-2xl font-black text-zinc-900">{bracketScore.pct}%</p>
-              <p className="text-xs text-zinc-500 mt-1">
-                {bracketScore.correct}/{bracketScore.decided} knockout picks right
-              </p>
-            </Link>
-          )}
-
-          {pickCount > 0 && (!bracketScore || bracketScore.decided === 0) && (
-            <Link
-              href="/bracket/predict"
-              className="rounded-xl border border-blue-100 bg-blue-50/50 p-4 hover:border-blue-200 transition-colors"
-            >
-              <p className="text-[10px] font-bold uppercase tracking-wider text-blue-700 mb-2 flex items-center gap-1">
-                <GitBranch size={11} />
-                Bracket
-              </p>
-              <p className="text-2xl font-black text-zinc-900">{pickCount}</p>
-              <p className="text-xs text-zinc-500 mt-1">picks saved</p>
-            </Link>
           )}
 
           {streak && streak.currentStreak > 0 && (

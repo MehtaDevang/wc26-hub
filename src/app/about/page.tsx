@@ -45,8 +45,8 @@ export default function AboutPage() {
             <Feature icon={Star} label="My World Cup" href="/my">
               Follow your nations and see their matches first on your device.
             </Feature>
-            <Feature icon={GitBranch} label="Bracket tools" href="/bracket/predict">
-              Predict the knockout stage and share picks with friends.
+            <Feature icon={GitBranch} label="Live knockout bracket" href="/bracket">
+              Follow Round of 32 through the Final with live scores.
             </Feature>
             <Feature icon={Calendar} label="Daily digest" href="/daily">
               Yesterday&apos;s results, today&apos;s fixtures, and what&apos;s live now.

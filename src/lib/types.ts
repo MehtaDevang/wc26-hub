@@ -22,6 +22,9 @@ export interface Match {
   venueCountry?: string;
   homeScore?: number;
   awayScore?: number;
+  /** Set from ESPN when the side won (includes penalty shootouts). */
+  homeWon?: boolean;
+  awayWon?: boolean;
   minute?: number;
   displayClock?: string;
   attendance?: number;
@@ -29,6 +32,8 @@ export interface Match {
   homeRecord?: string;
   awayRecord?: string;
   stageLabel?: string;
+  /** ESPN season slug, e.g. round-of-32, round-of-16, quarterfinals */
+  roundSlug?: string;
 }
 
 export interface NewsArticle {

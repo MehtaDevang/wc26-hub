@@ -106,6 +106,7 @@ export interface EspnEvent {
   id: string;
   date: string;
   name: string;
+  season?: { year?: number; type?: number; slug?: string };
   competitions: EspnCompetition[];
 }
 

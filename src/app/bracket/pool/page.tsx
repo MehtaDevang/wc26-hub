@@ -33,8 +33,8 @@ export default async function BracketPoolPage() {
         subtitle="Challenge your friends - everyone's picks, auto-scored against live results"
       />
       <p className="text-sm text-zinc-500">
-        <Link href="/bracket/predict" className="text-blue-600 hover:underline font-medium">
-          Make your picks first →
+        <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
+          View live bracket →
         </Link>
       </p>
       <AdBanner placement="inline" />

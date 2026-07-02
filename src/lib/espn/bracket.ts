@@ -1,4 +1,9 @@
 import { resolveTeamCode } from "../team-lookup";
+import {
+  fifaR32PositionForMatch,
+  FIFA_R32_POSITION_TO_TREE_SLOT,
+  r16TreeSlotForTeams,
+} from "./fifa-bracket-slots";
 import type {
   BracketMatch,
   BracketRound,
@@ -65,13 +70,31 @@ const SYNTHESIZED_ROUNDS: Partial<
   final: [{ home: "Semi-Final 1 Winner", away: "Semi-Final 2 Winner" }],
 };
 
+const SLUG_TO_ROUND: Record<string, BracketRoundId> = {
+  "round-of-32": "round-of-32",
+  "round-of-16": "round-of-16",
+  quarterfinals: "quarter-final",
+  "quarter-finals": "quarter-final",
+  semifinals: "semi-final",
+  "semi-finals": "semi-final",
+  "3rd-place-match": "third-place",
+  "third-place": "third-place",
+  "third-place-playoff": "third-place",
+  final: "final",
+};
+
+function classifyMatchRound(match: Match): BracketRoundId | null {
+  if (match.roundSlug && match.roundSlug !== "group-stage") {
+    const fromSlug = SLUG_TO_ROUND[match.roundSlug];
+    if (fromSlug) return fromSlug;
+  }
+  if (match.stageLabel) return classifyKnockoutRound(match.stageLabel);
+  return null;
+}
+
 function classifyKnockoutRound(stageLabel: string): BracketRoundId | null {
   const low = stageLabel.toLowerCase();
 
-  if (low.includes("third place") && low.includes("group")) return "round-of-32";
-  if (/group [a-l]/.test(low) && (low.includes("2nd place") || low.includes("winner"))) {
-    return "round-of-32";
-  }
   if (low.includes("round of 32") && low.includes("winner at round of 32")) {
     return "round-of-16";
   }
@@ -80,6 +103,14 @@ function classifyKnockoutRound(stageLabel: string): BracketRoundId | null {
   }
   if (low.includes("quarter") && low.includes("winner")) return "semi-final";
   if (low.includes("semi") && low.includes("winner")) return "final";
+  if (low.includes("third place") && low.includes("group")) return "round-of-32";
+  if (/group [a-l]/.test(low) && (low.includes("2nd place") || low.includes("winner"))) {
+    return "round-of-32";
+  }
+  if (low.includes("round of 32")) return "round-of-32";
+  if (low.includes("round of 16")) return "round-of-16";
+  if (low.includes("quarter")) return "quarter-final";
+  if (low.includes("semi")) return "semi-final";
   if (low.includes("third place")) return "third-place";
   if (low.includes("final") && !low.includes("semi") && !low.includes("quarter")) {
     return "final";
@@ -125,6 +156,9 @@ function parseGroupSlot(name: string): { group: string; rank: number } | null {
 
   const second = name.match(/group\s+([a-l])\s+2nd place/i);
   if (second) return { group: second[1].toUpperCase(), rank: 2 };
+
+  const third = name.match(/third place group\s+([a-l])/i);
+  if (third) return { group: third[1].toUpperCase(), rank: 3 };
 
   return null;
 }
@@ -202,10 +236,10 @@ function shortenFeederLabel(name: string): string {
 
 function parseFeederReference(label: string): { round: BracketRoundId; num: number } | null {
   const patterns: [RegExp, BracketRoundId][] = [
-    [/round of 32 (\d+) winner/i, "round-of-32"],
-    [/round of 16 (\d+) winner/i, "round-of-16"],
-    [/quarter-final (\d+) winner/i, "quarter-final"],
-    [/semi-final (\d+) winner/i, "semi-final"],
+    [/(?:round of 32|r32) (\d+) winner/i, "round-of-32"],
+    [/(?:round of 16|r16) (\d+) winner/i, "round-of-16"],
+    [/(?:quarter-final|qf) (\d+) winner/i, "quarter-final"],
+    [/(?:semi-final|sf) (\d+) winner/i, "semi-final"],
   ];
 
   for (const [pattern, round] of patterns) {
@@ -213,10 +247,20 @@ function parseFeederReference(label: string): { round: BracketRoundId; num: numb
     if (match) return { round, num: parseInt(match[1], 10) };
   }
 
-  const loser = label.match(/semi-final (\d+) loser/i);
+  const loser = label.match(/(?:semi-final|sf) (\d+) loser/i);
   if (loser) return { round: "semi-final", num: parseInt(loser[1], 10) };
 
   return null;
+}
+
+function matchSideWon(match: Match, side: "home" | "away"): boolean {
+  if (side === "home" && match.homeWon) return true;
+  if (side === "away" && match.awayWon) return true;
+  if (match.status !== "finished") return false;
+  if (match.homeScore === undefined || match.awayScore === undefined) return false;
+  return side === "home"
+    ? match.homeScore > match.awayScore
+    : match.awayScore > match.homeScore;
 }
 
 function matchToBracket(
@@ -226,16 +270,8 @@ function matchToBracket(
   matchNumber: number | undefined,
   standings?: GroupStandings[]
 ): BracketMatch {
-  const homeWinner =
-    match.status === "finished" &&
-    match.homeScore !== undefined &&
-    match.awayScore !== undefined &&
-    match.homeScore > match.awayScore;
-  const awayWinner =
-    match.status === "finished" &&
-    match.homeScore !== undefined &&
-    match.awayScore !== undefined &&
-    match.awayScore > match.homeScore;
+  const homeWinner = matchSideWon(match, "home");
+  const awayWinner = matchSideWon(match, "away");
 
   return {
     id: String(match.id),
@@ -316,16 +352,24 @@ function mergeRound(roundId: BracketRoundId, fromMatches: BracketMatch[]): Brack
 
 function getWinnerTeam(match: BracketMatch): BracketTeam | null {
   if (match.status !== "finished") return null;
-  if (match.home.winner) return { ...match.home, placeholder: false, projected: false };
-  if (match.away.winner) return { ...match.away, placeholder: false, projected: false };
+  if (match.home.winner) return { ...match.home, placeholder: false, projected: false, winner: true };
+  if (match.away.winner) return { ...match.away, placeholder: false, projected: false, winner: true };
   return null;
 }
 
 function getLoserTeam(match: BracketMatch): BracketTeam | null {
   if (match.status !== "finished") return null;
-  if (match.home.winner) return { ...match.away, placeholder: false, projected: false };
-  if (match.away.winner) return { ...match.home, placeholder: false, projected: false };
+  if (match.home.winner) return { ...match.away, placeholder: false, projected: false, winner: false };
+  if (match.away.winner) return { ...match.home, placeholder: false, projected: false, winner: false };
   return null;
+}
+
+function feederLabelForTeam(team: BracketTeam): string {
+  return team.feederLabel ?? team.name;
+}
+
+function isResolvedTeam(team: BracketTeam): boolean {
+  return Boolean(team.code) && !team.placeholder;
 }
 
 function findMatchByNumber(
@@ -362,45 +406,116 @@ function resolveFeederTeam(
 function propagateWinners(rounds: BracketRound[]): void {
   const ordered = [...ROUND_ORDER, "third-place"];
 
-  for (const roundId of ordered) {
-    const round = rounds.find((entry) => entry.id === roundId);
-    if (!round) continue;
+  for (let pass = 0; pass < 4; pass++) {
+    let changed = false;
 
-    for (const match of round.matches) {
-      for (const side of ["home", "away"] as const) {
-        const team = match[side];
-        if (!team.placeholder && team.code) continue;
+    for (const roundId of ordered) {
+      const round = rounds.find((entry) => entry.id === roundId);
+      if (!round) continue;
 
-        const feederLabel = team.feederLabel ?? team.name;
-        const wantLoser = /loser/i.test(feederLabel);
-        const resolved = resolveFeederTeam(feederLabel, rounds, wantLoser);
-        if (resolved) {
+      for (const match of round.matches) {
+        for (const side of ["home", "away"] as const) {
+          const team = match[side];
+          if (isResolvedTeam(team)) continue;
+
+          const feederLabel = feederLabelForTeam(team);
+          const wantLoser = /loser/i.test(feederLabel);
+          const resolved = resolveFeederTeam(feederLabel, rounds, wantLoser);
+          if (!resolved) continue;
+
           match[side] = {
             ...resolved,
-            score: team.score,
-            winner: team.winner,
+            winner: undefined,
           };
+          changed = true;
+        }
+
+        if (match.home.code || match.away.code) {
+          if (match.status === "tbd") match.status = "upcoming";
         }
       }
-
-      if (match.home.code || match.away.code) {
-        if (match.status === "tbd") match.status = "upcoming";
-      }
     }
+
+    if (!changed) break;
   }
 }
 
-function assignR32Numbers(matches: BracketMatch[]): void {
-  matches
+function assignR32TreeSlots(matches: BracketMatch[], sourceMatches: Match[]): void {
+  const sourceById = new Map(sourceMatches.map((m) => [m.id, m]));
+
+  for (const match of matches) {
+    const source = match.id ? sourceById.get(match.id) : undefined;
+    if (!source) continue;
+
+    const position = fifaR32PositionForMatch(source.id, source.home, source.away);
+    if (!position) continue;
+
+    const treeSlot = FIFA_R32_POSITION_TO_TREE_SLOT[position];
+    if (treeSlot === undefined) continue;
+
+    match.slot = treeSlot;
+    match.matchNumber = position;
+    match.label = `${ROUND_META["round-of-32"].shortLabel} ${position}`;
+  }
+}
+
+function assignRemainingRoundSlots(
+  roundId: BracketRoundId,
+  matches: BracketMatch[],
+  stageLabels: Map<BracketMatch, string>
+): void {
+  if (roundId === "round-of-32" || matches.length === 0) return;
+
+  const feederMatches: BracketMatch[] = [];
+  const realMatches: BracketMatch[] = [];
+
+  for (const match of matches) {
+    const label = stageLabels.get(match) ?? "";
+    if (parseFeederNumbers(label)) feederMatches.push(match);
+    else realMatches.push(match);
+  }
+
+  const slotAssignments = new Map<BracketMatch, number>();
+
+  if (feederMatches.length > 0) {
+    assignFeederRoundSlots(roundId, feederMatches, stageLabels);
+    for (const match of feederMatches) {
+      if (match.slot !== undefined) slotAssignments.set(match, match.slot);
+    }
+  }
+
+  for (const match of realMatches) {
+    if (roundId !== "round-of-16") {
+      continue;
+    }
+    const homeCode = match.home.code ?? resolveTeamCode(match.home.name) ?? "";
+    const awayCode = match.away.code ?? resolveTeamCode(match.away.name) ?? "";
+    if (!homeCode || !awayCode) continue;
+    const slot = r16TreeSlotForTeams(homeCode, awayCode);
+    if (slot !== null) slotAssignments.set(match, slot);
+  }
+
+  const usedSlots = new Set(slotAssignments.values());
+  const { slots } = ROUND_META[roundId];
+  const openSlots = Array.from({ length: slots }, (_, slot) => slot).filter(
+    (slot) => !usedSlots.has(slot)
+  );
+
+  realMatches
+    .filter((match) => !slotAssignments.has(match))
     .sort(
       (a, b) =>
         new Date(a.kickoffAt ?? 0).getTime() - new Date(b.kickoffAt ?? 0).getTime()
     )
     .forEach((match, index) => {
-      match.slot = index;
-      match.matchNumber = index + 1;
-      match.label = `${ROUND_META["round-of-32"].shortLabel} ${index + 1}`;
+      slotAssignments.set(match, openSlots[index] ?? index);
     });
+
+  for (const [match, slot] of slotAssignments) {
+    match.slot = slot;
+    match.matchNumber = slot + 1;
+    match.label = `${ROUND_META[roundId].shortLabel} ${slot + 1}`;
+  }
 }
 
 function assignFeederRoundSlots(
@@ -439,21 +554,20 @@ export function buildKnockoutBracket(
   const stageLabels = new Map<BracketMatch, string>();
 
   for (const match of matches) {
-    if (!match.stageLabel) continue;
-    const round = classifyKnockoutRound(match.stageLabel);
+    const round = classifyMatchRound(match);
     if (!round) continue;
 
     const list = byRound.get(round) ?? [];
     const bracketMatch = matchToBracket(match, round, list.length, undefined, standings);
-    stageLabels.set(bracketMatch, match.stageLabel);
+    stageLabels.set(bracketMatch, match.stageLabel ?? match.roundSlug ?? "");
     list.push(bracketMatch);
     byRound.set(round, list);
   }
 
-  assignR32Numbers(byRound.get("round-of-32") ?? []);
+  assignR32TreeSlots(byRound.get("round-of-32") ?? [], matches);
 
   for (const roundId of ["round-of-16", "quarter-final", "semi-final"] as BracketRoundId[]) {
-    assignFeederRoundSlots(roundId, byRound.get(roundId) ?? [], stageLabels);
+    assignRemainingRoundSlots(roundId, byRound.get(roundId) ?? [], stageLabels);
   }
 
   const rounds: BracketRound[] = [];
@@ -474,7 +588,10 @@ export function buildKnockoutBracket(
   const activeRound = [...ROUND_ORDER].reverse().find((roundId) => {
     const round = rounds.find((entry) => entry.id === roundId);
     return round?.matches.some(
-      (match) => match.status === "live" || match.status === "upcoming"
+      (match) =>
+        (match.status === "live" || match.status === "upcoming") &&
+        match.home.code &&
+        match.away.code
     );
   });
 

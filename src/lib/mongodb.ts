@@ -13,8 +13,12 @@ import { attachDatabasePool } from "@vercel/functions";
  */
 
 // Vercel's MongoDB storage integration injects the connection string as
-// STORAGE_MONGODB_URI; local dev / other setups may use MONGODB_URI.
+// STORAGE_MONGODB_URI; EC2 / local dev use MONGODB_URI in .env.production.
 const uri = process.env.MONGODB_URI ?? process.env.STORAGE_MONGODB_URI;
+
+export function isMongoConfigured(): boolean {
+  return Boolean(uri?.trim());
+}
 
 /** Database name from the connection string path, e.g. ...mongodb.net/<db>?... */
 function dbFromUri(connectionString: string | undefined): string | undefined {
@@ -45,7 +49,7 @@ declare global {
 function createClientPromise(): Promise<MongoClient> {
   if (!uri) {
     throw new Error(
-      "MONGODB_URI is not set. Add it in Vercel project settings (or .env.local for local dev)."
+      "MONGODB_URI is not set. Add it to .env.production on the server (optional — news/wallpapers only)."
     );
   }
   const client = new MongoClient(uri, options);

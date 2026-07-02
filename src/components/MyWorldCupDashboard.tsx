@@ -23,7 +23,6 @@ import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
 import { getTeam, TEAMS } from "@/lib/data";
 import { getSavedTeamResult, type SavedTeamResult } from "@/lib/quiz/team-personality-storage";
 import { getMyTeams, setMyTeams, toggleMyTeam, MAX_MY_TEAMS } from "@/lib/my-teams";
-import { getBracketPicks } from "@/lib/bracket-picks";
 import { fetchMatches } from "@/lib/matches";
 import { useTimezone } from "@/components/TimezoneProvider";
 import type { Match } from "@/lib/types";
@@ -41,17 +40,13 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
   const timezone = useTimezone();
   const [codes, setCodes] = useState<string[]>([]);
   const [allMatches, setAllMatches] = useState<Match[]>(initialTodayMatches);
-  const [bracketPickCount, setBracketPickCount] = useState(0);
   const [teamResult, setTeamResult] = useState<SavedTeamResult | null>(null);
 
   useEffect(() => {
     setCodes(getMyTeams());
-    const picks = getBracketPicks();
-    setBracketPickCount(Object.keys(picks).length);
     setTeamResult(getSavedTeamResult());
     const refresh = () => {
       setCodes(getMyTeams());
-      setBracketPickCount(Object.keys(getBracketPicks()).length);
       setTeamResult(getSavedTeamResult());
     };
     window.addEventListener("wc26-my-teams-changed", refresh);
@@ -235,20 +230,6 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
           ))}
         </div>
       </section>
-
-      {bracketPickCount > 0 && (
-        <Link
-          href="/bracket/predict"
-          className="card-surface rounded-xl p-4 flex items-center gap-3 hover:border-blue-200 transition-colors group"
-        >
-          <Trophy size={20} className="text-[var(--wc-gold)]" />
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-zinc-900">Your bracket</p>
-            <p className="text-xs text-zinc-500">{bracketPickCount} picks saved on this device</p>
-          </div>
-          <ArrowRight size={16} className="text-zinc-300 group-hover:text-blue-500" />
-        </Link>
-      )}
 
       {teamResult ? (
         <Link

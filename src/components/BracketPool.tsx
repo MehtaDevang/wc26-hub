@@ -202,8 +202,8 @@ export function BracketPool({ bracket }: { bracket: KnockoutBracketData }) {
           ) : (
             <p className="text-sm text-zinc-500">
               You haven&apos;t made any picks yet.{" "}
-              <Link href="/bracket/predict" className="text-blue-600 hover:underline font-medium">
-                Fill in your bracket →
+              <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
+                View live bracket →
               </Link>
             </p>
           )}
@@ -243,10 +243,6 @@ export function BracketPool({ bracket }: { bracket: KnockoutBracketData }) {
       </div>
 
       <p className="text-center text-sm text-zinc-500">
-        <Link href="/bracket/predict" className="text-blue-600 hover:underline font-medium">
-          Edit your bracket
-        </Link>
-        {" · "}
         <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
           Live knockout bracket →
         </Link>

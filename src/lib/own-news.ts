@@ -20,6 +20,9 @@ function toArticle({ _id, ...rest }: NewsDoc): NewsArticleDetail {
 }
 
 export async function getOwnNews(limit = 40): Promise<NewsArticleDetail[]> {
+  const { isMongoConfigured } = await import("./mongodb");
+  if (!isMongoConfigured()) return [];
+
   try {
     const db = await getDb();
     const docs = await db
@@ -38,6 +41,9 @@ export async function getOwnNews(limit = 40): Promise<NewsArticleDetail[]> {
 export async function getOwnNewsArticle(
   id: string
 ): Promise<NewsArticleDetail | null> {
+  const { isMongoConfigured } = await import("./mongodb");
+  if (!isMongoConfigured()) return null;
+
   try {
     const db = await getDb();
     const doc = await db.collection<NewsDoc>(COLLECTION).findOne({ id });

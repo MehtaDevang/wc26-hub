@@ -32,10 +32,6 @@ export default async function BracketPage() {
         subtitle="Follow the road to the Final - Round of 32, Round of 16, quarters, semis & the trophy match"
       />
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
-        <Link href="/bracket/predict" className="text-blue-600 hover:underline font-medium">
-          Fill in your bracket predictor →
-        </Link>
-        <span className="text-zinc-300">·</span>
         <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
           Road to Round of 32 →
         </Link>

@@ -1,5 +1,5 @@
 import { Binary } from "mongodb";
-import { getDb } from "./mongodb";
+import { getDb, isMongoConfigured } from "./mongodb";
 
 /**
  * DB-backed wallpapers (collection `wallpapers`).
@@ -40,6 +40,7 @@ function toBuffer(data: unknown): Buffer | null {
 }
 
 export async function getDbWallpapers(limit = 200): Promise<DbWallpaperMeta[]> {
+  if (!isMongoConfigured()) return [];
   try {
     const db = await getDb();
     const docs = await db
@@ -69,6 +70,7 @@ export async function getDbWallpapers(limit = 200): Promise<DbWallpaperMeta[]> {
 export async function getDbWallpaperImage(
   id: string
 ): Promise<{ contentType: string; buffer: Buffer } | null> {
+  if (!isMongoConfigured()) return null;
   try {
     const db = await getDb();
     const doc = await db.collection<DbWallpaperDoc>(COLLECTION).findOne({ id });

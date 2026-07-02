@@ -25,7 +25,6 @@ const STATIC_ROUTES: Array<{
   { path: "/standings", changeFrequency: "always", priority: 0.95 },
   { path: "/bracket", changeFrequency: "hourly", priority: 0.95 },
   { path: "/knockout", changeFrequency: "hourly", priority: 0.93 },
-  { path: "/bracket/predict", changeFrequency: "daily", priority: 0.9 },
   { path: "/bracket/pool", changeFrequency: "daily", priority: 0.85 },
   { path: "/scenarios", changeFrequency: "hourly", priority: 0.9 },
   { path: "/watch", changeFrequency: "hourly", priority: 0.9 },

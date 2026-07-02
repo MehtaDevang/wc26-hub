@@ -28,7 +28,7 @@ export function OfficePoolKit() {
           </h1>
           <p className="text-sm text-zinc-500 mt-2 max-w-2xl">
             Free World Cup 2026 bracket pool for your office, friends, or watch party. Rules,
-            printable bracket, and links to our bracket predictor.
+            printable bracket, and the live knockout bracket online.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <button
@@ -39,9 +39,9 @@ export function OfficePoolKit() {
               <Printer size={16} />
               Print bracket & rules
             </button>
-            <Link href="/bracket/predict" className="btn-usa inline-flex items-center gap-2 px-5 py-2.5 text-sm">
+            <Link href="/bracket" className="btn-usa inline-flex items-center gap-2 px-5 py-2.5 text-sm">
               <GitBranch size={16} />
-              Digital bracket predictor
+              Live knockout bracket
             </Link>
           </div>
         </div>

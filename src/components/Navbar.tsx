@@ -64,7 +64,6 @@ const EXPLORE_LINKS = [
 const TOOL_LINKS = [
   { href: "/knockout", label: "Road to Round of 32", icon: Flag },
   { href: "/bracket", label: "Live Bracket", icon: Trophy },
-  { href: "/bracket/predict", label: "Bracket Predictor", icon: GitBranch },
   { href: "/bracket/pool", label: "Bracket Pool", icon: Users },
   { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
   { href: "/watch", label: "Where to Watch", icon: Tv },
@@ -89,7 +88,6 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/wallpapers" && pathname.startsWith("/wallpapers")) return true;
   if (href === "/which-team" && pathname.startsWith("/which-team")) return true;
   if (href === "/knockout" && pathname.startsWith("/knockout")) return true;
-  if (href === "/bracket/predict" && pathname.startsWith("/bracket/predict")) return true;
   if (href === "/bracket/pool" && pathname.startsWith("/bracket/pool")) return true;
   if (href === "/bracket" && pathname === "/bracket") return true;
   if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;

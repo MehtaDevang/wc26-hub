@@ -49,7 +49,7 @@ export function LiveKnockoutBracket({
   useEffect(() => {
     const interval = setInterval(() => {
       refresh();
-    }, 120_000);
+    }, 60_000);
     return () => clearInterval(interval);
   }, [refresh]);
 
@@ -61,7 +61,7 @@ export function LiveKnockoutBracket({
     if (!hasLive) return;
     const interval = setInterval(() => {
       refresh();
-    }, 60_000);
+    }, 30_000);
     return () => clearInterval(interval);
   }, [hasLive, refresh]);
 

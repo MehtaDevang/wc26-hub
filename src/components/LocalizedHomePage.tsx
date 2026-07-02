@@ -188,12 +188,12 @@ export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
           {copy.fanTools}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/bracket/predict" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <GitBranch size={20} className="text-blue-600 mb-3" />
+          <Link href="/bracket" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
+            <Trophy size={20} className="text-blue-600 mb-3" />
             <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.bracketPredictor}
+              {copy.liveBracket}
             </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.bracketPredictorDesc}</p>
+            <p className="text-sm text-zinc-500 mt-1">{copy.liveBracketDesc}</p>
           </Link>
           <Link href="/scenarios" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
             <Calculator size={20} className="text-violet-600 mb-3" />

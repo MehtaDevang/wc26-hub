@@ -23,7 +23,6 @@ export const QUICK_NAV: SearchItem[] = [
   { id: "players", label: "Player stats", href: "/players", group: "Teams", keywords: "squad roster" },
   { id: "watch", label: "Where to watch", href: "/watch", group: "Watch", keywords: "tv stream broadcast" },
   { id: "scenarios", label: "Qualification scenarios & group simulator", href: "/scenarios", group: "Tools", keywords: "qualify advance points what if simulate" },
-  { id: "bracket-predict", label: "Bracket predictor", href: "/bracket/predict", group: "Tools", keywords: "pick predict winner" },
   { id: "bracket-pool", label: "Bracket pool vs friends", href: "/bracket/pool", group: "Tools", keywords: "pool leaderboard friends compete challenge office" },
   { id: "pool", label: "Office pool kit", href: "/pool", group: "Tools", keywords: "office pool printable" },
   { id: "history", label: "FIFA World Cup history", href: "/history", group: "Explore", keywords: "winners records finals hosts" },

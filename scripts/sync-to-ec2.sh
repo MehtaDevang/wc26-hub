@@ -62,11 +62,16 @@ set -euo pipefail
 cd ${EC2_PATH}
 unset NODE_ENV
 npm ci --omit=dev
+if [[ ! -x node_modules/next/dist/bin/next ]]; then
+  echo "ERROR: next binary missing after npm ci — check disk space and package-lock.json"
+  exit 1
+fi
 if command -v pm2 >/dev/null; then
-  pm2 restart thegoalposts 2>/dev/null || pm2 start npm --name thegoalposts -- start
+  pm2 delete thegoalposts 2>/dev/null || true
+  pm2 start ecosystem.config.cjs
   pm2 save
 else
-  echo "pm2 not found — start manually: cd ${EC2_PATH} && npm start"
+  echo "pm2 not found — run: npm install -g pm2 && pm2 start ecosystem.config.cjs"
 fi
 EOF
 

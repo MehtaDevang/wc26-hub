@@ -203,7 +203,11 @@ Choose redirect HTTP → HTTPS when prompted.
 
 ```bash
 cd /var/www/thegoalposts
-pm2 start npm --name thegoalposts -- start
+unset NODE_ENV
+npm ci --omit=dev
+
+pm2 delete thegoalposts 2>/dev/null || true
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
 # Run the sudo command PM2 prints
@@ -261,6 +265,7 @@ cd /var/www/thegoalposts
 unset NODE_ENV
 npm ci --omit=dev
 pm2 restart thegoalposts
+# or: pm2 start ecosystem.config.cjs
 ```
 
 One-liner from Mac:
@@ -313,9 +318,71 @@ curl -I https://www.thegoalposts.in/sitemap.xml
 
 ## Troubleshooting
 
+### Links redirect to `:3000` or do not work
+
+Apex (`thegoalposts.in`) was redirecting to `https://www.thegoalposts.in:3000/...` because
+Next.js saw the internal port. Fixed in `src/proxy.ts` (clears port on www redirect).
+
+**On the server**, use `scripts/nginx-thegoalposts.conf` so apex → www happens in nginx
+*before* Next.js, with correct `X-Forwarded-*` headers:
+
+```bash
+sudo cp /var/www/thegoalposts/scripts/nginx-thegoalposts.conf /etc/nginx/conf.d/thegoalposts.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### Site is very slow (8–15s per page)
+
+Normal on **t3.micro** while SSR hits many ESPN APIs. Mitigations:
+
+1. Enable **swap** (see one-time setup).
+2. Use the nginx config above (**gzip** + static asset caching).
+3. Upgrade to **t3.small** if still painful.
+4. Check CPU steal / memory: `free -h`, `pm2 monit`, `top`.
+
 ### `next: command not found`
 
-Run `npm ci` or `npm ci --omit=dev` in `/var/www/thegoalposts` before `npm start`.
+PM2 was likely started with `pm2 start npm -- start`, which breaks when `node_modules/.bin` is missing from PATH. Use the repo config instead:
+
+```bash
+cd /var/www/thegoalposts
+unset NODE_ENV && npm ci --omit=dev   # do not interrupt (^C leaves broken node_modules)
+pm2 delete thegoalposts
+pm2 start ecosystem.config.cjs
+pm2 save
+```
+
+Verify: `test -x node_modules/next/dist/bin/next && echo OK`
+
+### Disk full (~95%) / site won't start
+
+```bash
+cd /var/www/thegoalposts
+sudo bash scripts/ec2-recover.sh
+```
+
+Or manually: `npm cache clean --force`, `rm -rf wc26-hub .next/dev .next/cache`, `pm2 flush`, then `npm ci --omit=dev`.
+
+### Certbot nginx config (wrong proxy headers)
+
+If `/etc/nginx/conf.d/thegoalposts.conf` has **both** `thegoalposts.in` and `www.thegoalposts.in` in one `server` block **without** `X-Forwarded-Host` / `X-Forwarded-Port`, replace it:
+
+```bash
+sudo cp /var/www/thegoalposts/scripts/nginx-thegoalposts.conf /etc/nginx/conf.d/thegoalposts.conf
+sudo nginx -t && sudo systemctl reload nginx
+curl -sI https://thegoalposts.in/fixtures | grep -i location   # must NOT show :3000
+```
+
+### `MONGODB_URI is not set` in logs
+
+Optional — only needed for original news and DB wallpapers. Create `/var/www/thegoalposts/.env.production` and restart PM2:
+
+```bash
+nano /var/www/thegoalposts/.env.production
+pm2 restart thegoalposts --update-env
+```
+
+Without MongoDB the site still runs; those features are skipped.
 
 ### `Cannot find module '@tailwindcss/postcss'` (build on server)
 
@@ -369,6 +436,7 @@ If you must build on EC2:
 ```bash
 bash scripts/deploy-ec2.sh
 pm2 restart thegoalposts
+# or: pm2 start ecosystem.config.cjs
 ```
 
 `deploy-ec2.sh` forces `NODE_ENV=development` for `npm ci`, then prunes dev deps
@@ -382,6 +450,8 @@ after build.
 |--------|-----|
 | `scripts/sync-to-ec2.sh` | Mac build + rsync + remote `npm ci` + PM2 restart |
 | `scripts/deploy-ec2.sh` | Full build on the server (avoid on t3.micro) |
+| `scripts/ec2-recover.sh` | On-server recovery: disk cleanup, `npm ci`, PM2, health check |
+| `scripts/nginx-thegoalposts.conf` | Correct nginx config (apex→www, proxy headers, gzip) |
 
 ---
 
@@ -405,6 +475,7 @@ export EC2_HOST=1.2.3.4 EC2_PEM=~/.ssh/thegoalposts_deploy EC2_USER=ec2-user
 # Server — logs / restart
 pm2 logs thegoalposts
 pm2 restart thegoalposts
+# or: pm2 start ecosystem.config.cjs
 
 # Server — nginx / SSL
 sudo nginx -t && sudo systemctl reload nginx

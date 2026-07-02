@@ -94,6 +94,8 @@ export function transformEvent(
     venueCountry: venue?.address?.country,
     homeScore: status !== "upcoming" ? parseInt(home.score ?? "0", 10) : undefined,
     awayScore: status !== "upcoming" ? parseInt(away.score ?? "0", 10) : undefined,
+    homeWon: status === "finished" ? home.winner === true : undefined,
+    awayWon: status === "finished" ? away.winner === true : undefined,
     minute: status === "live" ? parseMinute(comp.status.displayClock) : undefined,
     displayClock: comp.status.displayClock,
     status,
@@ -101,6 +103,7 @@ export function transformEvent(
     homeRecord: getRecord(home),
     awayRecord: getRecord(away),
     stageLabel: event.name,
+    roundSlug: event.season?.slug,
   };
 }
 
