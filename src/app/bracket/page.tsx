@@ -1,11 +1,9 @@
 import Link from "next/link";
-import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
+import { BracketPageContent, BracketPageLinks } from "@/components/bracket/BracketPageContent";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
-import { getKnockoutBracket } from "@/lib/espn/services";
-import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
   title: "World Cup 2026 Knockout Bracket - Live Scores & Results",
@@ -19,29 +17,18 @@ export const metadata = createPageMetadata({
   ]),
 });
 
-export const revalidate = 120;
+export const revalidate = 60;
 
-export default async function BracketPage() {
-  const timeZone = await getServerTimezone();
-  const bracket = await getKnockoutBracket(timeZone);
-
+export default function BracketPage() {
   return (
     <div className="space-y-6">
       <WC26PageBanner
         title="Knockout Bracket"
         subtitle="Follow the road to the Final - Round of 32, Round of 16, quarters, semis & the trophy match"
       />
-      <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
-        <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
-          Road to Round of 32 →
-        </Link>
-        <span className="text-zinc-300">·</span>
-        <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
-          Qualification scenarios →
-        </Link>
-      </p>
+      <BracketPageLinks />
       <AdBanner placement="inline" />
-      <LiveKnockoutBracket initialData={bracket} />
+      <BracketPageContent />
     </div>
   );
 }

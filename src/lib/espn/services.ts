@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import {
   fetchEspnScoreboard,
   fetchEspnSummary,
@@ -17,11 +18,11 @@ import {
 import { pickNextUpcomingMatches } from "../upcoming-matches";
 import type { GroupStandings, Match, Highlight, NewsArticle, NewsArticleDetail } from "../types";
 import { buildKnockoutBracket } from "./bracket";
-import { fetchAllGroupStandings } from "./standings";
 import { transformNewsResponse, transformNewsDetail } from "./news";
 import { getOwnNews, getOwnNewsArticle } from "../own-news";
 
-const ESPN_TIMEOUT_MS = 8_000;
+const ESPN_TIMEOUT_MS = 6_000;
+const TOURNAMENT_DATES = "20260611-20260719";
 
 async function withTimeout<T>(promise: Promise<T>, ms = ESPN_TIMEOUT_MS): Promise<T> {
   return Promise.race([
@@ -31,6 +32,28 @@ async function withTimeout<T>(promise: Promise<T>, ms = ESPN_TIMEOUT_MS): Promis
     ),
   ]);
 }
+
+const getTournamentScoreboard = unstable_cache(
+  async () => withTimeout(fetchEspnScoreboard({ dates: TOURNAMENT_DATES }), 6_000),
+  ["wc26-tournament-scoreboard"],
+  { revalidate: 60, tags: ["tournament-scoreboard"] }
+);
+
+const getCachedKnockoutBracket = unstable_cache(
+  async (timeZone: string) => {
+    const data = await getTournamentScoreboard();
+    const matches = transformEvents(data.events ?? [], timeZone);
+    return buildKnockoutBracket(matches, []);
+  },
+  ["wc26-knockout-bracket"],
+  { revalidate: 60, tags: ["knockout-bracket"] }
+);
+
+const getCachedHighlights = unstable_cache(
+  async (limit: number, timeZone: string) => getRecentHighlightsUncached(limit, timeZone),
+  ["wc26-recent-highlights"],
+  { revalidate: 120, tags: ["highlights"] }
+);
 
 export async function getTodayMatches(
   timeZone: string = DEFAULT_TIMEZONE
@@ -116,34 +139,35 @@ function sortHighlights(highlights: Highlight[]): Highlight[] {
   });
 }
 
-export async function getRecentHighlights(
+async function getRecentHighlightsUncached(
   limit = 6,
   timeZone: string = DEFAULT_TIMEZONE
 ): Promise<Highlight[]> {
   const end = new Date();
   const start = new Date();
-  start.setDate(start.getDate() - 4);
+  start.setDate(start.getDate() - 3);
 
   const data = await withTimeout(
     fetchEspnScoreboard({
       dates: `${formatEspnDateInTimezone(start, timeZone)}-${formatEspnDateInTimezone(end, timeZone)}`,
-    })
+    }),
+    5_000
   );
 
   const finished = (data.events ?? [])
     .filter((e) => e.competitions[0]?.status.type.state === "post")
-    .slice(-6)
+    .slice(-4)
     .reverse();
 
   const results = await Promise.allSettled(
     finished.map(async (event) => {
       const match = transformEvent(event, timeZone);
-      const summary = await withTimeout(fetchEspnSummary(event.id), 6_000);
+      const summary = await withTimeout(fetchEspnSummary(event.id), 4_000);
       const goals = goalsToHighlights(match, summary);
       const usedUrls = new Set(
         goals.map((g) => g.imageUrl).filter((url): url is string => !!url)
       );
-      const moments = extractMomentHighlights(match, summary, usedUrls, 3);
+      const moments = extractMomentHighlights(match, summary, usedUrls, 2);
       return { goals, moments };
     })
   );
@@ -161,20 +185,28 @@ export async function getRecentHighlights(
   return combined.slice(0, limit);
 }
 
+export async function getRecentHighlights(
+  limit = 6,
+  timeZone: string = DEFAULT_TIMEZONE
+): Promise<Highlight[]> {
+  try {
+    return await getCachedHighlights(limit, timeZone);
+  } catch {
+    return [];
+  }
+}
+
 export async function getKnockoutBracket(
   timeZone: string = DEFAULT_TIMEZONE,
   prefetchedStandings?: GroupStandings[]
 ): Promise<ReturnType<typeof buildKnockoutBracket>> {
-  const [data, standings] = await Promise.all([
-    withTimeout(fetchEspnScoreboard({ dates: "20260611-20260719" })),
-    prefetchedStandings
-      ? Promise.resolve(prefetchedStandings)
-      : withTimeout(fetchAllGroupStandings()).catch(
-          () => [] as Awaited<ReturnType<typeof fetchAllGroupStandings>>
-        ),
-  ]);
-  const matches = transformEvents(data.events ?? [], timeZone);
-  return buildKnockoutBracket(matches, standings);
+  if (prefetchedStandings?.length) {
+    const data = await getTournamentScoreboard();
+    const matches = transformEvents(data.events ?? [], timeZone);
+    return buildKnockoutBracket(matches, prefetchedStandings);
+  }
+
+  return getCachedKnockoutBracket(timeZone);
 }
 
 export async function getWorldCupNews(limit = 8): Promise<NewsArticle[]> {

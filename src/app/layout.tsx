@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { headers } from "next/headers";
 import { Outfit, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -26,6 +27,7 @@ import {
   SITE_TWITTER_URL,
 } from "@/lib/site";
 import { FollowOnX } from "@/components/FollowOnX";
+import { RouteProgress } from "@/components/RouteProgress";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -70,6 +72,9 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:rounded-lg focus:bg-[var(--wc-usa)] focus:px-4 focus:py-2 focus:text-white focus:text-sm focus:font-semibold"

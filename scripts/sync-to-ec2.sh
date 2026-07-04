@@ -70,6 +70,8 @@ if command -v pm2 >/dev/null; then
   pm2 delete thegoalposts 2>/dev/null || true
   pm2 start ecosystem.config.cjs
   pm2 save
+  sleep 2
+  curl -sf -o /dev/null http://127.0.0.1:3000/ || echo "WARN: app not responding on :3000 yet"
 else
   echo "pm2 not found — run: npm install -g pm2 && pm2 start ecosystem.config.cjs"
 fi

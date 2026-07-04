@@ -1,15 +1,14 @@
 import Link from "next/link";
-import { InteractiveStandingsGrid } from "@/components/InteractiveStandingsGrid";
-import { LiveKnockoutBracket } from "@/components/LiveKnockoutBracket";
 import { WC26PageBanner } from "@/components/WC26Brand";
-import { fetchAllGroupStandings } from "@/lib/espn/standings";
-import { getKnockoutBracket } from "@/lib/espn/services";
 import { AdBanner } from "@/components/AdBanner";
 import { EditorialHubIntro } from "@/components/EditorialHubIntro";
+import {
+  StandingsBracketSection,
+  StandingsTablesSection,
+} from "@/components/standings/StandingsPageContent";
 import { STANDINGS_HUB_INTRO } from "@/lib/editorial-hub-intros";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
-import { getServerTimezone } from "@/lib/timezone";
 
 export const metadata = createPageMetadata({
   title: "World Cup 2026 Standings - Live Group Tables & Points",
@@ -26,11 +25,7 @@ export const metadata = createPageMetadata({
 
 export const revalidate = 120;
 
-export default async function StandingsPage() {
-  const timeZone = await getServerTimezone();
-  const standings = await fetchAllGroupStandings();
-  const bracket = await getKnockoutBracket(timeZone, standings);
-
+export default function StandingsPage() {
   return (
     <div className="space-y-6">
       <WC26PageBanner
@@ -56,8 +51,8 @@ export default async function StandingsPage() {
       </p>
       <EditorialHubIntro intro={STANDINGS_HUB_INTRO} />
       <AdBanner placement="standings" />
-      <InteractiveStandingsGrid groups={standings} />
-      <LiveKnockoutBracket initialData={bracket} showLink />
+      <StandingsTablesSection />
+      <StandingsBracketSection />
     </div>
   );
 }
