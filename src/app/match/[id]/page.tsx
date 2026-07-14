@@ -1,6 +1,12 @@
 import { notFound } from "next/navigation";
-import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
-import { transformEvent, transformSummary, buildAllMatchHighlights, buildMinimalMatchDetail, transformEvents } from "@/lib/espn/transform";
+import { fetchEspnEventById, fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
+import {
+  transformEvent,
+  transformSummary,
+  buildAllMatchHighlights,
+  buildMinimalMatchDetail,
+  transformEvents,
+} from "@/lib/espn/transform";
 import { buildHeadToHead } from "@/lib/espn/head-to-head";
 import { getRivalryInfo } from "@/lib/rivalries";
 import { getLiveMatchesExcluding, getRelatedMatchesForMatch } from "@/lib/related-matches";
@@ -35,8 +41,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   try {
     const timeZone = await getServerTimezone();
-    const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-    const event = scoreboard.events?.find((e) => e.id === id);
+    const event = await fetchEspnEventById(id);
     if (!event) {
       return createPageMetadata({
         title: "Match Not Found",
@@ -83,11 +88,11 @@ export default async function MatchPage({ params }: PageProps) {
   if (!isValidMatchId(id)) notFound();
 
   const timeZone = await getServerTimezone();
-  const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-  const event = scoreboard.events?.find((e) => e.id === id);
+  const event = await fetchEspnEventById(id);
   if (!event) notFound();
 
   const match = transformEvent(event, timeZone);
+  const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
   const allMatches = transformEvents(scoreboard.events ?? [], timeZone);
   const liveMatches = getLiveMatchesExcluding(allMatches, id);
   const relatedMatches = getRelatedMatchesForMatch(match, allMatches);

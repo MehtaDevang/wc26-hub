@@ -67,7 +67,7 @@ function FinaleHomePage({ finale }: { finale: HomeFinaleData }) {
       {finale.state.stage === "semi" && (
         <HomeSemifinalShowdowns
           matches={finale.state.semiFinals}
-          fixtures={[...finale.initialTodayMatches, ...finale.initialUpcomingMatches]}
+          fixtures={finale.semiFinalFixtures}
         />
       )}
 

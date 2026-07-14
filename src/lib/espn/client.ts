@@ -47,6 +47,55 @@ export async function fetchEspnSummary(eventId: string): Promise<EspnSummary> {
   return res.json();
 }
 
+/** Build an EspnEvent from a summary response (used when scoreboard lookup misses). */
+function eventFromSummaryHeader(summary: EspnSummary): EspnEvent | null {
+  const header = summary.header;
+  const comp = header?.competitions?.[0] as EspnCompetition | undefined;
+  if (!header?.id || !comp) return null;
+
+  const competitors = comp.competitors.map((c) => ({
+    ...c,
+    team: {
+      ...c.team,
+      logo:
+        c.team.logo ??
+        (c.team as { logos?: Array<{ href?: string; rel?: string[] }> }).logos?.find((l) =>
+          l.rel?.includes("default")
+        )?.href,
+    },
+  }));
+
+  const homeName = competitors.find((c) => c.homeAway === "home")?.team.displayName;
+  const awayName = competitors.find((c) => c.homeAway === "away")?.team.displayName;
+
+  return {
+    id: String(header.id),
+    date: comp.date,
+    name:
+      header.season?.name ??
+      (homeName && awayName ? `${awayName} at ${homeName}` : "FIFA World Cup 2026"),
+    season: header.season ? { year: header.season.year } : undefined,
+    competitions: [{ ...comp, competitors }],
+  };
+}
+
+/**
+ * Resolve a tournament event by id. ESPN's full-range scoreboard returns at most
+ * ~100 events, so semi-finals and the Final may be absent — fall back to summary.
+ */
+export async function fetchEspnEventById(eventId: string): Promise<EspnEvent | null> {
+  const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
+  const fromBoard = scoreboard.events?.find((e) => String(e.id) === String(eventId));
+  if (fromBoard) return fromBoard;
+
+  try {
+    const summary = await fetchEspnSummary(eventId);
+    return eventFromSummaryHeader(summary);
+  } catch {
+    return null;
+  }
+}
+
 export function todayEspnDate(): string {
   const d = new Date();
   return d.toISOString().slice(0, 10).replace(/-/g, "");
@@ -157,14 +206,14 @@ export interface EspnCompetitor {
 
 export interface EspnSummary {
   header?: {
-    competitions?: Array<{
-      competitors: EspnCompetitor[];
-      status: EspnCompetition["status"];
-      venue?: EspnCompetition["venue"];
-      attendance?: number;
-      notes?: Array<{ type: string; headline: string }>;
-      broadcasts?: EspnBroadcast[];
-    }>;
+    id?: string;
+    season?: { year?: number; name?: string };
+    competitions?: Array<
+      EspnCompetition & {
+        notes?: Array<{ type: string; headline: string }>;
+        broadcasts?: EspnBroadcast[];
+      }
+    >;
   };
   gameInfo?: {
     venue?: EspnCompetition["venue"];

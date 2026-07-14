@@ -24,6 +24,8 @@ import {
   getTodayMatches,
   getWorldCupNews,
 } from "@/lib/espn/services";
+import { fetchEspnScoreboard } from "@/lib/espn/client";
+import { transformEvents } from "@/lib/espn/transform";
 import { pickRecentFinishedMatches } from "@/lib/upcoming-matches";
 import { getFinaleState, type FinaleState } from "@/lib/tournament-stage";
 import { HomeFinaleHero } from "@/components/home/HomeFinaleHero";
@@ -86,11 +88,22 @@ const loadFullMatches = cache(async () => {
   }
 });
 
+const loadSemiFinalFixtures = cache(async () => {
+  const timeZone = await getHomeTimezone();
+  try {
+    const data = await fetchEspnScoreboard({ dates: "20260714-20260715" });
+    return transformEvents(data.events ?? [], timeZone);
+  } catch {
+    return [];
+  }
+});
+
 export interface HomeFinaleData {
   state: FinaleState;
   initialTodayMatches: Match[];
   initialUpcomingMatches: Match[];
   initialRecentFinished: Match[];
+  semiFinalFixtures: Match[];
 }
 
 /**
@@ -98,18 +111,23 @@ export interface HomeFinaleData {
  * Reuses the cached home loaders so this adds no extra fetches per request.
  */
 export async function getHomeFinaleData(): Promise<HomeFinaleData> {
-  const [bracket, todayMatches, upcomingMatches, fullMatches] = await Promise.all([
-    loadBracket(),
-    loadTodayMatches(),
-    loadNextMatches(),
-    loadFullMatches(),
-  ]);
+  const [bracket, todayMatches, upcomingMatches, fullMatches, semiFinalFixtures] =
+    await Promise.all([
+      loadBracket(),
+      loadTodayMatches(),
+      loadNextMatches(),
+      loadFullMatches(),
+      loadSemiFinalFixtures(),
+    ]);
+
+  const state = getFinaleState(bracket);
 
   return {
-    state: getFinaleState(bracket),
+    state,
     initialTodayMatches: todayMatches,
     initialUpcomingMatches: upcomingMatches,
     initialRecentFinished: pickRecentFinishedMatches(fullMatches, 1, true),
+    semiFinalFixtures: state.stage === "semi" ? semiFinalFixtures : [],
   };
 }
 

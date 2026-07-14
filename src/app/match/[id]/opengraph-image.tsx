@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { fetchEspnScoreboard } from "@/lib/espn/client";
+import { fetchEspnEventById } from "@/lib/espn/client";
 import { transformEvent } from "@/lib/espn/transform";
 import { getTeam } from "@/lib/data";
 import { getFifaRank } from "@/lib/fifa-rankings";
@@ -44,8 +44,7 @@ export default async function Image({ params }: OgProps) {
 
   try {
     const timeZone = await getServerTimezone();
-    const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-    const event = scoreboard.events?.find((e) => e.id === id);
+    const event = await fetchEspnEventById(id);
 
     if (!event) {
       throw new Error("match not found");

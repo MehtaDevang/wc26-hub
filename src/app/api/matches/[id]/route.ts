@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { apiErrorResponse, apiJsonResponse, isValidMatchId } from "@/lib/api-security";
-import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
+import { fetchEspnEventById, fetchEspnSummary } from "@/lib/espn/client";
 import { transformEvent, transformSummary, buildAllMatchHighlights } from "@/lib/espn/transform";
 import { lookupVenue } from "@/lib/venues";
 import { fetchMatchWeather } from "@/lib/weather";
@@ -18,8 +18,7 @@ export async function GET(
   }
 
   try {
-    const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-    const event = scoreboard.events?.find((e) => e.id === id);
+    const event = await fetchEspnEventById(id);
 
     if (!event) {
       return apiJsonResponse({ error: "Match not found" }, { status: 404 });

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { fetchEspnScoreboard, fetchEspnSummary } from "@/lib/espn/client";
+import { fetchEspnScoreboard, fetchEspnSummary, fetchEspnEventById } from "@/lib/espn/client";
 import {
   transformEvent,
   transformSummary,
@@ -26,8 +26,7 @@ export async function loadMatchPageData(
 ): Promise<MatchPageData | null> {
   if (!isValidMatchId(id)) return null;
 
-  const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-  const event = scoreboard.events?.find((e) => e.id === id);
+  const event = await fetchEspnEventById(id);
   if (!event) return null;
 
   const match = transformEvent(event, timeZone);
