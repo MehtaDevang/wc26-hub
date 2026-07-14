@@ -40,7 +40,15 @@ function ShowdownCard({ match, matchId }: { match: BracketMatch; matchId: string
 
   return (
     <Link
-      href={matchId ? `/match/${matchId}` : "/bracket"}
+      href={
+        matchId
+          ? isDone
+            ? `/match/${matchId}/recap`
+            : isLive
+              ? `/match/${matchId}`
+              : `/match/${matchId}/preview`
+          : "/bracket"
+      }
       className="group relative block overflow-hidden rounded-2xl border border-white/10 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)]"
     >
       <div className="relative aspect-[16/9] w-full bg-[var(--stadium-navy)]">

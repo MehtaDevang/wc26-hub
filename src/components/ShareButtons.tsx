@@ -31,7 +31,16 @@ function WhatsAppIcon({ size = 14 }: { size?: number }) {
 
 function resolvePageUrl(fallback?: string): string {
   if (typeof window !== "undefined") {
-    return `${window.location.origin}${window.location.pathname}`;
+    const { origin, pathname, search } = window.location;
+    if (fallback) {
+      try {
+        const parsed = new URL(fallback, origin);
+        return parsed.href;
+      } catch {
+        return fallback;
+      }
+    }
+    return `${origin}${pathname}${search}`;
   }
   return fallback ?? "";
 }
@@ -72,7 +81,10 @@ export function ShareButtons({
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
-  const getShareUrl = useCallback(() => resolvePageUrl(url), [url]);
+  const getShareUrl = useCallback(() => {
+    if (url) return resolvePageUrl(url);
+    return resolvePageUrl();
+  }, [url]);
 
   const copyLink = useCallback(async () => {
     const shareUrl = getShareUrl();

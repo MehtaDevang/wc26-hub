@@ -2,9 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { NewsArticleContent } from "@/components/NewsArticleContent";
+import { JsonLd } from "@/components/JsonLd";
 import { createPageMetadata } from "@/lib/seo";
 import { getWorldCupNewsArticle } from "@/lib/espn/services";
 import { isValidNewsId } from "@/lib/api-security";
+import { buildNewsArticleJsonLd } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -37,6 +39,7 @@ export default async function NewsArticlePage({ params }: PageProps) {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      {article.isOriginal && <JsonLd data={buildNewsArticleJsonLd(article)} />}
       <Link
         href="/news"
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 hover:text-blue-600 transition-colors"

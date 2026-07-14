@@ -15,20 +15,31 @@ import { fetchAllGroupStandings } from "@/lib/espn/standings";
 import { getKnockoutBracket, getMatchesByParams } from "@/lib/espn/services";
 import { buildKnockoutQualification } from "@/lib/knockout-qualification";
 import { getServerTimezone } from "@/lib/timezone";
+import { isKnockoutPhase } from "@/lib/knockout-hub-data";
 
-export const metadata = createPageMetadata({
-  title: "Road to Round of 32 - World Cup 2026 Qualification Tracker",
-  description:
-    "Live World Cup 2026 knockout qualification tracker - best third-placed teams ranking, 32-team projection board, group progress, and Round of 32 bracket preview.",
-  path: "/knockout",
-  keywords: [
-    "World Cup 2026 Round of 32",
-    "best third placed teams",
-    "World Cup qualification tracker",
-    "knockout qualification",
-    "World Cup 2026 groups to knockout",
-  ],
-});
+export async function generateMetadata() {
+  const timeZone = await getServerTimezone();
+  const bracket = await getKnockoutBracket(timeZone).catch(() => null);
+  const archived = isKnockoutPhase(bracket);
+
+  return createPageMetadata({
+    title: archived
+      ? "World Cup 2026 Knockout Qualification (Archive)"
+      : "Road to Round of 32 - World Cup 2026 Qualification Tracker",
+    description: archived
+      ? "Archived group-stage qualification tracker for World Cup 2026. Follow the live knockout bracket, semi-finals, and Final instead."
+      : "Live World Cup 2026 knockout qualification tracker - best third-placed teams ranking, 32-team projection board, group progress, and Round of 32 bracket preview.",
+    path: "/knockout",
+    noIndex: archived,
+    keywords: [
+      "World Cup 2026 Round of 32",
+      "best third placed teams",
+      "World Cup qualification tracker",
+      "knockout qualification",
+      "World Cup 2026 groups to knockout",
+    ],
+  });
+}
 
 export const revalidate = 120;
 

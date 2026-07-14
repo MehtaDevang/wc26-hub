@@ -112,6 +112,9 @@ export function rootMetadata(): Metadata {
     category: "sports",
     alternates: {
       canonical: url,
+      types: {
+        "application/rss+xml": `${url}/feed.xml`,
+      },
     },
     openGraph: {
       title: `FIFA World Cup 2026 Live Scores - ${SITE_NAME}`,

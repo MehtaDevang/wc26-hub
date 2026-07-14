@@ -13,6 +13,24 @@ import { localePath } from "@/lib/i18n";
 
 export const revalidate = 1800;
 
+async function collectMatchIds(): Promise<string[]> {
+  const ids = new Set<string>();
+  const ranges = ["20260611-20260719", "20260714-20260715", "20260718-20260719"];
+
+  for (const dates of ranges) {
+    try {
+      const scoreboard = await fetchEspnScoreboard({ dates });
+      for (const event of scoreboard.events ?? []) {
+        if (event.id) ids.add(String(event.id));
+      }
+    } catch {
+      // Continue with other ranges if one fetch fails.
+    }
+  }
+
+  return [...ids];
+}
+
 const STATIC_ROUTES: Array<{
   path: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
@@ -23,6 +41,11 @@ const STATIC_ROUTES: Array<{
   { path: "/my", changeFrequency: "hourly", priority: 0.92 },
   { path: "/fixtures", changeFrequency: "always", priority: 0.97 },
   { path: "/bracket", changeFrequency: "hourly", priority: 0.98 },
+  { path: "/semi-finals", changeFrequency: "always", priority: 0.99 },
+  { path: "/final", changeFrequency: "always", priority: 0.99 },
+  { path: "/which-team", changeFrequency: "weekly", priority: 0.82 },
+  { path: "/embed", changeFrequency: "monthly", priority: 0.55 },
+  { path: "/feed.xml", changeFrequency: "hourly", priority: 0.7 },
   { path: "/standings", changeFrequency: "daily", priority: 0.75 },
   { path: "/knockout", changeFrequency: "weekly", priority: 0.4 },
   { path: "/scenarios", changeFrequency: "weekly", priority: 0.4 },
@@ -48,10 +71,6 @@ const STATIC_ROUTES: Array<{
   { path: "/contact", changeFrequency: "yearly", priority: 0.35 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/es", changeFrequency: "always", priority: 0.9 },
-  { path: "/es/fixtures", changeFrequency: "always", priority: 0.9 },
-  { path: "/fr", changeFrequency: "always", priority: 0.9 },
-  { path: "/fr/fixtures", changeFrequency: "always", priority: 0.9 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -135,6 +154,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   });
 
+  for (const team of Object.keys(TEAMS)) {
+    entries.push({
+      url: `${siteUrl}/which-team/${team}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
   for (const letter of getAllGroupLetters()) {
     entries.push({
       url: `${siteUrl}/groups/${letter}`,
@@ -174,13 +202,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const scoreboard = await fetchEspnScoreboard({ dates: "20260611-20260719" });
-    for (const event of scoreboard.events ?? []) {
+    const matchIds = await collectMatchIds();
+    for (const id of matchIds) {
       entries.push({
-        url: `${siteUrl}/match/${event.id}`,
+        url: `${siteUrl}/match/${id}`,
         lastModified: now,
         changeFrequency: "always",
         priority: 0.9,
+      });
+      entries.push({
+        url: `${siteUrl}/match/${id}/preview`,
+        lastModified: now,
+        changeFrequency: "hourly",
+        priority: 0.85,
+      });
+      entries.push({
+        url: `${siteUrl}/match/${id}/recap`,
+        lastModified: now,
+        changeFrequency: "hourly",
+        priority: 0.85,
       });
     }
   } catch {

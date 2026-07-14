@@ -45,6 +45,8 @@ const PRIMARY_LINKS = [
 ] as const;
 
 const EXPLORE_LINKS = [
+  { href: "/semi-finals", label: "Semi-Finals", icon: Swords },
+  { href: "/final", label: "The Final", icon: Trophy },
   { href: "/daily", label: "Today at the World Cup", icon: Calendar },
   { href: "/news", label: "News", icon: Newspaper },
   { href: "/players", label: "Players", icon: Target },

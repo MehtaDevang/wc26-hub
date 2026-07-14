@@ -6,23 +6,34 @@ import { AdBanner } from "@/components/AdBanner";
 import { GroupStageArchiveBanner } from "@/components/GroupStageArchiveBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
-import { getMatchesByParams } from "@/lib/espn/services";
+import { getKnockoutBracket, getMatchesByParams } from "@/lib/espn/services";
 import { getServerTimezone } from "@/lib/timezone";
+import { isKnockoutPhase } from "@/lib/knockout-hub-data";
 
-export const metadata = createPageMetadata({
-  title: "World Cup 2026 Qualification Scenarios & Group Simulator",
-  description:
-    "World Cup 2026 group qualification calculator and what-if simulator - set hypothetical scores for remaining fixtures and watch the table reshuffle, or see what each team needs to advance.",
-  path: "/scenarios",
-  keywords: [
-    "World Cup qualification scenarios",
-    "World Cup group simulator",
-    "what if group calculator",
-    "can team qualify",
-    "group stage calculator",
-    "World Cup 2026 advancement",
-  ],
-});
+export async function generateMetadata() {
+  const timeZone = await getServerTimezone();
+  const bracket = await getKnockoutBracket(timeZone).catch(() => null);
+  const archived = isKnockoutPhase(bracket);
+
+  return createPageMetadata({
+    title: archived
+      ? "World Cup 2026 Qualification Scenarios (Archive)"
+      : "World Cup 2026 Qualification Scenarios & Group Simulator",
+    description: archived
+      ? "Archived group-stage what-if simulator for World Cup 2026. Follow live knockout scores, the semi-finals, and the Final on The Goal Posts."
+      : "World Cup 2026 group qualification calculator and what-if simulator - set hypothetical scores for remaining fixtures and watch the table reshuffle, or see what each team needs to advance.",
+    path: "/scenarios",
+    noIndex: archived,
+    keywords: [
+      "World Cup qualification scenarios",
+      "World Cup group simulator",
+      "what if group calculator",
+      "can team qualify",
+      "group stage calculator",
+      "World Cup 2026 advancement",
+    ],
+  });
+}
 
 export const revalidate = 300;
 

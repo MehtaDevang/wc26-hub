@@ -324,6 +324,49 @@ export function buildFaqJsonLd(items: FaqEntry[]) {
   };
 }
 
+export function buildNewsArticleJsonLd(
+  article: {
+    id: string;
+    headline: string;
+    summary: string;
+    publishedAt: string;
+    imageUrl?: string;
+    byline?: string;
+  }
+) {
+  const siteUrl = getSiteUrl();
+  const url = `${siteUrl}/news/${article.id}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "@id": `${url}#article`,
+    headline: article.headline,
+    description: article.summary,
+    url,
+    datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
+    inLanguage: "en-US",
+    isPartOf: { "@id": `${siteUrl}/#website` },
+    publisher: { "@id": `${siteUrl}/#organization` },
+    author: {
+      "@type": "Organization",
+      name: article.byline ?? SITE_NAME,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    ...(article.imageUrl
+      ? {
+          image: article.imageUrl.startsWith("http")
+            ? article.imageUrl
+            : `${siteUrl}${article.imageUrl}`,
+        }
+      : {}),
+  };
+}
+
 export function buildItemListJsonLd({
   name,
   path,

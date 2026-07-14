@@ -2,8 +2,10 @@ import Link from "next/link";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
 import { BracketPageContent, BracketPageLinks } from "@/components/bracket/BracketPageContent";
+import { FaqSection } from "@/components/FaqSection";
 import { createPageMetadata } from "@/lib/seo";
 import { mergeKeywords, LIVE_SCORES_KEYWORDS } from "@/lib/seo-keywords";
+import { BRACKET_FAQ } from "@/lib/knockout-hub-faq";
 
 export const metadata = createPageMetadata({
   title: "World Cup 2026 Knockout Bracket - Live Scores & Results",
@@ -29,6 +31,7 @@ export default function BracketPage() {
       <BracketPageLinks />
       <AdBanner placement="inline" />
       <BracketPageContent />
+      <FaqSection heading="World Cup 2026 knockout bracket — FAQ" items={BRACKET_FAQ} />
     </div>
   );
 }

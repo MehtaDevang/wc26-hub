@@ -34,7 +34,6 @@ export async function generateMetadata({ params }: PageProps) {
       title: `${match.homeName} ${score} ${match.awayName} Recap - World Cup 2026`,
       description: `Full recap: ${match.homeName} ${match.homeScore}-${match.awayScore} ${match.awayName} at FIFA World Cup 2026 - scorers, match stats, and key moments.`,
       path: `/match/${id}/recap`,
-      noIndex: true,
       keywords: mergeKeywords(LIVE_SCORES_KEYWORDS, STATS_KEYWORDS, [
         `${match.homeName} vs ${match.awayName} recap`,
         `${match.homeName} vs ${match.awayName} result`,

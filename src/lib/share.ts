@@ -124,6 +124,14 @@ export function buildWhatsAppShareUrl(text: string, url: string): string {
   return `https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`;
 }
 
+export function buildFacebookShareUrl(url: string): string {
+  return `https://www.facebook.com/sharer/sharer.php?${new URLSearchParams({ u: url })}`;
+}
+
+export function buildRedditShareUrl(title: string, url: string): string {
+  return `https://www.reddit.com/submit?${new URLSearchParams({ title, url })}`;
+}
+
 export function buildHighlightSharePayload(
   match: Pick<Match, "id" | "homeName" | "awayName" | "homeScore" | "awayScore" | "status">,
   highlight: Pick<
