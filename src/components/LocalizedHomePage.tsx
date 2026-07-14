@@ -1,56 +1,121 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import {
-  Puzzle,
-  Trophy,
-  TrendingUp,
-  ArrowRight,
-  Calendar,
-  Table2,
-  History,
-  GitBranch,
-  Calculator,
-  Tv,
-  BarChart3,
-  MapPin,
-  Swords,
-  Users,
-  Code2,
-  Sparkles,
-  Flag,
-} from "lucide-react";
-import { IconicMoments } from "@/components/IconicMoments";
+import { ArrowRight, Star } from "lucide-react";
 import { HomeHero } from "@/components/HomeHero";
 import { MyTeamsPicker } from "@/components/MyTeams";
-import { TeamJourneyPromo } from "@/components/TeamJourneyPromo";
-import { PuzzleStreakCard } from "@/components/PuzzleStreakCard";
-import { HomeJumpNav } from "@/components/HomeJumpNav";
-import { FollowOnX } from "@/components/FollowOnX";
-import { WhichTeamPromo } from "@/components/WhichTeamPromo";
 import { JsonLd } from "@/components/JsonLd";
+import { HomeQuickLinks } from "@/components/home/HomeQuickLinks";
+import { PredictTheFinal } from "@/components/home/PredictTheFinal";
+import { HomeSemifinalShowdowns } from "@/components/home/HomeSemifinalShowdowns";
 import {
-  HomeBracketSection,
-  HomeFeaturedPlayersSection,
-  HomeHighlightsSection,
-  HomeLiveScoresSection,
-  HomeMomentsSection,
-  HomeMyTeamsSection,
+  getHomeFinaleData,
+  HomeDashboardBracketSection,
+  HomeDashboardScoresSection,
+  HomeFinaleHeroSection,
+  HomeFinalFourSection,
+  HomeGoldenBootSection,
   HomeNewsSection,
-  HomeNextMatchSection,
-  HomePlayerOfTheDaySection,
   HomeSectionSkeleton,
+  type HomeFinaleData,
 } from "@/components/home/HomeSections";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
-import { getHomeCopy, getStrings, localePath, type Locale } from "@/lib/i18n";
+import { getStrings, localePath, type Locale } from "@/lib/i18n";
 
 interface LocalizedHomePageProps {
   locale: Locale;
 }
 
-export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
+function FollowYourTeams() {
+  return (
+    <section className="home-dash-panel home-dash-panel--teams">
+      <div className="home-dash-panel-stripe" aria-hidden />
+      <div className="home-dash-panel-head home-dash-panel-head--compact">
+        <div className="home-dash-panel-head-icon home-dash-panel-head-icon--teams">
+          <Star size={16} className="fill-current" />
+        </div>
+        <div className="home-dash-panel-head-text min-w-0 flex-1">
+          <h2 className="home-dash-panel-title">Follow your teams</h2>
+        </div>
+        <Link href="/my" className="home-dash-panel-link shrink-0">
+          My WC <ArrowRight size={12} />
+        </Link>
+      </div>
+      <div className="home-dash-panel-body home-dash-panel-body--compact">
+        <MyTeamsPicker />
+      </div>
+    </section>
+  );
+}
+
+function FinaleHomePage({ finale }: { finale: HomeFinaleData }) {
+  const finalists =
+    finale.state.finalists.length > 0 ? finale.state.finalists : finale.state.semifinalists;
+
+  return (
+    <div className="home-dashboard home-dashboard--finale space-y-5 sm:space-y-6">
+      <JsonLd
+        data={buildWebPageJsonLd({
+          path: localePath("en"),
+          title: `FIFA World Cup 2026 ${finale.state.stageLabel} - Road to the Final`,
+          description:
+            "Live coverage of the World Cup 2026 semi-finals and Final: countdown, the final four, the Golden Boot race and the path to the trophy.",
+        })}
+      />
+
+      <HomeFinaleHeroSection data={finale} />
+
+      {finale.state.stage === "semi" && (
+        <HomeSemifinalShowdowns
+          matches={finale.state.semiFinals}
+          fixtures={[...finale.initialTodayMatches, ...finale.initialUpcomingMatches]}
+        />
+      )}
+
+      <div className="home-dashboard-grid home-dashboard-grid--finale">
+        <div className="flex flex-col gap-4 sm:gap-5">
+          <Suspense fallback={<HomeSectionSkeleton height={360} className="home-dash-panel-skeleton" />}>
+            <HomeFinalFourSection state={finale.state} />
+          </Suspense>
+
+          {finale.state.stage !== "champions" && finalists.length >= 2 && (
+            <PredictTheFinal
+              candidates={finalists}
+              locked={finale.state.stage === "final"}
+            />
+          )}
+        </div>
+
+        <Suspense fallback={<HomeSectionSkeleton height={420} className="home-dash-panel-skeleton" />}>
+          <div id="bracket" className="min-h-0">
+            <HomeDashboardBracketSection />
+          </div>
+        </Suspense>
+      </div>
+
+      <Suspense fallback={<HomeSectionSkeleton height={120} />}>
+        <HomeGoldenBootSection variant="finale" />
+      </Suspense>
+
+      <Suspense fallback={<HomeSectionSkeleton height={200} />}>
+        <HomeNewsSection limit={3} />
+      </Suspense>
+
+      <FollowYourTeams />
+
+      <HomeQuickLinks />
+    </div>
+  );
+}
+
+export async function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
   const t = getStrings(locale);
-  const copy = getHomeCopy(locale);
-  const fixturesHref = localePath(locale, "/fixtures");
+
+  if (locale === "en") {
+    const finale = await getHomeFinaleData();
+    if (finale.state.stage !== "pre") {
+      return <FinaleHomePage finale={finale} />;
+    }
+  }
 
   const jsonTitle =
     locale === "es"
@@ -60,7 +125,7 @@ export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
         : "FIFA World Cup 2026 Live Scores Today";
 
   return (
-    <div className="space-y-14">
+    <div className="home-dashboard space-y-5 sm:space-y-6">
       <JsonLd
         data={buildWebPageJsonLd({
           path: localePath(locale),
@@ -72,318 +137,38 @@ export function LocalizedHomePage({ locale }: LocalizedHomePageProps) {
       {locale !== "en" && (
         <div className="card-surface rounded-2xl overflow-hidden">
           <div className="host-stripe" />
-          <div className="p-5 sm:p-6">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
-              {copy.localeLabel}
-            </p>
-            <h1 className="section-title text-2xl sm:text-3xl">{t.homeTitle}</h1>
-            <p className="text-sm text-zinc-500 mt-2 max-w-2xl">{t.homeSubtitle}</p>
+          <div className="p-4 sm:p-5">
+            <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">{t.homeTitle}</h1>
+            <p className="text-sm text-zinc-500 mt-1">{t.homeSubtitle}</p>
           </div>
         </div>
       )}
 
       <HomeHero />
 
-      <HomeJumpNav />
+      <div className="home-dashboard-grid" id="live">
+        <Suspense fallback={<HomeSectionSkeleton height={420} className="home-dash-panel-skeleton" />}>
+          <HomeDashboardScoresSection locale={locale} />
+        </Suspense>
+
+        <Suspense fallback={<HomeSectionSkeleton height={420} className="home-dash-panel-skeleton" />}>
+          <div id="bracket" className="h-full min-h-0">
+            <HomeDashboardBracketSection />
+          </div>
+        </Suspense>
+      </div>
 
       <Suspense fallback={<HomeSectionSkeleton height={120} />}>
-        <HomeMyTeamsSection />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionSkeleton height={220} />}>
-        <HomeLiveScoresSection locale={locale} />
+        <HomeGoldenBootSection />
       </Suspense>
 
       <Suspense fallback={<HomeSectionSkeleton height={200} />}>
-        <HomeMomentsSection />
+        <HomeNewsSection limit={3} />
       </Suspense>
 
-      <Suspense fallback={<HomeSectionSkeleton height={180} />}>
-        <HomeNextMatchSection />
-      </Suspense>
+      <FollowYourTeams />
 
-      <Suspense fallback={<HomeSectionSkeleton height={280} />}>
-        <HomeBracketSection />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionSkeleton height={320} />}>
-        <HomeHighlightsSection />
-      </Suspense>
-
-      <section id="quiz">
-        <WhichTeamPromo />
-      </section>
-
-      <Suspense fallback={<HomeSectionSkeleton height={280} />}>
-        <HomeNewsSection />
-      </Suspense>
-
-      <FollowOnX />
-
-      <IconicMoments limit={9} />
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="explore">
-        <Link
-          href={fixturesHref}
-          className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
-        >
-          <div>
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {t.fullFixtures}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{t.fullFixturesDesc}</p>
-          </div>
-          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-        </Link>
-        <Link
-          href="/standings"
-          className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
-        >
-          <div>
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {t.groupTables}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{t.groupTablesDesc}</p>
-          </div>
-          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-        </Link>
-        <Link
-          href="/bracket"
-          className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between sm:col-span-2 lg:col-span-1"
-        >
-          <div>
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {t.knockoutBracket}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{t.knockoutBracketDesc}</p>
-          </div>
-          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-        </Link>
-      </div>
-
-      <MyTeamsPicker />
-
-      <div className="text-center">
-        <Link
-          href="/my"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--wc-usa)] hover:underline"
-        >
-          Open My World Cup dashboard →
-        </Link>
-      </div>
-
-      <TeamJourneyPromo />
-
-      <Suspense fallback={<HomeSectionSkeleton height={120} />}>
-        <HomePlayerOfTheDaySection />
-      </Suspense>
-
-      <Suspense fallback={<HomeSectionSkeleton height={240} />}>
-        <HomeFeaturedPlayersSection />
-      </Suspense>
-
-      <section>
-        <h2 className="section-title mb-5 flex items-center gap-2">
-          <GitBranch size={22} className="text-blue-600" />
-          {copy.fanTools}
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/bracket" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Trophy size={20} className="text-blue-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.liveBracket}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.liveBracketDesc}</p>
-          </Link>
-          <Link href="/scenarios" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Calculator size={20} className="text-violet-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.qualificationScenarios}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.qualificationScenariosDesc}</p>
-          </Link>
-          <Link href="/knockout" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Flag size={20} className="text-indigo-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.roadToR32}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.roadToR32Desc}</p>
-          </Link>
-          <Link href="/watch" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Tv size={20} className="text-emerald-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.whereToWatch}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.whereToWatchDesc}</p>
-          </Link>
-          <Link href="/leaders" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <BarChart3 size={20} className="text-amber-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.statLeaders}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.statLeadersDesc}</p>
-          </Link>
-          <Link href="/pool" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Users size={20} className="text-rose-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              {copy.officePool}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.officePoolDesc}</p>
-          </Link>
-          <Link href="/which-team" className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group">
-            <Sparkles size={20} className="text-fuchsia-600 mb-3" />
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">
-              Which team are you?
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">
-              Take the quiz and find your World Cup 2026 team.
-            </p>
-          </Link>
-        </div>
-      </section>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Link
-          href="/rivalries"
-          className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
-        >
-          <div>
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <Swords size={18} className="text-[var(--wc-usa)]" />
-              {copy.rivalries}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.rivalriesDesc}</p>
-          </div>
-          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-        </Link>
-        <Link
-          href="/embed"
-          className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
-        >
-          <div>
-            <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
-              <Code2 size={18} className="text-blue-600" />
-              {copy.embedWidget}
-            </h3>
-            <p className="text-sm text-zinc-500 mt-1">{copy.embedWidgetDesc}</p>
-          </div>
-          <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-        </Link>
-      </div>
-
-      <Link
-        href="/cities"
-        className="card-surface rounded-2xl p-5 hover:shadow-md transition-all group flex items-center justify-between"
-      >
-        <div>
-          <h3 className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors flex items-center gap-2">
-            <MapPin size={18} className="text-emerald-600" />
-            {copy.cityGuides}
-          </h3>
-          <p className="text-sm text-zinc-500 mt-1">{copy.cityGuidesDesc}</p>
-        </div>
-        <ArrowRight size={18} className="text-zinc-300 group-hover:text-blue-600" />
-      </Link>
-
-      <section>
-        <h2 className="section-title mb-5 flex items-center gap-2">
-          <TrendingUp size={22} className="text-blue-600" />
-          {copy.dailyPuzzles}
-        </h2>
-        <PuzzleStreakCard />
-        <div className="grid gap-4 sm:grid-cols-3 mt-5">
-          <Link
-            href="/puzzles/guess-player"
-            className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5"
-          >
-            <div className="rounded-xl p-2.5 bg-blue-50 text-blue-600 w-fit mb-4">
-              <Puzzle size={22} />
-            </div>
-            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">
-              {copy.guessPlayer}
-            </h3>
-            <p className="text-sm text-zinc-500 leading-relaxed">{copy.guessPlayerDesc}</p>
-          </Link>
-          <Link
-            href="/puzzles/scramble"
-            className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5"
-          >
-            <div className="rounded-xl p-2.5 bg-violet-50 text-violet-600 w-fit mb-4">
-              <Puzzle size={22} />
-            </div>
-            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">
-              {copy.nameScramble}
-            </h3>
-            <p className="text-sm text-zinc-500 leading-relaxed">{copy.nameScrambleDesc}</p>
-          </Link>
-          <Link
-            href="/puzzles/quiz"
-            className="group card-surface rounded-2xl p-5 hover:shadow-md transition-all hover:-translate-y-0.5"
-          >
-            <div className="rounded-xl p-2.5 bg-amber-50 text-amber-600 w-fit mb-4">
-              <Puzzle size={22} />
-            </div>
-            <h3 className="font-bold text-zinc-900 text-base mb-1.5 group-hover:text-blue-600 transition-colors">
-              {copy.dailyQuiz}
-            </h3>
-            <p className="text-sm text-zinc-500 leading-relaxed">{copy.dailyQuizDesc}</p>
-          </Link>
-        </div>
-        <Link
-          href="/puzzles"
-          className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium mt-4 hover:underline"
-        >
-          {copy.viewAllPuzzles} <ArrowRight size={14} />
-        </Link>
-      </section>
-
-      <section>
-        <h2 className="section-title mb-5 flex items-center gap-2">
-          <History size={22} className="text-[var(--wc-gold)]" />
-          {copy.worldCupHistory}
-        </h2>
-        <Link
-          href="/history"
-          className="group card-surface rounded-2xl p-6 sm:p-8 hover:shadow-md transition-all block relative overflow-hidden"
-        >
-          <div className="host-stripe absolute top-0 left-0 right-0" />
-          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
-                1930 - 2022
-              </p>
-              <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[var(--wc-usa)] transition-colors">
-                {copy.historyTitle}
-              </h3>
-              <p className="text-sm text-zinc-500 mt-2 max-w-lg leading-relaxed">{copy.historyDesc}</p>
-            </div>
-            <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--wc-usa)] shrink-0">
-              {copy.browseHistory}{" "}
-              <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-            </span>
-          </div>
-        </Link>
-      </section>
-
-      <section className="card-elevated rounded-2xl p-8 sm:p-10 text-center relative overflow-hidden">
-        <div className="host-stripe absolute top-0 left-0 right-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none" />
-        <Trophy className="mx-auto text-blue-600 mb-3 relative mt-1" size={36} />
-        <h2 className="text-xl font-bold text-zinc-900 mb-2 relative">{t.exploreTournament}</h2>
-        <p className="text-zinc-500 text-sm max-w-sm mx-auto mb-6 relative leading-relaxed">
-          {copy.exploreSubtitle}
-        </p>
-        <div className="flex flex-wrap justify-center gap-3 relative">
-          <Link href={fixturesHref} className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm">
-            <Calendar size={16} />
-            {copy.fixturesBtn}
-          </Link>
-          <Link href="/standings" className="btn-usa inline-flex items-center gap-2 px-5 py-2.5 text-sm">
-            <Table2 size={16} />
-            {copy.standingsBtn}
-          </Link>
-        </div>
-      </section>
+      <HomeQuickLinks />
     </div>
   );
 }

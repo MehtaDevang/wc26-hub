@@ -15,8 +15,18 @@ import type { Match } from "@/lib/types";
 
 const GROUPS = "ABCDEFGHIJKL".split("");
 
+type PhaseFilter = "all" | "knockout";
+
 interface FixturesExplorerProps {
   matches: Match[];
+  defaultPhase?: PhaseFilter;
+}
+
+function isKnockoutMatch(match: Match): boolean {
+  return (
+    match.group === "?" ||
+    (match.roundSlug != null && match.roundSlug !== "group-stage")
+  );
 }
 
 function teamInMatch(match: Match, code: string): boolean {
@@ -33,9 +43,10 @@ function defaultFixtureDateKey(dateKeys: string[], timeZone: string): string {
   return dateKeys[dateKeys.length - 1] ?? today;
 }
 
-export function FixturesExplorer({ matches }: FixturesExplorerProps) {
+export function FixturesExplorer({ matches, defaultPhase = "all" }: FixturesExplorerProps) {
   const timezone = useTimezone();
   const dateStripRef = useRef<HTMLDivElement>(null);
+  const [phase, setPhase] = useState<PhaseFilter>(defaultPhase);
   const [group, setGroup] = useState<string | "all">("all");
   const [myTeamsOnly, setMyTeamsOnly] = useState(false);
   const [hideFinished, setHideFinished] = useState(false);
@@ -56,13 +67,18 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
     };
   }, []);
 
+  const phaseMatches = useMemo(() => {
+    if (phase === "all") return matches;
+    return matches.filter(isKnockoutMatch);
+  }, [matches, phase]);
+
   const dateKeys = useMemo(() => {
     const keys = new Set<string>();
-    for (const m of matches) {
+    for (const m of phaseMatches) {
       keys.add(m.kickoffAt ? formatKickoffDateKey(m.kickoffAt, timezone) : m.date);
     }
     return [...keys].sort();
-  }, [matches, timezone]);
+  }, [phaseMatches, timezone]);
 
   useEffect(() => {
     if (dateKeys.length === 0) return;
@@ -79,7 +95,7 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
   }, [dateKey, dateInitialized]);
 
   const filtered = useMemo(() => {
-    let list = matches;
+    let list = phaseMatches;
     if (group !== "all") list = list.filter((m) => m.group === group);
     if (myTeamsOnly && myTeams.length > 0) {
       list = list.filter((m) => myTeams.some((c) => teamInMatch(m, c)));
@@ -92,7 +108,11 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
       });
     }
     return list;
-  }, [matches, group, myTeamsOnly, myTeams, hideFinished, dateKey, timezone]);
+  }, [phaseMatches, group, myTeamsOnly, myTeams, hideFinished, dateKey, timezone]);
+
+  useEffect(() => {
+    if (phase === "knockout") setGroup("all");
+  }, [phase]);
 
   return (
     <div className="space-y-4">
@@ -135,6 +155,38 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
           <Filter size={12} />
+          Phase
+        </span>
+        <button
+          type="button"
+          onClick={() => setPhase("knockout")}
+          className={clsx(
+            "rounded-full px-3 py-1.5 text-xs font-semibold border transition-colors",
+            phase === "knockout"
+              ? "bg-[var(--wc-usa)] text-white border-[var(--wc-usa)]"
+              : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+          )}
+        >
+          Knockout
+        </button>
+        <button
+          type="button"
+          onClick={() => setPhase("all")}
+          className={clsx(
+            "rounded-full px-3 py-1.5 text-xs font-semibold border transition-colors",
+            phase === "all"
+              ? "bg-zinc-900 text-white border-zinc-900"
+              : "bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+          )}
+        >
+          All matches
+        </button>
+      </div>
+
+      {phase === "all" && (
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
+          <Filter size={12} />
           Group
         </span>
         <button
@@ -165,6 +217,7 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
           </button>
         ))}
       </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
         <button
@@ -193,7 +246,7 @@ export function FixturesExplorer({ matches }: FixturesExplorerProps) {
           Hide finished
         </button>
         <span className="text-xs text-zinc-400 self-center ml-auto tabular-nums">
-          {filtered.length} of {matches.length} matches
+          {filtered.length} of {phaseMatches.length} matches
         </span>
       </div>
 

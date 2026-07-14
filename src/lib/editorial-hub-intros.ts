@@ -7,29 +7,29 @@ export interface HubIntro {
 }
 
 export const FIXTURES_HUB_INTRO: HubIntro = {
-  title: "How to use the World Cup 2026 fixture list",
+  title: "World Cup 2026 knockout fixtures & results",
   paragraphs: [
-    "This page lists every FIFA World Cup 2026 match from the opening group games through the final across the United States, Mexico, and Canada. Kick-off times follow your local timezone so you can plan around work, travel, and watch parties.",
-    "The tournament uses twelve groups of four teams (48 nations). The top two in each group advance, plus the eight best third-placed sides, for a 32-team knockout stage. Use the date filter to jump to today, browse by group, or add the full schedule to your calendar.",
-    "Scores and statuses refresh from live match data throughout the day. For tables and qualification math, see our group standings and Road to the Round of 32 tracker.",
+    "The group stage is complete — 32 teams remain in the knockout bracket. This page lists every Round of 32, Round of 16, quarter-final, semi-final, third-place play-off, and final match with kick-off times in your local timezone.",
+    "Use the knockout filter to focus on elimination games, jump by date to today’s slate, or follow only the teams you’ve starred on My World Cup. Scores and statuses refresh from live match data throughout the day.",
+    "For the full tournament tree, live bracket updates, and Golden Boot standings, see our knockout bracket and stat leaders pages.",
   ],
   links: [
-    { href: "/standings", label: "Live group tables" },
-    { href: "/knockout", label: "Qualification tracker" },
-    { href: "/history", label: "World Cup history" },
+    { href: "/bracket", label: "Live knockout bracket" },
+    { href: "/leaders", label: "Golden Boot & stat leaders" },
+    { href: "/standings", label: "Final group tables (archive)" },
   ],
 };
 
 export const STANDINGS_HUB_INTRO: HubIntro = {
-  title: "Understanding the World Cup 2026 group stage",
+  title: "Final World Cup 2026 group-stage tables",
   paragraphs: [
-    "Forty-eight teams are split into twelve groups (A through L). Each team plays three group matches. Three points for a win, one for a draw, with goal difference and goals scored breaking ties before fair play and lots.",
-    "Twenty-four teams qualify automatically as group winners and runners-up. The remaining eight knockout spots go to the best third-placed teams, ranked on points, goal difference, and goals scored across all twelve groups.",
-    "Tables on this page update after every final whistle. Tap a team for fixtures and squad stats, or open the qualification simulator to model what-if results for remaining games.",
+    "Forty-eight teams played three matches each across twelve groups (A through L). These tables show the final group-stage standings — points, goal difference, and who advanced to the Round of 32.",
+    "Twenty-four teams qualified as group winners and runners-up. The remaining eight knockout spots went to the best third-placed teams, ranked on points, goal difference, and goals scored.",
+    "The knockout phase is underway. Follow live scores and the path to the Final on the main bracket, or browse upcoming elimination fixtures.",
   ],
   links: [
-    { href: "/knockout", label: "Best third-placed tracker" },
-    { href: "/scenarios", label: "What-if simulator" },
+    { href: "/bracket", label: "Live knockout bracket" },
+    { href: "/fixtures", label: "Knockout fixtures" },
     { href: "/groups", label: "All groups A–L" },
   ],
 };

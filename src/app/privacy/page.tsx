@@ -49,7 +49,6 @@ export default function PrivacyPage() {
           </p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>the teams you follow and your &ldquo;My World Cup&rdquo; preferences;</li>
-            <li>your bracket predictions and saved pool entries;</li>
             <li>puzzle progress and scores;</li>
             <li>your preferred language, timezone and cookie-consent choice;</li>
             <li>whether you have dismissed prompts such as the install banner.</li>

@@ -53,10 +53,10 @@ export default function TermsPage() {
 
         <Section title="Predictions, simulators and games">
           <p>
-            Features such as the live knockout bracket, group simulator, scenario calculator, pools and
-            puzzles are provided for entertainment only. They do not constitute betting advice or any
-            guarantee of outcomes. {SITE_NAME} does not facilitate gambling and is not responsible for
-            any decisions you make based on these features.
+            Features such as the live knockout bracket, archived group simulator, and puzzles are
+            provided for entertainment only. They do not constitute betting advice or any guarantee of
+            outcomes. {SITE_NAME} does not facilitate gambling and is not responsible for any
+            decisions you make based on these features.
           </p>
         </Section>
 

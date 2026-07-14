@@ -66,6 +66,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "media.licdn.com", pathname: "/**" },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/bracket/pool", destination: "/bracket", permanent: true },
+      { source: "/pool", destination: "/bracket", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

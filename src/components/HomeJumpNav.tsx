@@ -6,10 +6,10 @@ import clsx from "clsx";
 const SECTIONS = [
   { id: "my-teams", label: "My teams" },
   { id: "live", label: "Live" },
+  { id: "bracket", label: "Bracket" },
   { id: "highlights", label: "Highlights" },
   { id: "quiz", label: "Quiz" },
   { id: "news", label: "News" },
-  { id: "bracket", label: "Bracket" },
   { id: "explore", label: "Explore" },
 ] as const;
 

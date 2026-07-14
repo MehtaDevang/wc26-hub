@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { Suspense } from "react";
 import { headers } from "next/headers";
-import { Outfit, Geist_Mono } from "next/font/google";
+import { Outfit, Geist_Mono, Oswald } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -41,6 +42,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const oswald = Oswald({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = rootMetadata();
 
 export default async function RootLayout({
@@ -55,23 +62,29 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${geistMono.variable} ${oswald.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }} />
         {!isNativeApp && (
-          <>
-            <meta name="google-adsense-account" content={ADSENSE_CLIENT_ID} />
-            <script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
-              crossOrigin="anonymous"
-            />
-          </>
+          <meta name="google-adsense-account" content={ADSENSE_CLIENT_ID} />
         )}
         <link rel="preconnect" href="https://a.espncdn.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col cup-bg text-zinc-900">
+        {/* Consent defaults must run before any ad/analytics script loads. */}
+        <Script
+          id="consent-default"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: CONSENT_DEFAULT_SCRIPT }}
+        />
+        {!isNativeApp && (
+          <Script
+            id="adsbygoogle-init"
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>
@@ -92,46 +105,46 @@ export default async function RootLayout({
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 pb-4">
               <SiteFooterAd />
             </div>
-            <footer className="border-t border-zinc-200 bg-white py-8">
+            <footer className="border-t border-white/10 bg-[var(--stadium-navy)] py-8 text-white">
               <WC26MascotStrip variant="footer" className="mb-4" />
-              <p className="text-center text-xs text-zinc-400">
+              <p className="text-center text-xs text-white/50">
                 {SITE_NAME} © 2026 - Not affiliated with FIFA. Live data via ESPN.
               </p>
               <div className="mt-4 flex justify-center">
                 <FollowOnX variant="footer" />
               </div>
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-zinc-400">
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-white/50">
                 <span>Hosted across Mexico, USA & Canada</span>
                 <span>·</span>
                 <LocaleSwitcher />
                 <span>·</span>
-                <Link href="/install" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/install" className="hover:text-[var(--wc-gold)] transition-colors">
                   Get the app
                 </Link>
                 <span>·</span>
-                <Link href="/wallpapers" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/wallpapers" className="hover:text-[var(--wc-gold)] transition-colors">
                   Wallpapers
                 </Link>
                 <span>·</span>
-                <Link href="/about" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/about" className="hover:text-[var(--wc-gold)] transition-colors">
                   About
                 </Link>
                 <span>·</span>
-                <Link href="/contact" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/contact" className="hover:text-[var(--wc-gold)] transition-colors">
                   Contact
                 </Link>
                 <span>·</span>
-                <Link href="/privacy" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/privacy" className="hover:text-[var(--wc-gold)] transition-colors">
                   Privacy
                 </Link>
                 <span>·</span>
-                <Link href="/terms" className="hover:text-[var(--wc-usa)] transition-colors">
+                <Link href="/terms" className="hover:text-[var(--wc-gold)] transition-colors">
                   Terms
                 </Link>
                 <span>·</span>
                 <a
                   href={`mailto:${SITE_ADS_EMAIL}`}
-                  className="hover:text-[var(--wc-usa)] transition-colors"
+                  className="hover:text-[var(--wc-gold)] transition-colors"
                 >
                   Advertise
                 </a>
@@ -140,7 +153,7 @@ export default async function RootLayout({
                   href={SITE_TWITTER_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[var(--wc-usa)] transition-colors"
+                  className="hover:text-[var(--wc-gold)] transition-colors"
                 >
                   @{SITE_TWITTER_HANDLE}
                 </a>

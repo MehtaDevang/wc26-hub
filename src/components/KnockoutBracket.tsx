@@ -247,6 +247,7 @@ interface KnockoutBracketProps {
   compact?: boolean;
   showLink?: boolean;
   refreshing?: boolean;
+  embedded?: boolean;
 }
 
 export function KnockoutBracket({
@@ -254,6 +255,7 @@ export function KnockoutBracket({
   compact = false,
   showLink = false,
   refreshing = false,
+  embedded = false,
 }: KnockoutBracketProps) {
   const mainRounds = data.rounds.filter((r) => r.id !== "third-place");
   const thirdPlace = data.rounds.find((r) => r.id === "third-place");
@@ -272,48 +274,11 @@ export function KnockoutBracket({
     ? ROUND_PROGRESS.indexOf(data.activeRound)
     : ROUND_PROGRESS.length - 1;
 
-  return (
-    <section>
-      <div className="mb-4 flex items-end justify-between gap-4">
-        <div>
-          <h2 className="section-title flex items-center gap-2 text-base sm:text-lg">
-            <GitBranch size={20} className="text-[var(--wc-usa)]" />
-            Knockout Bracket
-          </h2>
-          <p className="mt-1 text-sm text-zinc-500">
-            {data.finishedMatches} of {data.totalMatches} knockout matches played
-            {data.activeRound && (
-              <>
-                {" · "}
-                <span className="font-semibold text-[var(--wc-usa)]">
-                  Now: {data.rounds.find((r) => r.id === data.activeRound)?.label}
-                </span>
-              </>
-            )}
-            {data.updatedAt && (
-              <>
-                {" · "}
-                <span className={`text-xs ${refreshing ? "text-[var(--wc-usa)]" : ""}`}>
-                  {refreshing ? "Updating…" : "Auto-updates from ESPN"}
-                </span>
-              </>
-            )}
-          </p>
-        </div>
-        {showLink && (
-          <Link
-            href="/bracket"
-            className="text-sm font-semibold text-[var(--wc-usa)] hover:underline shrink-0 inline-flex items-center gap-1"
-          >
-            Full bracket <ChevronRight size={14} />
-          </Link>
-        )}
-      </div>
+  const bracketContent = (
+    <div className={`bracket-shell ${embedded ? "bracket-shell--embedded" : "rounded-2xl p-4 sm:p-6"} overflow-hidden relative`}>
+        {!embedded && <div className="host-stripe absolute top-0 left-0 right-0 z-[1]" />}
 
-      <div className="bracket-shell rounded-2xl p-4 sm:p-6 overflow-hidden relative">
-        <div className="host-stripe absolute top-0 left-0 right-0 z-[1]" />
-
-        <div className="relative z-[2] mb-4 mt-1">
+        <div className={`relative z-[2] ${embedded ? "mb-3 mt-0" : "mb-4 mt-1"}`}>
           <div className="flex items-center justify-between gap-1">
             {ROUND_PROGRESS.map((roundId, index) => {
               const theme = ROUND_THEME[roundId];
@@ -370,7 +335,7 @@ export function KnockoutBracket({
           </div>
         )}
 
-        {compact && (
+        {compact && !embedded && (
           <p className="relative z-[2] mt-3 text-center text-xs text-zinc-500">
             Round of 32 on the{" "}
             <Link href="/bracket" className="text-[var(--wc-usa)] font-semibold hover:underline">
@@ -379,6 +344,50 @@ export function KnockoutBracket({
           </p>
         )}
       </div>
+  );
+
+  if (embedded) {
+    return bracketContent;
+  }
+
+  return (
+    <section>
+      <div className="mb-4 flex items-end justify-between gap-4">
+        <div>
+          <h2 className="section-title flex items-center gap-2 text-base sm:text-lg">
+            <GitBranch size={20} className="text-[var(--wc-usa)]" />
+            Knockout Bracket
+          </h2>
+          <p className="mt-1 text-sm text-zinc-500">
+            {data.finishedMatches} of {data.totalMatches} knockout matches played
+            {data.activeRound && (
+              <>
+                {" · "}
+                <span className="font-semibold text-[var(--wc-usa)]">
+                  Now: {data.rounds.find((r) => r.id === data.activeRound)?.label}
+                </span>
+              </>
+            )}
+            {data.updatedAt && (
+              <>
+                {" · "}
+                <span className={`text-xs ${refreshing ? "text-[var(--wc-usa)]" : ""}`}>
+                  {refreshing ? "Updating…" : "Auto-updates from ESPN"}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        {showLink && (
+          <Link
+            href="/bracket"
+            className="text-sm font-semibold text-[var(--wc-usa)] hover:underline shrink-0 inline-flex items-center gap-1"
+          >
+            Full bracket <ChevronRight size={14} />
+          </Link>
+        )}
+      </div>
+      {bracketContent}
     </section>
   );
 }

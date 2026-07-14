@@ -29,20 +29,16 @@ export interface HomeCopy {
   fanTools: string;
   liveBracket: string;
   liveBracketDesc: string;
-  qualificationScenarios: string;
-  qualificationScenariosDesc: string;
-  roadToR32: string;
-  roadToR32Desc: string;
+  dailyDigest: string;
+  dailyDigestDesc: string;
+  knockoutFixtures: string;
+  knockoutFixturesDesc: string;
   whereToWatch: string;
   whereToWatchDesc: string;
   statLeaders: string;
   statLeadersDesc: string;
-  officePool: string;
-  officePoolDesc: string;
   rivalries: string;
   rivalriesDesc: string;
-  embedWidget: string;
-  embedWidgetDesc: string;
   cityGuides: string;
   cityGuidesDesc: string;
   dailyPuzzles: string;
@@ -90,20 +86,16 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     fanTools: "Fan Tools",
     liveBracket: "Live Bracket",
     liveBracketDesc: "Knockout scores from Round of 32 to the Final",
-    qualificationScenarios: "Qualification Scenarios",
-    qualificationScenariosDesc: "What does each team need to advance?",
-    roadToR32: "Road to Round of 32",
-    roadToR32Desc: "Live 32-team board & best third-placed tracker",
+    dailyDigest: "Daily Digest",
+    dailyDigestDesc: "Today's results, fixtures, and Golden Boot movers",
+    knockoutFixtures: "Knockout Fixtures",
+    knockoutFixturesDesc: "Round of 16 through the Final — kick-offs in your time",
     whereToWatch: "Where to Watch",
     whereToWatchDesc: "TV channels for every match",
     statLeaders: "Stat Leaders",
     statLeadersDesc: "Golden Boot, assists & more",
-    officePool: "Office Pool Kit",
-    officePoolDesc: "Printable bracket & scoring rules",
     rivalries: "World Cup Rivalries",
     rivalriesDesc: "Argentina vs Brazil, Mexico vs USA, and 18 more historic matchups",
-    embedWidget: "Embed Live Scores",
-    embedWidgetDesc: "Free widget for blogs and fan sites",
     cityGuides: "Host City Travel Guides",
     cityGuidesDesc: "Airports, stadium transit, fan zones & tips for every host city",
     dailyPuzzles: "Daily Puzzles",
@@ -120,28 +112,24 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       "Explore every World Cup winner, final score, host nation, Golden Ball winners, all-time records, trophy history, prize money, and documented controversies.",
     browseHistory: "Browse FIFA World Cup history",
     exploreSubtitle: "Videos, lineups, stats, photos, and live tables for every match.",
-    fixturesBtn: "Fixtures",
-    standingsBtn: "Standings",
+    fixturesBtn: "Knockout fixtures",
+    standingsBtn: "Group tables",
   },
   es: {
     localeLabel: "Español",
     fanTools: "Herramientas para fans",
     liveBracket: "Llave en vivo",
     liveBracketDesc: "Resultados del knockout del dieciseisavos a la final",
-    qualificationScenarios: "Escenarios de clasificación",
-    qualificationScenariosDesc: "¿Qué necesita cada selección para avanzar?",
-    roadToR32: "Camino a los 16avos",
-    roadToR32Desc: "Tablero en vivo de 32 equipos y mejores terceros",
+    dailyDigest: "Resumen del día",
+    dailyDigestDesc: "Resultados de hoy, partidos y líderes de goleo",
+    knockoutFixtures: "Partidos de knockout",
+    knockoutFixturesDesc: "Octavos a la final — horarios en tu zona",
     whereToWatch: "Dónde ver",
     whereToWatchDesc: "Canales de TV para cada partido",
     statLeaders: "Líderes estadísticos",
     statLeadersDesc: "Bota de Oro, asistencias y más",
-    officePool: "Quiniela de oficina",
-    officePoolDesc: "Bracket imprimible y reglas de puntuación",
     rivalries: "Rivalidades del Mundial",
     rivalriesDesc: "Argentina vs Brasil, México vs EE.UU. y 18 duelos históricos más",
-    embedWidget: "Widget de resultados",
-    embedWidgetDesc: "Widget gratuito para blogs y sitios de fans",
     cityGuides: "Guías de ciudades sede",
     cityGuidesDesc: "Aeropuertos, transporte, fan zones y consejos de viaje",
     dailyPuzzles: "Puzzles diarios",
@@ -166,20 +154,16 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     fanTools: "Outils fans",
     liveBracket: "Tableau en direct",
     liveBracketDesc: "Scores du knockout des 16es à la finale",
-    qualificationScenarios: "Scénarios de qualification",
-    qualificationScenariosDesc: "De quoi chaque équipe a-t-elle besoin pour se qualifier ?",
-    roadToR32: "Route vers les 16es",
-    roadToR32Desc: "Tableau des 32 équipes et meilleurs troisièmes",
+    dailyDigest: "Résumé du jour",
+    dailyDigestDesc: "Résultats du jour, matchs et classement des buteurs",
+    knockoutFixtures: "Matchs à élimination",
+    knockoutFixturesDesc: "Huitièmes de finale à la finale — heures locales",
     whereToWatch: "Où regarder",
     whereToWatchDesc: "Chaînes TV pour chaque match",
     statLeaders: "Leaders statistiques",
     statLeadersDesc: "Soulier d'Or, passes décisives et plus",
-    officePool: "Pool de bureau",
-    officePoolDesc: "Bracket imprimable et règles de points",
     rivalries: "Rivalités de la Coupe du monde",
     rivalriesDesc: "Argentine vs Brésil, Mexique vs États-Unis et 18 autres duels historiques",
-    embedWidget: "Widget scores en direct",
-    embedWidgetDesc: "Widget gratuit pour blogs et sites de supporters",
     cityGuides: "Guides des villes hôtes",
     cityGuidesDesc: "Aéroports, transports, fan zones et conseils voyage",
     dailyPuzzles: "Puzzles quotidiens",
@@ -209,9 +193,9 @@ const STRINGS: Record<Locale, LocaleStrings> = {
     fixturesSubtitle: (n) =>
       `All World Cup 2026 matches · ${n} fixtures · kick-offs in your local time`,
     homeTitle: "FIFA World Cup 2026 Live Scores",
-    homeSubtitle: "Live scores, fixtures, standings, and stats for every match.",
-    groupTables: "Group Tables",
-    groupTablesDesc: "Live standings for all 12 groups",
+    homeSubtitle: "Live knockout scores, bracket, fixtures, Golden Boot race, and daily puzzles.",
+    groupTables: "Group Tables (archive)",
+    groupTablesDesc: "Final group-stage standings for all 12 groups",
     fullFixtures: "Full Fixtures",
     fullFixturesDesc: "Every match, venue & kickoff time",
     knockoutBracket: "Knockout Bracket",

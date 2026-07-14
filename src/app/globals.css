@@ -70,6 +70,7 @@
 
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
 body {
@@ -77,6 +78,92 @@ body {
   color: var(--text);
   font-family: var(--font-outfit), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   ESPN / stadium-energy design layer
+   Bold condensed display type, high-contrast color blocking.
+   ============================================================ */
+:root {
+  --ink: #0a0e1a;
+  --ink-2: #131a2e;
+  --stadium-navy: #0a1430;
+}
+
+/* Condensed heavy display type for headlines (ESPN broadcast feel) */
+.font-display,
+.stadium-title {
+  font-family: var(--font-display), var(--font-outfit), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+/* Reusable bold color-blocked section header (used across pages) */
+.stadium-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stadium-head::before {
+  content: "";
+  width: 6px;
+  align-self: stretch;
+  min-height: 1.75rem;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--wc-canada), #a10419);
+  box-shadow: 0 2px 8px rgba(216, 6, 33, 0.35);
+}
+
+.stadium-head--navy::before {
+  background: linear-gradient(180deg, var(--wc-usa), #001640);
+  box-shadow: 0 2px 8px rgba(0, 40, 104, 0.3);
+}
+
+.stadium-head--gold::before {
+  background: linear-gradient(180deg, #f0b429, var(--wc-gold));
+  box-shadow: 0 2px 8px rgba(201, 162, 39, 0.35);
+}
+
+.stadium-head--green::before {
+  background: linear-gradient(180deg, #0a8f61, var(--wc-mexico));
+  box-shadow: 0 2px 8px rgba(0, 104, 71, 0.3);
+}
+
+.stadium-head-title {
+  font-family: var(--font-display), var(--font-outfit), system-ui, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  font-size: 1.5rem;
+  color: var(--ink);
+}
+
+@media (min-width: 640px) {
+  .stadium-head-title {
+    font-size: 1.875rem;
+  }
+}
+
+.stadium-head-sub {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* Card surface upgrade: crisper edge + stronger lift for energy */
+.stadium-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(10, 14, 26, 0.04), 0 10px 30px -12px rgba(10, 14, 26, 0.15);
 }
 
 /* Pointer cursor on interactive elements */
@@ -110,7 +197,670 @@ button:disabled,
     radial-gradient(ellipse 50% 40% at 100% 20%, rgba(216, 6, 33, 0.04), transparent);
 }
 
-/* Homepage hero */
+/* Homepage dashboard */
+.home-dashboard {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.site-main:has(.home-dashboard) {
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(0, 104, 71, 0.07), transparent 50%),
+    radial-gradient(ellipse 70% 45% at 90% 0%, rgba(0, 40, 104, 0.08), transparent 45%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(216, 6, 33, 0.05), transparent 50%),
+    var(--bg);
+}
+
+.home-dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--wc-usa) 20%, white);
+  background: #fff;
+  box-shadow:
+    0 8px 32px rgba(0, 40, 104, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+/* Finale (semi-finals -> Final) homepage treatment */
+.site-main:has(.home-dashboard--finale) {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -12%, rgba(0, 40, 104, 0.16), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 10% 6%, rgba(0, 104, 71, 0.1), transparent 50%),
+    radial-gradient(ellipse 70% 45% at 90% 4%, rgba(216, 6, 33, 0.09), transparent 50%),
+    var(--bg);
+}
+
+.home-finale-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg, #0a0f1a 0%, #12182a 55%, #0d1220 100%);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.home-finale-hero--final {
+  border-color: color-mix(in srgb, var(--wc-gold) 45%, rgba(255, 255, 255, 0.1));
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px color-mix(in srgb, var(--wc-gold) 30%, transparent);
+}
+
+.home-finale-hero--champion {
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 0%, rgba(201, 162, 39, 0.35), transparent 60%),
+    linear-gradient(160deg, #1a1405 0%, #241b06 55%, #14100a 100%);
+  border-color: color-mix(in srgb, var(--wc-gold) 50%, rgba(255, 255, 255, 0.1));
+}
+
+.home-dashboard-hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(0, 104, 71, 0.14), transparent 65%),
+    radial-gradient(ellipse 70% 55% at 80% -5%, rgba(0, 40, 104, 0.12), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(216, 6, 33, 0.08), transparent 70%);
+}
+
+.home-dashboard-hero-inner {
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem 1rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .home-dashboard-hero-inner {
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+}
+
+.home-dashboard-hero-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .home-dashboard-hero-header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+.home-dashboard-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wc-canada);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.home-dashboard-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  background: linear-gradient(135deg, var(--wc-usa) 0%, var(--wc-mexico) 55%, var(--wc-canada) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (min-width: 640px) {
+  .home-dashboard-title {
+    font-size: 2rem;
+  }
+}
+
+.home-dashboard-subtitle {
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 32rem;
+}
+
+.home-dashboard-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.home-dashboard-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.home-dashboard-cta:hover {
+  background: #fafafa;
+  border-color: #d4d4d8;
+}
+
+.home-dashboard-cta-primary {
+  background: linear-gradient(135deg, var(--wc-usa) 0%, #003d99 100%);
+  border-color: var(--wc-usa);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 40, 104, 0.25);
+}
+
+.home-dashboard-cta-primary:hover {
+  opacity: 0.92;
+  background: linear-gradient(135deg, var(--wc-usa) 0%, #003d99 100%);
+  border-color: var(--wc-usa);
+}
+
+.home-dashboard-cta-icon {
+  padding: 0.5rem;
+  width: 2.25rem;
+}
+
+.home-dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* Prevent grid blowout: let items shrink so the bracket's internal
+   horizontal scroll container is bounded instead of widening the page. */
+.home-dashboard-grid > * {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .home-dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Finale: left rail (final four + predict) beside the taller bracket.
+     Align to top so the shorter column doesn't stretch and leave dead space. */
+  .home-dashboard-grid--finale {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: start;
+  }
+}
+
+.home-dashboard-main,
+.home-dashboard-side {
+  min-width: 0;
+}
+
+/* Symmetric dashboard panels */
+.home-dash-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow:
+    0 4px 24px rgba(0, 40, 104, 0.07),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  min-height: 420px;
+  height: 100%;
+}
+
+.home-dash-panel--fill {
+  height: 100%;
+}
+
+.home-dash-panel--auto {
+  min-height: 0;
+  height: auto;
+}
+
+.home-dash-panel-stripe {
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--wc-mexico) 0%,
+    var(--wc-mexico) 33.33%,
+    var(--wc-usa) 33.33%,
+    var(--wc-usa) 66.66%,
+    var(--wc-canada) 66.66%,
+    var(--wc-canada) 100%
+  );
+}
+
+.home-dash-panel--scores {
+  border-color: color-mix(in srgb, var(--wc-usa) 22%, white);
+  background:
+    radial-gradient(ellipse 90% 50% at 0% 0%, rgba(0, 40, 104, 0.09), transparent 55%),
+    radial-gradient(ellipse 70% 40% at 100% 100%, rgba(216, 6, 33, 0.06), transparent 50%),
+    #fff;
+}
+
+.home-dash-panel--bracket {
+  border-color: color-mix(in srgb, var(--wc-mexico) 22%, white);
+  background:
+    radial-gradient(ellipse 80% 50% at 100% 0%, rgba(0, 104, 71, 0.1), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 0% 100%, rgba(201, 162, 39, 0.08), transparent 50%),
+    #fff;
+}
+
+.home-dash-panel--teams {
+  border-color: color-mix(in srgb, var(--wc-canada) 18%, white);
+  background: linear-gradient(135deg, #fff 0%, #fff9fa 100%);
+  min-height: auto;
+  height: auto;
+}
+
+.home-dash-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+}
+
+.home-dash-panel-head--compact {
+  padding: 0.75rem 1rem;
+}
+
+.home-dash-panel-head-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+/* High-contrast solid color-blocked icon chips (ESPN energy) */
+.home-dash-panel--scores .home-dash-panel-head-icon {
+  background: linear-gradient(135deg, #ef1e3c, var(--wc-canada));
+  box-shadow: 0 4px 12px -2px rgba(216, 6, 33, 0.45);
+}
+
+.home-dash-panel--bracket .home-dash-panel-head-icon {
+  background: linear-gradient(135deg, #123f8c, var(--wc-usa));
+  box-shadow: 0 4px 12px -2px rgba(0, 40, 104, 0.45);
+}
+
+.home-dash-panel-head-icon--teams {
+  background: linear-gradient(135deg, #0a8f61, var(--wc-mexico));
+  box-shadow: 0 4px 12px -2px rgba(0, 104, 71, 0.4);
+}
+
+.home-dash-panel-title {
+  font-family: var(--font-display), var(--font-outfit), system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  line-height: 1.05;
+}
+
+.home-dash-panel-subtitle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+.home-dash-panel-link {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--wc-usa);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.home-dash-panel-link:hover {
+  text-decoration: underline;
+}
+
+.home-dash-panel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.home-dash-panel-body--compact {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.home-dash-panel-skeleton {
+  border-radius: 16px;
+  min-height: 420px;
+}
+
+.home-scores-embedded {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--wc-usa) 12%, white);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.home-scores-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--wc-usa) 10%, white);
+  background: linear-gradient(90deg, var(--wc-usa-light) 0%, #fff 55%, var(--wc-canada-light) 100%);
+}
+
+.home-scores-live-pill {
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wc-canada);
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--wc-canada) 20%, white);
+  border-radius: 9999px;
+  padding: 0.15rem 0.45rem;
+}
+
+.home-scores-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+.home-scores-more-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--wc-usa);
+  border-top: 1px solid var(--border-light);
+  background: linear-gradient(180deg, transparent, var(--wc-usa-light));
+  transition: background 0.15s ease;
+}
+
+.home-scores-more-link:hover {
+  background: var(--wc-usa-light);
+}
+
+.bracket-shell--embedded {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.25rem 0.5rem 0.5rem;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 12px;
+}
+
+.home-golden-boot-row {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--wc-gold) 40%, white);
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(201, 162, 39, 0.14), transparent 60%),
+    radial-gradient(ellipse 50% 70% at 100% 50%, rgba(234, 88, 12, 0.1), transparent 55%),
+    linear-gradient(180deg, #fffbeb 0%, #fff 100%);
+  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.12);
+}
+
+.home-golden-boot-row-stripe {
+  height: 3px;
+  background: linear-gradient(90deg, #f59e0b, var(--wc-gold), #ea580c);
+}
+
+.home-golden-boot-row-inner {
+  padding: 1rem 1.125rem 1.125rem;
+}
+
+.home-golden-boot-row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+}
+
+.home-golden-boot-row-grid {
+  display: grid;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .home-golden-boot-row-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.home-golden-boot-chip {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+
+.home-spotlight-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.home-spotlight-wrap--multi {
+  max-width: 40rem;
+}
+
+.home-spotlight-card {
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--wc-usa) 15%, white);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 40, 104, 0.08);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.home-spotlight-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 40, 104, 0.1);
+  transform: translateY(-1px);
+}
+
+.home-spotlight-card-bar {
+  height: 4px;
+}
+
+.home-spotlight-card-body {
+  padding: 1rem 1.125rem 1rem;
+}
+
+.home-spotlight-eyebrow {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+}
+
+.home-spotlight-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  background: #fde8eb;
+  color: var(--wc-canada);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.home-spotlight-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--wc-canada);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.home-spotlight-ft-badge {
+  font-size: 0.625rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #71717a;
+  background: #f4f4f5;
+  border-radius: 9999px;
+  padding: 0.2rem 0.5rem;
+}
+
+.home-spotlight-cta {
+  margin-top: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--wc-usa);
+}
+
+.home-spotlight-offday {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 12px;
+  border: 1px dashed #d4d4d8;
+  background: #fafafa;
+  padding: 0.875rem 1rem;
+}
+
+.home-spotlight-offday-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--wc-usa);
+  white-space: nowrap;
+}
+
+.home-quick-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .home-quick-links {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+.home-quick-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 0.75rem 0.375rem;
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.home-quick-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 40, 104, 0.1);
+}
+
+.home-quick-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+}
+
+.home-quick-link-icon--usa {
+  background: linear-gradient(135deg, var(--wc-usa-light), #fff);
+  color: var(--wc-usa);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wc-usa) 15%, white);
+}
+
+.home-quick-link-icon--violet {
+  background: linear-gradient(135deg, #ede9fe, #fff);
+  color: #6d28d9;
+  box-shadow: 0 0 0 1px #ddd6fe;
+}
+
+.home-quick-link-icon--green {
+  background: linear-gradient(135deg, var(--wc-mexico-light), #fff);
+  color: var(--wc-mexico);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wc-mexico) 15%, white);
+}
+
+.home-quick-link-icon--gold {
+  background: linear-gradient(135deg, #fef3c7, #fff);
+  color: #b45309;
+  box-shadow: 0 0 0 1px #fde68a;
+}
+
+.home-quick-link-icon--red {
+  background: linear-gradient(135deg, var(--wc-canada-light), #fff);
+  color: var(--wc-canada);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wc-canada) 15%, white);
+}
+
+.home-quick-link-icon--purple {
+  background: linear-gradient(135deg, #f3e8ff, #fff);
+  color: #9333ea;
+  box-shadow: 0 0 0 1px #e9d5ff;
+}
+
+.home-quick-link-icon--slate {
+  background: linear-gradient(135deg, #f4f4f5, #fff);
+  color: #52525b;
+  box-shadow: 0 0 0 1px #e4e4e7;
+}
+
+.home-quick-link-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* Legacy hero aliases (embed / other pages) */
 .home-hero {
   position: relative;
   overflow: hidden;
@@ -356,11 +1106,15 @@ button:disabled,
 }
 
 /* Typography helpers */
+/* ESPN stadium-energy section heading (site-wide) */
 .section-title {
-  font-size: 1.375rem;
+  font-family: var(--font-display), var(--font-outfit), system-ui, sans-serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1.05;
+  color: var(--ink);
 }
 
 .text-muted {

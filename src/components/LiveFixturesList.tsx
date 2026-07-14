@@ -8,9 +8,10 @@ import type { Match } from "@/lib/types";
 
 interface LiveFixturesListProps {
   initialMatches: Match[];
+  defaultPhase?: "all" | "knockout";
 }
 
-export function LiveFixturesList({ initialMatches }: LiveFixturesListProps) {
+export function LiveFixturesList({ initialMatches, defaultPhase = "all" }: LiveFixturesListProps) {
   const timezone = useTimezone();
   const [matches, setMatches] = useState(initialMatches);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,7 +43,7 @@ export function LiveFixturesList({ initialMatches }: LiveFixturesListProps) {
       {refreshing && (
         <p className="text-center text-xs text-zinc-400">Refreshing fixtures…</p>
       )}
-      <FixturesExplorer matches={matches} />
+      <FixturesExplorer matches={matches} defaultPhase={defaultPhase} />
     </div>
   );
 }

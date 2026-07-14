@@ -26,12 +26,16 @@ export function BracketPageContent() {
 export function BracketPageLinks() {
   return (
     <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
-      <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
-        Road to Round of 32 →
+      <Link href="/fixtures" className="text-blue-600 hover:underline font-medium">
+        Knockout fixtures →
       </Link>
       <span className="text-zinc-300">·</span>
-      <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
-        Qualification scenarios →
+      <Link href="/leaders" className="text-blue-600 hover:underline font-medium">
+        Golden Boot leaders →
+      </Link>
+      <span className="text-zinc-300">·</span>
+      <Link href="/standings" className="text-blue-600 hover:underline font-medium">
+        Final group tables →
       </Link>
     </p>
   );

@@ -395,7 +395,7 @@ export function TournamentLeadersPanel({ leaders }: { leaders: TournamentLeaders
         )}
       </div>
 
-      <p className="text-xs text-zinc-400 text-center">
+      <p className="text-xs text-zinc-400 text-center" suppressHydrationWarning>
         Stats from match data · Auto-refreshes every 90s · Updated{" "}
         {new Date(leaders.updatedAt).toLocaleString()}
       </p>

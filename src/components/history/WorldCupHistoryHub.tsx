@@ -17,6 +17,8 @@ import {
   Globe,
   List,
   ArrowRight,
+  Flame,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -37,6 +39,7 @@ import {
 import {
   EDITION_AWARDS,
 } from "@/lib/world-cup-awards";
+import { GREATEST_MATCHES, WC_LEGENDS } from "@/lib/world-cup-legends";
 import {
   WORLD_CUP_CONTROVERSIES,
   CONTROVERSY_CATEGORIES,
@@ -48,6 +51,8 @@ import { GoalRecordsTab } from "@/components/history/GoalRecordsTab";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: BookOpen },
+  { id: "matches", label: "Greatest Matches", icon: Flame },
+  { id: "legends", label: "Legends", icon: Star },
   { id: "winners", label: "Winners", icon: Crown },
   { id: "finals", label: "All Finals", icon: List },
   { id: "editions", label: "All Cups", icon: Calendar },
@@ -786,6 +791,72 @@ function ControversiesTab() {
   );
 }
 
+function GreatestMatchesTab() {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-zinc-500 leading-relaxed">
+        Eight matches that shaped the World Cup&apos;s legend — upsets, classics and
+        moments that outlived the tournaments they were played in.
+      </p>
+      <div className="space-y-3">
+        {GREATEST_MATCHES.map((m) => (
+          <article key={m.id} className="card-surface rounded-2xl p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-extrabold text-[var(--wc-usa)] tabular-nums">{m.year}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">
+                {m.stage}
+              </span>
+            </div>
+            <h3 className="mt-2 text-lg font-extrabold tracking-tight text-zinc-900">{m.title}</h3>
+            <p className="mt-1 text-sm font-bold text-zinc-800">
+              {m.teams.homeFlag} {m.scoreline} {m.teams.awayFlag}
+            </p>
+            <p className="mt-0.5 text-xs text-zinc-400">{m.venue}</p>
+            <p className="mt-3 text-sm text-zinc-600 leading-relaxed">{m.summary}</p>
+            <p className="mt-3 flex gap-2 rounded-lg bg-[var(--wc-gold-light)] px-3 py-2 text-sm text-zinc-700 leading-relaxed">
+              <Flame size={15} className="mt-0.5 shrink-0 text-[var(--wc-gold)]" />
+              <span><span className="font-semibold text-zinc-900">Why it matters: </span>{m.why}</span>
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LegendsTab() {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-zinc-500 leading-relaxed">
+        The players who defined the World Cup — from three-time champions to the
+        record-breakers whose numbers still stand.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {WC_LEGENDS.map((p) => (
+          <article key={p.id} className="card-surface rounded-2xl p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-3xl shrink-0">{p.flag}</span>
+              <div className="min-w-0">
+                <h3 className="text-base font-extrabold tracking-tight text-zinc-900">{p.name}</h3>
+                <p className="text-xs text-zinc-400">{p.country} · {p.era}</p>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--wc-gold-light)] px-2.5 py-1 text-[11px] font-semibold text-[var(--wc-gold)]">
+                <Trophy size={11} /> {p.worldCups}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-semibold text-zinc-600">
+                {p.honour}
+              </span>
+            </div>
+            <p className="mt-3 text-sm text-zinc-600 leading-relaxed">{p.summary}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function WorldCupHistoryHub() {
   const [tab, setTab] = useState<TabId>("overview");
 
@@ -824,6 +895,8 @@ export function WorldCupHistoryHub() {
       </div>
 
       {tab === "overview" && <OverviewTab onNavigate={navigateTab} />}
+      {tab === "matches" && <GreatestMatchesTab />}
+      {tab === "legends" && <LegendsTab />}
       {tab === "winners" && <WinnersTab />}
       {tab === "finals" && <FinalsTab />}
       {tab === "editions" && <EditionsTab />}

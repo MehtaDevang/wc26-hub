@@ -48,10 +48,10 @@ export function MatchQualificationContext({
         ))}
       </ul>
       <Link
-        href="/scenarios"
+        href="/bracket"
         className="inline-block text-xs font-semibold text-violet-700 hover:underline mt-3"
       >
-        Full qualification calculator →
+        View live knockout bracket →
       </Link>
     </div>
   );

@@ -42,12 +42,18 @@ interface LiveScoresProps {
   initialMatches?: Match[];
   fixturesHref?: string;
   labels?: Partial<LiveScoresLabels>;
+  compact?: boolean;
+  maxItems?: number;
+  embedded?: boolean;
 }
 
 export function LiveScores({
   initialMatches,
   fixturesHref = "/fixtures",
   labels: labelOverrides,
+  compact = false,
+  maxItems,
+  embedded = false,
 }: LiveScoresProps) {
   const labels = { ...DEFAULT_LABELS, ...labelOverrides };
   const timezone = useTimezone();
@@ -89,6 +95,20 @@ export function LiveScores({
   const upcomingToday = localizedMatches.filter((m) => m.status === "upcoming");
   const finishedToday = localizedMatches.filter((m) => m.status === "finished");
 
+  const limitList = (list: Match[], remaining: number) => {
+    if (remaining <= 0) return [];
+    return list.slice(0, remaining);
+  };
+
+  let remaining = maxItems ?? Number.POSITIVE_INFINITY;
+  const visibleLive = limitList(liveMatches, remaining);
+  remaining -= visibleLive.length;
+  const visibleUpcoming = limitList(upcomingToday, remaining);
+  remaining -= visibleUpcoming.length;
+  const visibleFinished = limitList(finishedToday, remaining);
+  const visibleCount = visibleLive.length + visibleUpcoming.length + visibleFinished.length;
+  const hiddenCount = localizedMatches.length - visibleCount;
+
   useEffect(() => {
     const hasLive = liveMatches.length > 0;
     const interval = setInterval(() => loadMatches(false), hasLive ? 30_000 : 60_000);
@@ -107,33 +127,21 @@ export function LiveScores({
   const todayLabel = mounted ? formatTodayLabel(timezone) : "Today's matches";
   const showSpinner = loading && localizedMatches.length === 0;
 
-  return (
-    <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="section-title flex items-center gap-2">
-          <Radio size={20} className="text-red-500" />
-          {labels.title}
-        </h2>
-        <Link href={fixturesHref} className="text-[13px] text-blue-600 hover:text-blue-700 font-medium flex items-center gap-0.5">
-          {labels.allFixtures} <ChevronRight size={14} />
-        </Link>
-      </div>
-
-      <div className="card-elevated overflow-hidden rounded-2xl">
-        <div className="host-stripe" />
-        <div className="flex items-center justify-between gap-3 px-4 py-3 bg-zinc-50 border-b border-zinc-100">
-          <div className="flex items-center gap-2 text-sm text-zinc-600 min-w-0">
-            <Clock size={14} className="text-zinc-400 shrink-0" />
+  const scoresBody = (
+    <>
+        <div className={`home-scores-toolbar ${embedded ? "home-scores-toolbar--embedded" : ""}`}>
+          <div className="flex items-center gap-2 text-sm text-zinc-700 min-w-0 font-medium">
+            <Clock size={14} className="text-[var(--wc-usa)] shrink-0" />
             <span className="truncate">{todayLabel}</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <TimezoneBadge showIcon={false} />
             {lastUpdated && (
-              <span className="text-[10px] text-zinc-400 tabular-nums hidden sm:inline">
+              <span className="text-[10px] text-zinc-500 tabular-nums hidden sm:inline">
                 Updated {lastUpdated.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
               </span>
             )}
-            <span className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">{labels.autoUpdates}</span>
+            <span className="home-scores-live-pill">{labels.autoUpdates}</span>
           </div>
         </div>
 
@@ -157,43 +165,72 @@ export function LiveScores({
         )}
 
         {!showSpinner && (localizedMatches.length > 0 || error) && (
-          <div className="match-clash-list">
+          <div className="match-clash-list home-scores-list">
             {error && localizedMatches.length > 0 && (
               <p className="px-4 py-2 text-xs text-amber-600 bg-amber-50 border-b border-amber-100">
                 Couldn&apos;t refresh - showing cached scores
               </p>
             )}
-            {liveMatches.length > 0 && (
+            {visibleLive.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-red-500 font-bold">
                   {labels.live}
                 </p>
-                {liveMatches.map((m) => (
+                {visibleLive.map((m) => (
                   <MatchClashRow key={m.id} match={m} liveMinute={liveMinute} />
                 ))}
               </div>
             )}
-            {upcomingToday.length > 0 && (
+            {visibleUpcoming.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
                   {labels.upcoming}
                 </p>
-                {upcomingToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
+                {visibleUpcoming.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
             )}
-            {finishedToday.length > 0 && (
+            {visibleFinished.length > 0 && (
               <div>
                 <p className="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest text-zinc-400 font-semibold">
                   {labels.fullTime}
                 </p>
-                {finishedToday.map((m) => <MatchClashRow key={m.id} match={m} />)}
+                {visibleFinished.map((m) => <MatchClashRow key={m.id} match={m} />)}
               </div>
             )}
             {localizedMatches.length === 0 && !error && (
               <p className="px-4 py-10 text-center text-zinc-400 text-sm">{labels.noMatchesToday}</p>
             )}
+            {hiddenCount > 0 && (
+              <Link
+                href={fixturesHref}
+                className="home-scores-more-link"
+              >
+                {hiddenCount} more today →
+              </Link>
+            )}
           </div>
         )}
+    </>
+  );
+
+  if (embedded) {
+    return <div className="home-scores-embedded">{scoresBody}</div>;
+  }
+
+  return (
+    <section>
+      <div className={`flex items-center justify-between ${compact ? "mb-3" : "mb-4"}`}>
+        <h2 className={`section-title flex items-center gap-2 ${compact ? "text-base" : ""}`}>
+          <Radio size={compact ? 18 : 20} className="text-red-500" />
+          {labels.title}
+        </h2>
+        <Link href={fixturesHref} className="text-[13px] text-blue-600 hover:text-blue-700 font-medium flex items-center gap-0.5">
+          {labels.allFixtures} <ChevronRight size={14} />
+        </Link>
+      </div>
+      <div className={`card-elevated overflow-hidden rounded-2xl ${compact ? "shadow-sm" : ""}`}>
+        <div className="host-stripe" />
+        {scoresBody}
       </div>
     </section>
   );

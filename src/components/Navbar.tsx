@@ -15,13 +15,11 @@ import {
   MapPin,
   ChevronDown,
   GitBranch,
-  Calculator,
   Tv,
   BarChart3,
   Compass,
   Wrench,
   Swords,
-  Code2,
   History,
   Puzzle,
   Target,
@@ -29,7 +27,6 @@ import {
   Newspaper,
   Download,
   Image as ImageIcon,
-  Flag,
 } from "lucide-react";
 import clsx from "clsx";
 import { SITE_NAME, SITE_SHORT_NAME } from "@/lib/site";
@@ -41,10 +38,10 @@ import { useIsNativeApp } from "@/components/NativeAppProvider";
 
 const PRIMARY_LINKS = [
   { href: "/", label: "Today", icon: Trophy },
-  { href: "/my", label: "My WC", icon: Star },
+  { href: "/bracket", label: "Bracket", icon: GitBranch },
   { href: "/fixtures", label: "Fixtures", icon: Calendar },
-  { href: "/standings", label: "Tables", icon: Table2 },
-  { href: "/teams", label: "Teams", icon: Users },
+  { href: "/leaders", label: "Leaders", icon: BarChart3 },
+  { href: "/my", label: "My WC", icon: Star },
 ] as const;
 
 const EXPLORE_LINKS = [
@@ -62,23 +59,25 @@ const EXPLORE_LINKS = [
 ] as const;
 
 const TOOL_LINKS = [
-  { href: "/knockout", label: "Road to Round of 32", icon: Flag },
-  { href: "/bracket", label: "Live Bracket", icon: Trophy },
-  { href: "/bracket/pool", label: "Bracket Pool", icon: Users },
-  { href: "/scenarios", label: "Qualification Scenarios", icon: Calculator },
+  { href: "/daily", label: "Daily Digest", icon: Calendar },
   { href: "/watch", label: "Where to Watch", icon: Tv },
-  { href: "/leaders", label: "Stat Leaders", icon: BarChart3 },
-  { href: "/pool", label: "Office Pool", icon: Users },
-  { href: "/embed", label: "Embed Widget", icon: Code2 },
+  { href: "/standings", label: "Group Tables (archive)", icon: Table2 },
+  { href: "/teams", label: "All Teams", icon: Users },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
   if (pathname === href) return true;
-  if (href === "/daily" && pathname.startsWith("/daily")) return true;
+  if (href === "/" && pathname === "/") return true;
   if (href === "/my" && pathname.startsWith("/my")) return true;
+  if (href === "/fixtures" && pathname.startsWith("/fixtures")) return true;
+  if (href === "/bracket" && pathname.startsWith("/bracket")) return true;
+  if (href === "/leaders" && pathname.startsWith("/leaders")) return true;
+  if (href === "/daily" && pathname.startsWith("/daily")) return true;
+  if (href === "/watch" && pathname.startsWith("/watch")) return true;
+  if (href === "/standings" && pathname.startsWith("/standings")) return true;
+  if (href === "/teams" && pathname.startsWith("/teams")) return true;
   if (href === "/puzzles" && pathname.startsWith("/puzzles")) return true;
   if (href === "/history" && pathname.startsWith("/history")) return true;
-  if (href === "/teams" && pathname.startsWith("/teams")) return true;
   if (href === "/news" && pathname.startsWith("/news")) return true;
   if (href === "/players" && pathname.startsWith("/players")) return true;
   if (href === "/hosts" && pathname.startsWith("/hosts")) return true;
@@ -87,14 +86,6 @@ function isActive(pathname: string, href: string): boolean {
   if (href === "/rivalries" && pathname.startsWith("/rivalries")) return true;
   if (href === "/wallpapers" && pathname.startsWith("/wallpapers")) return true;
   if (href === "/which-team" && pathname.startsWith("/which-team")) return true;
-  if (href === "/knockout" && pathname.startsWith("/knockout")) return true;
-  if (href === "/bracket/pool" && pathname.startsWith("/bracket/pool")) return true;
-  if (href === "/bracket" && pathname === "/bracket") return true;
-  if (href === "/scenarios" && pathname.startsWith("/scenarios")) return true;
-  if (href === "/watch" && pathname.startsWith("/watch")) return true;
-  if (href === "/leaders" && pathname.startsWith("/leaders")) return true;
-  if (href === "/pool" && pathname.startsWith("/pool")) return true;
-  if (href === "/embed" && pathname.startsWith("/embed")) return true;
   return false;
 }
 
@@ -142,10 +133,10 @@ function NavDropdown({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className={clsx(
-          "flex items-center gap-1 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors",
+          "flex items-center gap-1 rounded-md px-2.5 py-2 text-[13px] font-semibold uppercase tracking-wide transition-colors",
           active || open
-            ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
-            : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+            ? "bg-white/10 text-white"
+            : "text-white/60 hover:text-white hover:bg-white/5"
         )}
       >
         <Icon size={15} strokeWidth={active ? 2.5 : 2} />
@@ -181,11 +172,11 @@ function BrandLogo() {
     <Link href="/" className="flex items-center gap-2 min-w-0 shrink-0 group">
       <MascotStackLogo />
       <div className="min-w-0">
-        <p className="font-bold text-zinc-900 text-sm sm:text-[15px] leading-tight truncate group-hover:text-[var(--wc-usa)] transition-colors">
+        <p className="font-display text-base sm:text-lg leading-none truncate text-white transition-colors group-hover:text-[var(--wc-gold)]">
           <span className="sm:hidden">{SITE_SHORT_NAME}</span>
           <span className="hidden sm:inline">{SITE_NAME}</span>
         </p>
-        <p className="hidden lg:block text-[10px] text-zinc-400 leading-none mt-0.5 tracking-wide uppercase">
+        <p className="hidden lg:block text-[10px] text-white/45 leading-none mt-1 tracking-[0.14em] uppercase">
           All football updates
         </p>
       </div>
@@ -209,7 +200,7 @@ export function Navbar() {
   return (
     <>
       <CommandPalette />
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200">
+      <header className="sticky top-0 z-40 bg-[var(--stadium-navy)]/95 backdrop-blur-md border-b border-white/10 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.5)]">
         <div className="host-stripe" />
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 h-14">
           <BrandLogo />
@@ -222,10 +213,11 @@ export function Navbar() {
                   key={href}
                   href={href}
                   className={clsx(
-                    "rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+                    "relative rounded-md px-3 py-2 text-[13px] font-semibold uppercase tracking-wide transition-colors",
+                    "after:absolute after:inset-x-2.5 after:-bottom-px after:h-[3px] after:rounded-full after:bg-[var(--wc-canada)] after:transition-opacity",
                     active
-                      ? "bg-[var(--wc-usa-light)] text-[var(--wc-usa)]"
-                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+                      ? "text-white after:opacity-100"
+                      : "text-white/60 hover:text-white hover:bg-white/5 after:opacity-0"
                   )}
                 >
                   {label}
@@ -240,17 +232,17 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event("wc26-open-search"))}
-              className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/80 px-2.5 py-1.5 text-xs text-zinc-500 hover:border-zinc-300 hover:bg-white transition-colors"
+              className="flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs text-white/60 hover:border-white/30 hover:bg-white/10 hover:text-white transition-colors"
               aria-label="Search"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <span>Search…</span>
-              <kbd className="rounded bg-white border border-zinc-200 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘K</kbd>
+              <kbd className="rounded bg-white/10 border border-white/15 px-1.5 py-0.5 text-[10px] font-mono text-white/50">⌘K</kbd>
             </button>
             {showInstall && (
               <Link
                 href="/install"
-                className="flex items-center gap-1.5 rounded-lg bg-[var(--wc-usa)] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                className="flex items-center gap-1.5 rounded-md bg-[var(--wc-canada)] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white transition-opacity hover:opacity-90"
               >
                 <Download size={14} />
                 Get app
@@ -263,7 +255,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event("wc26-open-search"))}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white lg:hidden"
               aria-label="Search"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -271,7 +263,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMenuOpen((o) => !o)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white"
               aria-expanded={menuOpen}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
             >

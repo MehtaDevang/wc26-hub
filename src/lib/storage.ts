@@ -7,6 +7,7 @@ const GUESS_KEY = "wc26_guess";
 const SCRAMBLE_KEY = "wc26_scramble";
 const QUIZ_KEY = "wc26_quiz";
 const PREMIUM_KEY = "wc26_premium";
+const FINAL_PICK_KEY = "wc26_final_pick";
 
 export interface RoundResult {
   guesses: string[];
@@ -90,6 +91,34 @@ export function getQuizState(): QuizState | null {
 
 export function saveQuizState(state: QuizState): void {
   write(QUIZ_KEY, sanitizeQuizState(state));
+}
+
+export interface FinalPick {
+  championCode: string;
+  championName: string;
+  /** Goals predicted for the champion (winner). */
+  homeGoals: number;
+  /** Goals predicted for the beaten finalist. */
+  awayGoals: number;
+  savedAt: number;
+  /** "champion" = trophy pick only; "score" = full Final scoreline. */
+  mode?: "champion" | "score";
+  /** The beaten finalist, only set when a full scoreline is predicted. */
+  opponentCode?: string;
+  opponentName?: string;
+}
+
+export function getFinalPick(): FinalPick | null {
+  return read<FinalPick>(FINAL_PICK_KEY);
+}
+
+export function saveFinalPick(pick: FinalPick): void {
+  write(FINAL_PICK_KEY, pick);
+}
+
+export function clearFinalPick(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(FINAL_PICK_KEY);
 }
 
 export function isPremium(): boolean {

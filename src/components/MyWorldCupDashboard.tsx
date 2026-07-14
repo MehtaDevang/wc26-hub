@@ -82,11 +82,11 @@ export function MyWorldCupDashboard({ initialTodayMatches }: MyWorldCupDashboard
   }, [allMatches, codes]);
 
   const quickLinks = [
-    { href: "/fixtures", label: "Full schedule", icon: Calendar },
-    { href: "/standings", label: "Group tables", icon: Table2 },
     { href: "/bracket", label: "Live bracket", icon: GitBranch },
+    { href: "/fixtures", label: "Knockout fixtures", icon: Calendar },
     { href: "/watch", label: "Where to watch", icon: Tv },
     { href: "/leaders", label: "Golden Boot", icon: BarChart3 },
+    { href: "/standings", label: "Group tables", icon: Table2 },
     { href: "/puzzles", label: "Daily puzzles", icon: Puzzle },
   ];
 

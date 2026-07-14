@@ -30,3 +30,32 @@ export function mergeMatchesById(...lists: Match[][]): Match[] {
   }
   return [...byId.values()];
 }
+
+/** Most recently finished matches (knockout-first when filtering). */
+export function pickRecentFinishedMatches(
+  matches: Match[],
+  limit = 2,
+  knockoutOnly = false
+): Match[] {
+  let list = matches.filter((m) => m.status === "finished" && m.kickoffAt);
+  if (knockoutOnly) {
+    list = list.filter(
+      (m) =>
+        m.group === "?" ||
+        (m.roundSlug != null && m.roundSlug !== "group-stage")
+    );
+  }
+  return list
+    .sort(
+      (a, b) =>
+        new Date(b.kickoffAt!).getTime() - new Date(a.kickoffAt!).getTime()
+    )
+    .slice(0, limit);
+}
+
+export function isKnockoutMatch(match: Match): boolean {
+  return (
+    match.group === "?" ||
+    (match.roundSlug != null && match.roundSlug !== "group-stage")
+  );
+}

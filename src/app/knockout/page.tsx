@@ -2,6 +2,7 @@ import Link from "next/link";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
 import { FaqSection } from "@/components/FaqSection";
+import { GroupStageArchiveBanner } from "@/components/GroupStageArchiveBanner";
 import {
   GroupQualificationGrid,
   GroupStageProgress,
@@ -45,20 +46,22 @@ export default async function KnockoutQualificationPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Road to the Round of 32"
-        subtitle="48 teams → 32 knockout spots — live qualification tracker"
+        subtitle="Group-stage qualification tracker — archived after the Round of 32 draw"
       />
 
+      <GroupStageArchiveBanner />
+
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
-        <Link href="/standings" className="text-blue-600 hover:underline font-medium">
-          Group tables →
-        </Link>
-        <span className="text-zinc-300">·</span>
-        <Link href="/scenarios" className="text-blue-600 hover:underline font-medium">
-          What-if simulator →
-        </Link>
-        <span className="text-zinc-300">·</span>
         <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
           Live bracket →
+        </Link>
+        <span className="text-zinc-300">·</span>
+        <Link href="/fixtures" className="text-blue-600 hover:underline font-medium">
+          Knockout fixtures →
+        </Link>
+        <span className="text-zinc-300">·</span>
+        <Link href="/standings" className="text-blue-600 hover:underline font-medium">
+          Final group tables →
         </Link>
       </p>
 

@@ -9,6 +9,7 @@ interface LiveKnockoutBracketProps {
   initialData: KnockoutBracketData;
   compact?: boolean;
   showLink?: boolean;
+  embedded?: boolean;
 }
 
 async function fetchBracket(timeZone: string): Promise<KnockoutBracketData> {
@@ -23,6 +24,7 @@ export function LiveKnockoutBracket({
   initialData,
   compact = false,
   showLink = false,
+  embedded = false,
 }: LiveKnockoutBracketProps) {
   const timezone = useTimezone();
   const [data, setData] = useState(initialData);
@@ -66,8 +68,8 @@ export function LiveKnockoutBracket({
   }, [hasLive, refresh]);
 
   return (
-    <div className="space-y-2">
-      <KnockoutBracket data={data} compact={compact} showLink={showLink} refreshing={refreshing} />
+    <div className={embedded ? "h-full flex flex-col" : "space-y-2"}>
+      <KnockoutBracket data={data} compact={compact} showLink={showLink} refreshing={refreshing} embedded={embedded} />
       {error && (
         <p className="text-center text-xs text-amber-700">
           Couldn&apos;t refresh bracket - showing last loaded data

@@ -3,6 +3,7 @@ import { ScenariosTabs } from "@/components/ScenariosTabs";
 import { FaqSection } from "@/components/FaqSection";
 import { WC26PageBanner } from "@/components/WC26Brand";
 import { AdBanner } from "@/components/AdBanner";
+import { GroupStageArchiveBanner } from "@/components/GroupStageArchiveBanner";
 import { createPageMetadata } from "@/lib/seo";
 import { fetchAllGroupStandings } from "@/lib/espn/standings";
 import { getMatchesByParams } from "@/lib/espn/services";
@@ -36,19 +37,22 @@ export default async function ScenariosPage() {
     <div className="space-y-6">
       <WC26PageBanner
         title="Qualification Scenarios"
-        subtitle="What does your team need - or simulate the whole group yourself"
+        subtitle="Group-stage what-if calculator — archived for the knockout phase"
       />
+
+      <GroupStageArchiveBanner variant="scenarios" />
+
       <p className="text-sm text-zinc-500 flex flex-wrap gap-x-3 gap-y-1">
-        <Link href="/knockout" className="text-blue-600 hover:underline font-medium">
-          Road to Round of 32 →
+        <Link href="/bracket" className="text-blue-600 hover:underline font-medium">
+          Live bracket →
+        </Link>
+        <span className="text-zinc-300">·</span>
+        <Link href="/leaders" className="text-blue-600 hover:underline font-medium">
+          Golden Boot leaders →
         </Link>
         <span className="text-zinc-300">·</span>
         <Link href="/standings" className="text-blue-600 hover:underline font-medium">
-          Live standings →
-        </Link>
-        <span className="text-zinc-300">·</span>
-        <Link href="/groups" className="text-blue-600 hover:underline font-medium">
-          All groups →
+          Final group tables →
         </Link>
       </p>
       <AdBanner placement="inline" />
